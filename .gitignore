@@ -1,0 +1,8 @@
+# Backend
+env
+
+# Other
+
+.idea
+.env
+.log
