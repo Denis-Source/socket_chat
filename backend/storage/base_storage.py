@@ -9,7 +9,7 @@ class NoRoomSpecifiedException(Exception):
 
 class BaseStorage(ABC):
     @abstractmethod
-    def store_room(self, room: Room):
+    def create_room(self, room: Room):
         pass
 
     @abstractmethod

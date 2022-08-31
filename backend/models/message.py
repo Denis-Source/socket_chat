@@ -2,14 +2,13 @@ from logging import getLogger
 
 from .base_model import BaseModel
 from .model_types import ModelTypes
-from .user import User
 
 
 class Message(BaseModel):
     TYPE = ModelTypes.MESSAGE
     logger = getLogger(f"{TYPE}-model")
 
-    def __init__(self, body: str, user: User, room):
+    def __init__(self, body: str, user, room):
         super().__init__()
         self.body = body
         self.user = user

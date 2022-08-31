@@ -6,7 +6,6 @@ from random import choice
 from .base_model import BaseModel
 from .message import Message
 from .model_types import ModelTypes
-from .user import User
 
 
 class RoomColorException(Exception):
@@ -75,7 +74,7 @@ class Room(BaseModel):
     def __str__(self):
         return self.name
 
-    def add_user(self, user: User):
+    def add_user(self, user):
         self.users.append(user)
         self.logger.debug(f"Added {user} to {self}")
 
@@ -83,7 +82,7 @@ class Room(BaseModel):
         self.messages.append(message)
         self.logger.debug(f"Added {message} to {self}")
 
-    def remove_user(self, user: User):
+    def remove_user(self, user):
         if user in self.users:
             self.users.remove(user)
             self.logger.debug(f"Removed {user} from {self}")
@@ -91,8 +90,8 @@ class Room(BaseModel):
             self.logger.debug(f"{user} is not in {self}")
             raise UserNotInRoomException(f"No {user} in {self}")
 
-    def set_color(self, color: str):
-        self.color = color
+    def set_color(self, color: RoomColor):
+        self.color = color.value
         self.logger.debug(f"set color {color} for {self}")
 
     def set_name(self, name: str):
@@ -106,5 +105,6 @@ class Room(BaseModel):
             "type": self.TYPE,
             "uuid": str(self.get_uuid()),
             "name": self.name,
-            "color": self.color
+            "color": self.color,
+            "users": [user.get_dict() for user in self.users]
         }
