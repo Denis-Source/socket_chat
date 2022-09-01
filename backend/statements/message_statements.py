@@ -12,4 +12,4 @@ class MessageResultStatements(str, Enum):
 
 
 class MessageErrorStatements(str, Enum):
-    pass
+    NO_SELECTED_ROOM = "no_selected_room"

@@ -6,3 +6,5 @@ class Config:
     PORT = 9000
 
     STORAGE_CLS = MemoryStorage
+
+    MESSAGE_HISTORY_LIMIT = 100

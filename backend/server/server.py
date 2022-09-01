@@ -8,13 +8,14 @@ from logging import getLogger
 from websockets.exceptions import ConnectionClosedError
 
 from config import Config
+from models.message import Message
 from models.room import Room, RoomColor, RoomColorException
 from models.user import User
 from statements.general_statements import GeneralStatements
-from statements.message_statements import MessageResultStatements
+from statements.message_statements import MessageResultStatements, MessageErrorStatements, MessageCallStatements
 from statements.room_statements import RoomCallStatements, RoomResultStatements, RoomErrorStatements
 from statements.statement_types import StatementTypes
-from statements.user_statements import UserResultStatements
+from statements.user_statements import UserResultStatements, UserCallStatements
 from storage.base_storage import NoRoomSpecifiedException
 
 
@@ -27,7 +28,7 @@ class Server:
     def __init__(self):
         self.storage = Config.STORAGE_CLS()
 
-        self.methods = {
+        self.calls = {
             RoomCallStatements.CREATE_ROOM: self.create_room,
             RoomCallStatements.DELETE_ROOM: self.delete_room,
             RoomCallStatements.LIST_ROOMS: self.list_rooms,
@@ -35,6 +36,11 @@ class Server:
             RoomCallStatements.LEAVE_ROOM: self.leave_room,
             RoomCallStatements.CHANGE_COLOR: self.change_room_color,
             RoomCallStatements.CHANGE_NAME: self.change_room_name,
+
+            UserCallStatements.CHANGE_USER_NAME: self.change_user_name,
+
+            MessageCallStatements.CREATE_MESSAGE: self.create_message,
+            MessageCallStatements.LIST_MESSAGES: self.list_messages
         }
 
     async def send_rooms(self, user: User):
@@ -74,7 +80,7 @@ class Server:
 
                 payload = memo["payload"]
                 method_type = payload["message"]
-                method = self.methods[method_type]
+                method = self.calls[method_type]
 
                 await method(user=user, payload=payload)
 
@@ -136,7 +142,7 @@ class Server:
                 }
             }))
 
-            await self.broadcast_room(room, RoomResultStatements.ROOM_CHANGED)
+            await self.broadcast_room(room, RoomResultStatements.ROOM_USER_ENTERED)
 
         except NoRoomSpecifiedException:
             self.logger.info(f"No room found for {user}")
@@ -161,7 +167,7 @@ class Server:
                 }
             }))
 
-            await self.broadcast_room(room, RoomResultStatements.ROOM_CHANGED)
+            await self.broadcast_room(room, RoomResultStatements.ROOM_USER_LEFT)
 
         except NoRoomSpecifiedException:
             self.logger.info(f"No room found for {user}")
@@ -218,7 +224,7 @@ class Server:
                     "message": GeneralStatements.OK
                 }
             }))
-            await self.broadcast_room(room, RoomResultStatements.ROOM_CHANGED)
+            await self.broadcast_room(room, RoomResultStatements.ROOM_NAME_CHANGED)
         except NoRoomSpecifiedException:
             self.logger.info(f"No room found for {user}")
             await user.connection.send(json.dumps({
@@ -242,7 +248,7 @@ class Server:
                     "message": GeneralStatements.OK
                 }
             }))
-            await self.broadcast_room(room, RoomResultStatements.ROOM_CHANGED)
+            await self.broadcast_room(room, RoomResultStatements.ROOM_COLOR_CHANGED)
         except NoRoomSpecifiedException:
             self.logger.info(f"No room found for {user}")
             await user.connection.send(json.dumps({
@@ -260,13 +266,66 @@ class Server:
                 }
             }))
 
-    async def broadcast_room(self, room: Room, message: RoomResultStatements):
+    async def broadcast_room(self, changed_room: Room, message: RoomResultStatements):
         for _, user in self.connected_users.items():
             await user.connection.send(json.dumps({
                 "type": StatementTypes.RESULT,
                 "payload": {
                     "message": message,
-                    "room": room.get_dict()
+                    "room": changed_room.get_dict()
+                }
+            }))
+
+    # user methods
+    async def change_user_name(self, payload: dict, user: User):
+        name = payload["name"]
+        self.logger.info(f"Changed {user} name to {name}")
+        user.set_name(name)
+        await user.connection.send(json.dumps({
+            "type": StatementTypes.RESULT,
+            "payload": {
+                "message": GeneralStatements.OK
+            }
+        }))
+        if user.room:
+            await self.broadcast_room(user.room, UserResultStatements.ROOM_USERS_CHANGED)
+
+    # message methods
+    async def create_message(self, payload: dict, user: User):
+        body = payload["name"]
+        if user.room:
+            message = Message(body, user.room)
+            self.logger.info(f"Sending {message} ({body[:10]}) from {user}")
+            user.room.add_message(message)
+            await user.connection.send(json.dumps({
+                "type": StatementTypes.RESULT,
+                "payload": {
+                    "message": GeneralStatements.OK
+                }
+            }))
+        else:
+            await user.connection.send(json.dumps({
+                "type": StatementTypes.ERROR,
+                "payload": {
+                    "message": MessageErrorStatements.NO_SELECTED_ROOM
+                }
+            }))
+
+    async def list_messages(self, payload: dict, user: User):
+        if user.room:
+            self.logger.info(f"Sending message list({len(user.name)}) to {user}")
+            await user.connection.send(json.dumps({
+                "type": StatementTypes.RESULT,
+                "payload": {
+                    "message": MessageResultStatements.MESSAGES_LISTED,
+                    "list": [message.get_dict() for message in user.room.messages]
+                }
+            }))
+        else:
+            await user.connection.send(json.dumps({
+                "type": StatementTypes.ERROR,
+                "payload": {
+                    "message": MessageErrorStatements.NO_SELECTED_ROOM
                 }
             }))
 
@@ -274,9 +333,9 @@ class Server:
         loop = asyncio.get_event_loop()
         try:
             socket_server = websockets.serve(self.handle_connection, Config.IP, Config.PORT)
-            self.logger.info("Started WebSocket server")
+            self.logger.info("starting server")
             loop.run_until_complete(socket_server)
             loop.run_forever()
         finally:
             loop.close()
-            self.logger.info("Successfully shut down")
+            self.logger.info("successfully shut down")

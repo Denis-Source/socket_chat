@@ -25,6 +25,10 @@ class User(BaseModel):
         room.add_user(self)
         self.logger.debug(f"Setting room {room} from {self}")
 
+    def set_name(self, name: str):
+        self.logger.debug(f"Changing name for {self} to {name}")
+        self.name = name
+
     def leave_room(self):
         self.logger.debug(f"leaving room {self.room}")
         if self.room:
