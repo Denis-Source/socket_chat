@@ -34,8 +34,8 @@ class Server:
             RoomCallStatements.LIST_ROOMS: self.list_rooms,
             RoomCallStatements.ENTER_ROOM: self.enter_room,
             RoomCallStatements.LEAVE_ROOM: self.leave_room,
-            RoomCallStatements.CHANGE_COLOR: self.change_room_color,
-            RoomCallStatements.CHANGE_NAME: self.change_room_name,
+            RoomCallStatements.CHANGE_ROOM_COLOR: self.change_room_color,
+            RoomCallStatements.CHANGE_ROOM_NAME: self.change_room_name,
 
             UserCallStatements.CHANGE_USER_NAME: self.change_user_name,
 
@@ -61,7 +61,7 @@ class Server:
         finally:
             self.logger.info(f"{user} disconnected")
             user.leave_room()
-            self.connected_users.pop(user)
+            self.connected_users.pop(user.get_uuid())
 
     async def handle_user(self, user: User):
         self.logger.info(f"Handling user request")
@@ -72,6 +72,8 @@ class Server:
                 "user": user.get_dict()
             }
         }))
+
+        await self.list_rooms(user, {})
 
         async for raw_message in user.connection:
             try:
@@ -84,8 +86,7 @@ class Server:
 
                 await method(user=user, payload=payload)
 
-            except (JSONDecodeError, KeyError) as e:
-                self.logger.info(e)
+            except (JSONDecodeError, KeyError):
                 await user.connection.send(json.dumps({
                     "type": StatementTypes.RESULT,
                     "payload": {
@@ -142,7 +143,7 @@ class Server:
                 }
             }))
 
-            await self.broadcast_room(room, RoomResultStatements.ROOM_USER_ENTERED)
+            await self.broadcast_room(room, RoomResultStatements.ROOM_CHANGED)
 
         except NoRoomSpecifiedException:
             self.logger.info(f"No room found for {user}")
@@ -154,11 +155,10 @@ class Server:
             }))
 
     async def leave_room(self, payload: dict, user: User):
-        try:
-            room_uuid = payload["uuid"]
-            room: Room = self.storage.get_room(room_uuid)
+        if user.room:
+            room = user.room
+            self.logger.info(f"{user} left {user.room}")
             user.leave_room()
-            self.logger.info(f"{user} left {room}")
 
             await user.connection.send(json.dumps({
                 "type": StatementTypes.RESULT,
@@ -166,10 +166,9 @@ class Server:
                     "message": RoomResultStatements.ROOM_LEFT
                 }
             }))
+            await self.broadcast_room(room, RoomResultStatements.ROOM_CHANGED)
 
-            await self.broadcast_room(room, RoomResultStatements.ROOM_USER_LEFT)
-
-        except NoRoomSpecifiedException:
+        else:
             self.logger.info(f"No room found for {user}")
             await user.connection.send(json.dumps({
                 "type": StatementTypes.ERROR,
@@ -224,7 +223,7 @@ class Server:
                     "message": GeneralStatements.OK
                 }
             }))
-            await self.broadcast_room(room, RoomResultStatements.ROOM_NAME_CHANGED)
+            await self.broadcast_room(room, RoomResultStatements.ROOM_CHANGED)
         except NoRoomSpecifiedException:
             self.logger.info(f"No room found for {user}")
             await user.connection.send(json.dumps({
@@ -248,7 +247,7 @@ class Server:
                     "message": GeneralStatements.OK
                 }
             }))
-            await self.broadcast_room(room, RoomResultStatements.ROOM_COLOR_CHANGED)
+            await self.broadcast_room(room, RoomResultStatements.ROOM_CHANGED)
         except NoRoomSpecifiedException:
             self.logger.info(f"No room found for {user}")
             await user.connection.send(json.dumps({
@@ -288,13 +287,13 @@ class Server:
             }
         }))
         if user.room:
-            await self.broadcast_room(user.room, UserResultStatements.ROOM_USERS_CHANGED)
+            await self.broadcast_room(user.room, RoomResultStatements.ROOM_CHANGED)
 
     # message methods
     async def create_message(self, payload: dict, user: User):
         body = payload["name"]
         if user.room:
-            message = Message(body, user.room)
+            message = Message(body, user, user.room)
             self.logger.info(f"Sending {message} ({body[:10]}) from {user}")
             user.room.add_message(message)
             await user.connection.send(json.dumps({

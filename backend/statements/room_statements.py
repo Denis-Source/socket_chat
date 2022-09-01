@@ -7,8 +7,8 @@ class RoomCallStatements(str, Enum):
     LEAVE_ROOM = "leave_room"
     DELETE_ROOM = "delete_room"
     LIST_ROOMS = "list_rooms"
-    CHANGE_COLOR = "change_color"
-    CHANGE_NAME = "change_name"
+    CHANGE_ROOM_COLOR = "change_color"
+    CHANGE_ROOM_NAME = "change_name"
 
 
 class RoomResultStatements(str, Enum):
@@ -17,11 +17,7 @@ class RoomResultStatements(str, Enum):
     ROOM_LEFT = "room_left"
     ROOM_DELETED = "room_deleted"
     ROOMS_LISTED = "rooms_listed"
-    ROOM_COLOR_CHANGED = "room_color_changed"
-    ROOM_NAME_CHANGED = "room_name_changed"
-    ROOM_USER_ENTERED = "room_user_entered"
-    ROOM_USER_LEFT = "room_user_left"
-    ROOM_USERS_CHANGED = "room_users_changed"
+    ROOM_CHANGED = "room_changed"
 
 
 class RoomErrorStatements(str, Enum):

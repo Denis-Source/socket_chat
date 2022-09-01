@@ -21,6 +21,8 @@ class User(BaseModel):
         return self.name
 
     def set_room(self, room: Room):
+        if self.room:
+            self.room.remove_user(self)
         self.room = room
         room.add_user(self)
         self.logger.debug(f"Setting room {room} from {self}")

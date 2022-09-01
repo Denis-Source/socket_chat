@@ -67,7 +67,7 @@ class Room(BaseModel):
         else:
             self.color = color
         self.name = f"{self.TYPE}-{self.get_uuid()}"
-        self.users = []
+        self.users = set()
         self.messages = []
         self.logger.debug(f"Created room {self}")
 
@@ -75,7 +75,7 @@ class Room(BaseModel):
         return self.name
 
     def add_user(self, user):
-        self.users.append(user)
+        self.users.add(user)
         self.logger.debug(f"Added {user} to {self}")
 
     def add_message(self, message: Message):
