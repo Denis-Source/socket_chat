@@ -7,7 +7,7 @@ class UserCallStatements(str, Enum):
 
 class UserResultStatements(str, Enum):
     USER_CREATED = "user_created"
-    USER_NAME_CHANGED = "user_name_changed"
+    USER_CHANGED = "user_changed"
 
 
 class UserErrorStatements(str, Enum):

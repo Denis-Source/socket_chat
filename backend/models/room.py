@@ -106,5 +106,6 @@ class Room(BaseModel):
             "uuid": str(self.get_uuid()),
             "name": self.name,
             "color": self.color,
-            "users": [user.get_dict() for user in self.users]
+            "users": [user.get_dict() for user in self.users],
+            "sum": len(self.messages)
         }

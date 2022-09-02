@@ -121,6 +121,7 @@ class Server:
     async def enter_room(self, user: User, payload: dict):
         try:
             room_uuid = payload["uuid"]
+            old_room = user.room
             room: Room = self.storage.get_room(room_uuid)
             self.logger.info(f"Selected {room} for {user}")
             user.set_room(room)
@@ -142,7 +143,8 @@ class Server:
                     "list": history
                 }
             }))
-
+            if old_room:
+                await self.broadcast_room(old_room, RoomResultStatements.ROOM_CHANGED)
             await self.broadcast_room(room, RoomResultStatements.ROOM_CHANGED)
 
         except NoRoomSpecifiedException:
@@ -286,6 +288,14 @@ class Server:
                 "message": GeneralStatements.OK
             }
         }))
+        await user.connection.send(json.dumps({
+            "type": StatementTypes.RESULT,
+            "payload": {
+                "message": UserResultStatements.USER_CREATED,
+                "user": user.get_dict()
+            }
+        }))
+
         if user.room:
             await self.broadcast_room(user.room, RoomResultStatements.ROOM_CHANGED)
 
