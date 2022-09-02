@@ -5,4 +5,5 @@ export interface RoomModel {
     name: string;
     color: string;
     users: UserModel[];
+    sum: number;
 }

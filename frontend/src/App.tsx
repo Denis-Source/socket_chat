@@ -1,17 +1,16 @@
 import React from 'react';
-import {useDispatch, useSelector} from "react-redux";
-import {set} from "./Reducers/User";
+import {useDispatch} from "react-redux";
+import {setUser} from "./Reducers/User";
 import useWebSocket from "react-use-websocket";
 import {WSS_FEED_URL} from "./api";
 import {UserStatements} from "./StatementsTypes/UserStatements";
 import {RoomStatements} from "./StatementsTypes/RoomStatements";
 import {add, remove, setBulk, update} from "./Reducers/Room";
-import {UserModel} from "./Molels/User.model";
 import List from "./Components/Room/List/List";
-
+import Header from "./Components/Header/Header";
+import styles from "./App.module.scss"
 
 function App() {
-    const user: UserModel = useSelector((state: any) => state.user.user);
     const dispatch = useDispatch()
 
     useWebSocket(WSS_FEED_URL, {
@@ -27,7 +26,11 @@ function App() {
 
         switch (type) {
             case UserStatements.UserCreated:
-                dispatch(set(payload.user));
+                dispatch(setUser(payload.user));
+                break;
+            case UserStatements.UserChanged:
+                console.log(payload.user);
+                dispatch(setUser(payload.user));
                 break;
             case RoomStatements.RoomsListed:
                 dispatch(setBulk(data.payload.list));
@@ -43,10 +46,14 @@ function App() {
                 break;
         }
     }
+
     return (
-        <div>
-            <h1>{user?.name}</h1>
-            <div>
+        <div className={styles.container}>
+            <Header/>
+            <div className={styles.layout}>
+                <List/>
+
+
                 <List/>
             </div>
         </div>

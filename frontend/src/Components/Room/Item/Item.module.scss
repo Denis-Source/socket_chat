@@ -1,0 +1,110 @@
+@import "src/Static/Styles/_globals.scss";
+
+.item {
+  width: calc(100% - 60px);
+  background-color: $color-room;
+  padding: 20px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+  gap: 10px;
+}
+
+.header {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+
+.name {
+  font-family: $font-family-text;
+  color: $color-text;
+  width: 100%;
+  outline: none;
+  border: 0;
+  background-color: transparent;
+  font-size: 24px;
+  opacity: 1;
+  padding: 0;
+}
+
+
+.closeButton {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  width: 25px;
+  height: 25px;
+  background-color: transparent;
+  transition: 300ms;
+
+  &:hover {
+    cursor: pointer;
+  }
+  &:active {
+    transform: scale(0.9);
+  }
+}
+
+
+.colorIcon {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  outline: 2px solid $color-accent;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.info {
+  display: flex;
+  gap: 10px;
+  color: $color-accent;
+}
+
+.stat {
+  display: flex;
+  gap: 5px;
+}
+
+.statIcon {
+  width: 20px;
+}
+
+.counter {
+  margin: 0;
+}
+
+
+.popOver {
+  position: absolute;
+  z-index: 2;
+  height: 0;
+
+  left: 20px;
+  top: -20px;
+}
+
+.cover {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.innerWrapper {
+  position: relative;
+  height: auto;
+}
+

@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap');
+
+$font-family-text: "Roboto Slab", serif;
+$font-family-code: "Roboto Slab", mono;
+
+$color-background-start: #65606b;
+$color-background-finish: #F29492;
+
+$color-room: #ffffff36;
+$color-accent: #ffffffaa;
+
+$color-text: #000000cc;
+
+$color-my-message: #ffffff88;
+$color-other-message: #ffffff44;
+
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+
+}
+
+::-webkit-scrollbar-thumb {
+  background: $color-accent;
+}
+
+body {
+  font-family: $font-family-text;
+  margin: 0;
+
+  color: $color-text;
+
+  background: linear-gradient(-45deg, $color-background-start, $color-background-finish);
+  min-height: 100vh;
+}
+

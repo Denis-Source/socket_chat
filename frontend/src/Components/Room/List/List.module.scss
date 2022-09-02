@@ -1,0 +1,89 @@
+@import "src/Static/Styles/_globals.scss";
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.headerWrapper {
+  display: flex;
+  width: calc(100% - 30px);
+  justify-content: space-between;
+}
+
+.headerWrapperOne {
+  @extend .headerWrapper;
+  justify-content: flex-end;
+}
+
+.header {
+  font-size: 28px;
+  text-align: center;
+  margin: 0;
+}
+
+
+.searchWrapper {
+  gap: 5px;
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.searchLabel {
+  font-size: 20px;
+}
+
+.search {
+  resize: none;
+  font-family: $font-family-text;
+  color: $color-text;
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 0;
+  background-color: $color-accent;
+  font-weight: 600;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.list {
+  padding: 10px;
+  height: 500px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+  overflow-y: scroll;
+}
+
+.followButton {
+  display: none;
+}
+
+.button {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  width: 50px;
+  height: 50px;
+  background-color: transparent;
+  transition: 300ms;
+
+  &:hover {
+    cursor: pointer;
+  }
+  &:active {
+    transform: scale(0.9);
+  }
+}
+
+.buttonIcon {
+  width: 100%;
+}

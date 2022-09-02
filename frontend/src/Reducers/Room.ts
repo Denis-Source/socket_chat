@@ -22,9 +22,10 @@ export const roomSlice = createSlice({
             state.list.push(action.payload);
         },
         update: (state, action: PayloadAction<RoomModel>) => {
+            console.log(action.payload);
             state.list =
                 [...state.list.map(room => room.uuid === action.payload.uuid ? action.payload : room)]
-            if (state.current?.uuid == action.payload.uuid) {
+            if (state.current?.uuid === action.payload.uuid) {
                 state.current = action.payload;
             }
         },
