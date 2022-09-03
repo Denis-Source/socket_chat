@@ -34,7 +34,7 @@ const Form = () => {
 
   // Function to process key presses
   const onEnterPress = async (event: any) => {
-    if (event.keyCode == 13 && event.shiftKey == false) {
+    if (event.keyCode === 13 && event.shiftKey === false) {
       event.preventDefault();
       await sendMessage(event);
     }
