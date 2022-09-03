@@ -8,7 +8,7 @@ import {WSS_FEED_URL} from "../../../api";
 import {RoomModel} from "../../../Models/Room.model";
 import {useDispatch, useSelector} from "react-redux";
 import {RoomStatements} from "../../../StatementsTypes/RoomStatements";
-import {RightTabs, setRightTab} from "../../../Reducers/General";
+import {LeftTabs, RightTabs, setLeftTab, setRightTab} from "../../../Reducers/General";
 import back from "../../../Static/Images/back.svg"
 import {leaveRoom} from "../../../Reducers/Room";
 
@@ -17,8 +17,8 @@ const MessageTab = () => {
         share: true
     });
 
+    const leftTab: LeftTabs = useSelector((state: any) => state.general.leftTab);
     const currentRoom: RoomModel = useSelector((state: any) => state.room.current);
-
 
     const [focus, setFocus] = useState<boolean>(false);
     const [enteredName, setEnteredName] = useState<string>(currentRoom?.name);
@@ -43,7 +43,6 @@ const MessageTab = () => {
 
     const dispatch = useDispatch();
 
-
     // Function to leave the entered room
     const sendLeave = async () => {
         dispatch(leaveRoom())
@@ -54,6 +53,7 @@ const MessageTab = () => {
             }
         })
         dispatch(setRightTab(RightTabs.Rooms))
+        leftTab === LeftTabs.Rooms && dispatch(setLeftTab(LeftTabs.Log))
     }
 
 
