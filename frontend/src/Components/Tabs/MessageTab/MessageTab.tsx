@@ -16,6 +16,7 @@ import {
 } from "../../../Reducers/General";
 import back from "../../../Static/Images/back.svg";
 import { TypeStatements } from "../../../StatementsTypes/TypeStatements";
+import { clearMessages } from "../../../Reducers/Message";
 
 const MessageTab = () => {
   // Configure websocket connection
@@ -49,12 +50,15 @@ const MessageTab = () => {
       type: TypeStatements.Call,
       message: RoomStatements.ChangeRoomName,
       uuid: currentRoom?.uuid,
+      name: event.target.value,
     });
     await sendJsonMessage(statements);
   };
 
   // Function to leave the entered room
   const sendLeave = async () => {
+    // Clear message history
+    dispatch(clearMessages());
     // Switch the left tab to room selection
     dispatch(setRightTab(RightTabs.Rooms));
     // Switch the right tab if the room list is selected

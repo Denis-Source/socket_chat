@@ -17,7 +17,7 @@ const List = () => {
     >
       <div className={styles.list}>
         {logs.map((log, index) => (
-          <Item log={log} key={index}/>
+          <Item log={log} key={index} />
         ))}
       </div>
     </ScrollToBottom>

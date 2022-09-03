@@ -40,7 +40,7 @@ const Item = ({ room }: { room: RoomModel }) => {
       type: TypeStatements.Call,
       message: RoomStatements.ChangeRoomName,
       uuid: room.uuid,
-      name: event.target.name,
+      name: event.target.value,
     });
     await sendJsonMessage(statement);
   };

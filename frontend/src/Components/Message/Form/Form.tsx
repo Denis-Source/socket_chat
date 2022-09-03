@@ -21,7 +21,8 @@ const Form = () => {
   ) => {
     event?.preventDefault();
 
-    if (textArea.current) {
+    // Send only if the ref is loaded and the input is filled
+    if (textArea.current?.value) {
       const statement = prepareStatement({
         type: TypeStatements.Call,
         message: MessageStatements.CreateMessage,

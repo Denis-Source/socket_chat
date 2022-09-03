@@ -7,7 +7,6 @@ import store from "./store";
 import { addLog } from "./Reducers/Log";
 
 export const WSS_FEED_URL = "ws://localhost:9000";
-
 // export const WSS_FEED_URL = "wss://chat.zoloto.cx.ua/api";
 
 export interface StatementParts {
@@ -23,10 +22,13 @@ export const prepareStatement = (parts: StatementParts) => {
   /*
     Construct the statements in the correct form
     Add log item to the state
-    */
+  */
+
+  console.log(parts);
+
   const newLog: LogModel = {
     type: parts.type,
-    time: new Date().toLocaleString(),
+    time: new Date().toLocaleTimeString(),
     origin: LogOrigin.Sent,
     description: parts.message,
   };

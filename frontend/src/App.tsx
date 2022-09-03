@@ -5,7 +5,13 @@ import useWebSocket from "react-use-websocket";
 import { WSS_FEED_URL } from "./api";
 import { UserStatements } from "./StatementsTypes/UserStatements";
 import { RoomStatements } from "./StatementsTypes/RoomStatements";
-import { addBulkRoom, addRoom, removeRoom, updateRoom } from "./Reducers/Room";
+import {
+  addBulkRoom,
+  addRoom,
+  leaveRoom,
+  removeRoom,
+  updateRoom,
+} from "./Reducers/Room";
 import Header from "./Components/Header/Header";
 import styles from "./App.module.scss";
 import RoomTabMinimal from "./Components/Tabs/RoomTabMinimal/RoomTabMinimal";
@@ -16,7 +22,9 @@ import RoomTab from "./Components/Tabs/RoomTab/RoomTab";
 import LogTab from "./Components/Tabs/LogTab/LogTab";
 import { addLog } from "./Reducers/Log";
 import { LogOrigin } from "./Models/Log.model";
-import { LeftTabs, RightTabs } from "./Reducers/General";
+import { LeftTabs, RightTabs, setLoaded } from "./Reducers/General";
+import Spinner from "./Components/Spinner/Spinner";
+import { UserModel } from "./Models/User.model";
 
 function App() {
   // Use dispatch
@@ -32,16 +40,13 @@ function App() {
   });
 
   // Get tab states to render elements based on them
-  const leftTab: LeftTabs = useSelector((state: any) => state.general.leftTab);
-  const rightTab: RightTabs = useSelector(
-    (state: any) => state.general.rightTab
-  );
-
+  const { leftTab, rightTab } = useSelector((state: any) => state.general);
+  const loading: boolean = useSelector((state: any) => state.general.loading);
   const processMessages = (data: any) => {
     /*
-            Processes the incoming data
-            Adds log item to the state
-         */
+                Processes the incoming data
+                Adds log item to the state
+        */
 
     // Get type of the message and payload
     const type = data.payload.message;
@@ -75,6 +80,9 @@ function App() {
       case RoomStatements.RoomDeleted:
         dispatch(removeRoom(data.payload.room));
         break;
+      case RoomStatements.RoomLeft:
+        dispatch(leaveRoom());
+        break;
       case RoomStatements.RoomChanged:
         dispatch(updateRoom(data.payload.room));
         break;
@@ -85,6 +93,9 @@ function App() {
         dispatch(addMessage(data.payload.object));
     }
   };
+
+  // Get user model from the store
+  const user: UserModel = useSelector((state: any) => state.user.user);
 
   // Set the tabs based on the selected in the state
   let leftTabElement;
@@ -108,14 +119,23 @@ function App() {
       break;
   }
 
+  // Set loading to false if user is loaded
+  user && dispatch(setLoaded());
+
   return (
-    <div className={styles.container}>
-      <Header />
-      <div className={styles.layout}>
-        {leftTabElement}
-        {rightTabElement}
-      </div>
-    </div>
+    <>
+      {!loading ? (
+        <div className={styles.container}>
+          <Header />
+          <div className={styles.layout}>
+            {leftTabElement}
+            {rightTabElement}
+          </div>
+        </div>
+      ) : (
+        <Spinner />
+      )}
+    </>
   );
 }
 

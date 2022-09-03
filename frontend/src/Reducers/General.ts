@@ -13,11 +13,13 @@ export enum RightTabs {
 interface InitialState {
   leftTab: LeftTabs;
   rightTab: RightTabs;
+  loading: boolean;
 }
 
 const initialState: InitialState = {
   leftTab: LeftTabs.Log,
   rightTab: RightTabs.Rooms,
+  loading: true,
 };
 
 export const generalSlice = createSlice({
@@ -32,8 +34,17 @@ export const generalSlice = createSlice({
       // Switches the right tab
       state.rightTab = action.payload;
     },
+    setLoading: (state) => {
+      // Sets app loading to true
+      state.loading = true;
+    },
+    setLoaded: (state) => {
+      // Sets app loading to false
+      state.loading = false;
+    },
   },
 });
 
-export const { setLeftTab, setRightTab } = generalSlice.actions;
+export const { setLeftTab, setRightTab, setLoading, setLoaded } =
+  generalSlice.actions;
 export default generalSlice.reducer;
