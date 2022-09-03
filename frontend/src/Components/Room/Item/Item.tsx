@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {RoomModel} from "../../../Molels/Room.model";
+import {RoomModel} from "../../../Models/Room.model";
 import {enterRoom} from "../../../Reducers/Room";
 import useWebSocket from "react-use-websocket";
 import {WSS_FEED_URL} from "../../../api";

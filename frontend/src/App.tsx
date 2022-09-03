@@ -12,7 +12,7 @@ import RoomTabMinimal from "./Components/Tabs/RoomTabMinimal/RoomTabMinimal";
 import MessageTab from "./Components/Tabs/MessageTab/MessageTab";
 import {MessageStatements} from "./StatementsTypes/MessageStatements";
 import {addMessage, bulkAddMessage} from "./Reducers/Message";
-import {RoomModel} from "./Molels/Room.model";
+import {RoomModel} from "./Models/Room.model";
 import RoomTab from "./Components/Tabs/RoomTab/RoomTab";
 
 function App() {

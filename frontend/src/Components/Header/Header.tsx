@@ -1,5 +1,5 @@
 import React from 'react';
-import {UserModel} from "../../Molels/User.model";
+import {UserModel} from "../../Models/User.model";
 import {useSelector} from "react-redux";
 import UserName from "./UserName/UserName";
 import {Strings} from "../../strings";

@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {UserModel} from "../../../Molels/User.model";
+import {UserModel} from "../../../Models/User.model";
 import {useSelector} from "react-redux";
 import useWebSocket from "react-use-websocket";
 import {WSS_FEED_URL} from "../../../api";

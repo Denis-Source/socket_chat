@@ -1,8 +1,8 @@
 import React from 'react';
 import {useSelector} from "react-redux";
-import {MessageModel} from "../../../Molels/Message.model";
+import {MessageModel} from "../../../Models/Message.model";
 import Item from "../Item/Item";
-import {UserModel} from "../../../Molels/User.model";
+import {UserModel} from "../../../Models/User.model";
 
 import styles from "./List.module.scss"
 import ScrollToBottom from "react-scroll-to-bottom";

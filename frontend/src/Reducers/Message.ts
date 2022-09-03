@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {MessageModel} from "../Molels/Message.model";
+import {MessageModel} from "../Models/Message.model";
 
 export const messageSlice = createSlice({
     name: "message",

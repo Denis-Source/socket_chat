@@ -8,6 +8,7 @@ export enum Strings {
     UserLoggedAs = "Logged as:",
     UserNameLabel = "Click to Edit:",
 
+    MessageTabRoom = "Room:",
     FormMessagePlaceholder = "Write a message...",
     FormSubmit = "Send",
 }

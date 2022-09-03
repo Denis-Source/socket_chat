@@ -1,5 +1,5 @@
 import React from 'react';
-import {RoomModel} from "../../../Molels/Room.model";
+import {RoomModel} from "../../../Models/Room.model";
 import {useDispatch, useSelector} from "react-redux";
 import Item from "../Item/Item";
 import {RoomStatements} from "../../../StatementsTypes/RoomStatements";

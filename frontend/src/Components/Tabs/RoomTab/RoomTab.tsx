@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import List from "../../Room/List/List";
-import Input from "../../../Input/Input";
+import Input from "../../Input/Input";
 import styles from "./RoomTab.module.scss"
 import {Strings} from "../../../strings";
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import {MessageModel} from "../../../Molels/Message.model";
+import {MessageModel} from "../../../Models/Message.model";
 import styles from "./Item.module.scss"
 
 const Item = ({message, isMine}: {message: MessageModel, isMine: boolean}) => {

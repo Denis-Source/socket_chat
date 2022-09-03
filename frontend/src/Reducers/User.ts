@@ -1,6 +1,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {enableMapSet} from 'immer';
-import {UserModel} from "../Molels/User.model";
+import {UserModel} from "../Models/User.model";
 
 enableMapSet();
 

@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {RoomModel} from "../Molels/Room.model";
+import {RoomModel} from "../Models/Room.model";
 
 type InitialState = {
     list: RoomModel[],
