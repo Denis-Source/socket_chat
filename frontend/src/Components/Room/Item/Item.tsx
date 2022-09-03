@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {RoomModel} from "../../../Molels/Room.model";
-import {enter} from "../../../Reducers/Room";
+import {enterRoom} from "../../../Reducers/Room";
 import useWebSocket from "react-use-websocket";
 import {WSS_FEED_URL} from "../../../api";
 import {RoomStatements} from "../../../StatementsTypes/RoomStatements";
@@ -40,7 +40,7 @@ const Item = ({room}: { room: RoomModel }) => {
 
     // Function to select the room
     const sendSelect = async () => {
-        dispatch(enter(room));
+        dispatch(enterRoom(room));
         await sendJsonMessage({
             type: "call",
             payload: {
@@ -63,7 +63,6 @@ const Item = ({room}: { room: RoomModel }) => {
 
     //Function to send new selected color
     const sendColor = async (color: string) => {
-        dispatch(enter(room));
         await sendJsonMessage({
             type: "call",
             payload: {

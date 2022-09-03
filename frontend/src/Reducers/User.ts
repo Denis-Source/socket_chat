@@ -17,7 +17,6 @@ export const userSlice = createSlice({
     initialState: initialState,
     reducers: {
         setUser: (state, action: PayloadAction<UserModel>) => {
-            console.log(action.payload);
             state.user = action.payload;
         },
     },

@@ -5,7 +5,7 @@ import Item from "../Item/Item";
 import {RoomStatements} from "../../../StatementsTypes/RoomStatements";
 import useWebSocket from "react-use-websocket";
 import {WSS_FEED_URL} from "../../../api";
-import {leave} from "../../../Reducers/Room";
+import {leaveRoom} from "../../../Reducers/Room";
 import styles from "./List.module.scss"
 import add from "../../../Static/Images/add.svg";
 import ScrollToBottom from "react-scroll-to-bottom";
@@ -18,12 +18,11 @@ const List = ({filterString}: {filterString: string}) => {
 
     // Select rooms
     const rooms: RoomModel[] = useSelector((state: any) => state.room.list);
-
     const dispatch = useDispatch()
 
     // Function to leave the entered room
     const sendLeave = async () => {
-        dispatch(leave())
+        dispatch(leaveRoom())
         await sendJsonMessage({
             type: "call",
             payload: {

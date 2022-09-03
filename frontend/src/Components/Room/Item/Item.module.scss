@@ -9,6 +9,9 @@
   flex-direction: column;
   margin: 10px;
   gap: 10px;
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .header {
@@ -75,10 +78,11 @@
 .stat {
   display: flex;
   gap: 5px;
+  align-items: center;
 }
 
 .statIcon {
-  width: 20px;
+  height: 16px;
 }
 
 .counter {

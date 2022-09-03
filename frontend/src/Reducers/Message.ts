@@ -4,24 +4,24 @@ import {MessageModel} from "../Molels/Message.model";
 export const messageSlice = createSlice({
     name: "message",
     initialState: {
-        history: new Array<MessageModel>()
+        list: new Array<MessageModel>()
     },
     reducers: {
-        clear: (state) => {
-            state.history = []
+        clearMessages: (state) => {
+            state.list = []
         },
-        add: (state, action: PayloadAction<MessageModel>) => {
-            state.history.push(action.payload);
+        addMessage: (state, action: PayloadAction<MessageModel>) => {
+            state.list.push(action.payload);
         },
-        bulkSet: (state, action: PayloadAction<MessageModel[]>) => {
-            state.history = [...action.payload]
+        bulkAddMessage: (state, action: PayloadAction<MessageModel[]>) => {
+            state.list = [...action.payload]
         },
-        update: (state, action: PayloadAction<MessageModel>) => {
-            state.history =
-                [...state.history.map(message => message.uuid === action.payload.uuid ? action.payload : message)]
+        updateMessage: (state, action: PayloadAction<MessageModel>) => {
+            state.list =
+                [...state.list.map(message => message.uuid === action.payload.uuid ? action.payload : message)]
         }
     },
 })
 
-export const {clear, add, bulkSet, update} = messageSlice.actions
+export const {clearMessages, addMessage, bulkAddMessage, updateMessage} = messageSlice.actions
 export default messageSlice.reducer

@@ -27,20 +27,19 @@ const Form = () => {
     }
 
     const onEnterPress = async (event: any) => {
-        if(event.keyCode == 13 && event.shiftKey == false) {
+        if (event.keyCode == 13 && event.shiftKey == false) {
             event.preventDefault();
             await sendMessage(event)
         }
     }
 
     return (
-        <div className={styles.formWrapper}>
-            <form className={styles.form}  onSubmit={(event) => sendMessage(event)}>
-                <textarea className={styles.textArea} placeholder={Strings.FormMessagePlaceholder} ref={textArea} rows={5}
+        <form className={styles.form} onSubmit={(event) => sendMessage(event)}>
+                <textarea className={styles.textArea} placeholder={Strings.FormMessagePlaceholder} ref={textArea}
+                          rows={5}
                           onKeyDown={(event) => onEnterPress(event)}/>
-                <input className={styles.submit} value={Strings.FormSubmit} type="submit"/>
-            </form>
-        </div>
+            <input className={styles.submit} value={Strings.FormSubmit} type="submit"/>
+        </form>
     );
 };
 

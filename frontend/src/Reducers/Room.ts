@@ -15,31 +15,30 @@ export const roomSlice = createSlice({
     name: "room",
     initialState: initialState,
     reducers: {
-        setBulk: (state, action: PayloadAction<RoomModel[]>) => {
+        addBulkRoom: (state, action: PayloadAction<RoomModel[]>) => {
             state.list = [...action.payload]
         },
-        add: (state, action: PayloadAction<RoomModel>) => {
+        addRoom: (state, action: PayloadAction<RoomModel>) => {
             state.list.push(action.payload);
         },
-        update: (state, action: PayloadAction<RoomModel>) => {
-            console.log(action.payload);
+        updateRoom: (state, action: PayloadAction<RoomModel>) => {
             state.list =
                 [...state.list.map(room => room.uuid === action.payload.uuid ? action.payload : room)]
             if (state.current?.uuid === action.payload.uuid) {
                 state.current = action.payload;
             }
         },
-        enter: (state, action: PayloadAction<RoomModel>) => {
+        enterRoom: (state, action: PayloadAction<RoomModel>) => {
             state.current = action.payload;
         },
-        remove: (state, action: PayloadAction<RoomModel>) => {
+        removeRoom: (state, action: PayloadAction<RoomModel>) => {
             state.list = state.list.filter(room => room.uuid !== action.payload.uuid);
         },
-        leave: (state) => {
+        leaveRoom: (state) => {
             state.current = null;
         }
     },
 })
 
-export const {setBulk, update, enter, add, remove, leave} = roomSlice.actions
+export const {addBulkRoom, updateRoom, enterRoom, addRoom, removeRoom, leaveRoom} = roomSlice.actions
 export default roomSlice.reducer

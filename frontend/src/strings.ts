@@ -2,7 +2,7 @@ export enum Strings {
     Header = "Chat",
 
     SearchPlaceholder = "Search",
-    ListRoomHeader = "Select Room:",
+    ListRoomHeader = "Select Room",
     EnterRoom = "Enter",
 
     UserLoggedAs = "Logged as:",

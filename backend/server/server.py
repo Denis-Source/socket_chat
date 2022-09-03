@@ -314,11 +314,23 @@ class Server:
                 }
             }))
             await self.broadcast_room(user.room, RoomResultStatements.ROOM_CHANGED)
+            await self.broadcast_message(message)
         else:
             await user.connection.send(json.dumps({
                 "type": StatementTypes.ERROR,
                 "payload": {
                     "message": MessageErrorStatements.NO_SELECTED_ROOM
+                }
+            }))
+
+    async def broadcast_message(self, message: Message):
+        self.logger.info(f"Broadcasting {message} in room {message.room}")
+        for user in message.room.users:
+            await user.connection.send(json.dumps({
+                "type": StatementTypes.RESULT,
+                "payload": {
+                    "message": MessageResultStatements.MESSAGE_CREATED,
+                    "object": message.get_dict()
                 }
             }))
 
