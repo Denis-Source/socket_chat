@@ -1,11 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap");
 
 $font-family-text: "Roboto Slab", serif;
 $font-family-code: "Roboto Slab", mono;
 
 $color-background-start: #65606b;
-$color-background-finish: #F29492;
+$color-background-finish: #f29492;
 
 $color-room: #ffffff36;
 $color-accent: #ffffffaa;
@@ -16,14 +16,12 @@ $color-text-light: #00000066;
 $color-my-message: #ffffff88;
 $color-other-message: #ffffff36;
 
-
 ::-webkit-scrollbar {
   width: 6px;
 }
 
 ::-webkit-scrollbar-track {
   background: transparent;
-
 }
 
 ::-webkit-scrollbar-thumb {
@@ -36,7 +34,10 @@ body {
 
   color: $color-text;
 
-  background: linear-gradient(-45deg, $color-background-start, $color-background-finish);
+  background: linear-gradient(
+    -45deg,
+    $color-background-start,
+    $color-background-finish
+  );
   min-height: 100vh;
 }
-

@@ -20,7 +20,6 @@
   gap: 10px;
 }
 
-
 .name {
   font-family: $font-family-text;
   color: $color-text;
@@ -32,7 +31,6 @@
   opacity: 1;
   padding: 0;
 }
-
 
 .closeButton {
   margin: 0;
@@ -50,7 +48,6 @@
     transform: scale(0.9);
   }
 }
-
 
 .colorIcon {
   width: 20px;
@@ -89,7 +86,6 @@
   margin: 0;
 }
 
-
 .popOver {
   position: absolute;
   z-index: 2;
@@ -111,4 +107,3 @@
   position: relative;
   height: auto;
 }
-

@@ -1,15 +1,15 @@
 export enum Strings {
-    Header = "Chat",
+  Header = "Chat",
 
-    SearchPlaceholder = "Search",
-    ListRoomHeader = "Select Room",
+  SearchPlaceholder = "Search",
+  ListRoomHeader = "Select Room",
 
-    LogsHeading = "Event Log:",
+  LogsHeading = "Event Log:",
 
-    UserLoggedAs = "Logged as:",
-    UserNameLabel = "Click to Edit:",
+  UserLoggedAs = "Logged as:",
+  UserNameLabel = "Click to Edit:",
 
-    MessageTabRoom = "Room:",
-    FormMessagePlaceholder = "Write a message...",
-    FormSubmit = "Send",
+  MessageTabRoom = "Room:",
+  FormMessagePlaceholder = "Write a message...",
+  FormSubmit = "Send",
 }

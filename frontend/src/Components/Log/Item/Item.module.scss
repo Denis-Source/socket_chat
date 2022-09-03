@@ -9,12 +9,12 @@
   display: flex;
   flex-direction: column;
 
-  &:last-child{
+  &:last-child {
     border: 0;
     padding-bottom: 0;
   }
-  &:before{
-    content: '';
+  &:before {
+    content: "";
     width: 15px;
     height: 15px;
     background: #ffffffdd;
@@ -28,7 +28,7 @@
 .origin {
   margin: 0;
   font-size: 14px;
-  font-weight: 600;;
+  font-weight: 600;
 }
 
 .time {
