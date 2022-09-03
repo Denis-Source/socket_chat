@@ -1,0 +1,31 @@
+
+.inputWrapper {
+  gap: 5px;
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+}
+@import "src/Static/Styles/_globals.scss";
+
+.input {
+  resize: none;
+  font-family: $font-family-text;
+  color: $color-text;
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 0;
+  background-color: $color-accent;
+  font-weight: 600;
+
+  &::placeholder {
+    font-family: $font-family-text;
+    color: $color-text-light;
+    font-weight: 400;
+    font-size: 16px;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
