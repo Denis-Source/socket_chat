@@ -1,0 +1,47 @@
+@import "src/Static/Styles/_globals.scss";
+
+.item {
+  border-left: 2px solid #ffffff55;
+  position: relative;
+  padding: 0 0 30px 30px;
+  margin-left: 10px;
+  font-family: $font-family-code;
+  display: flex;
+  flex-direction: column;
+
+  &:last-child{
+    border: 0;
+    padding-bottom: 0;
+  }
+  &:before{
+    content: '';
+    width: 15px;
+    height: 15px;
+    background: #ffffffdd;
+    box-shadow: 3px 3px 0 $color-accent;
+    border-radius: 50%;
+    position: absolute;
+    left: -10px;
+    top: -2px;
+  }
+}
+.origin {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;;
+}
+
+.time {
+  font-weight: 600;
+  margin: 0;
+}
+
+.type {
+  margin: -10px 0 0 0;
+  align-self: flex-end;
+}
+
+.description {
+  margin: 0;
+  align-self: flex-end;
+}

@@ -1,11 +1,13 @@
 import React, {useRef} from 'react';
 import useWebSocket from "react-use-websocket";
-import {WSS_FEED_URL} from "../../../api";
-import {MessageStatements} from "../../../StatementsTypes/MessageStatements";
+import {prepareStatement, WSS_FEED_URL} from "../../../api";
 import styles from "./Form.module.scss"
 import {Strings} from "../../../strings";
+import {TypeStatements} from "../../../StatementsTypes/TypeStatements";
+import {MessageStatements} from "../../../StatementsTypes/MessageStatements";
 
 const Form = () => {
+    //
     const {sendJsonMessage} = useWebSocket(WSS_FEED_URL, {
         share: true
     });
@@ -14,14 +16,15 @@ const Form = () => {
 
     const sendMessage = async (event: React.FormEvent<HTMLFormElement> | null) => {
         event?.preventDefault();
+
         if (textArea.current) {
-            await sendJsonMessage({
-                type: "call",
-                payload: {
-                    message: MessageStatements.CreateMessage,
-                    body: textArea.current.value,
-                }
+            const statement = prepareStatement({
+                type: TypeStatements.Call,
+                message: MessageStatements.CreateMessage,
+                body: textArea.current.value,
+
             })
+            await sendJsonMessage(statement);
             textArea.current.value = "";
         }
     }

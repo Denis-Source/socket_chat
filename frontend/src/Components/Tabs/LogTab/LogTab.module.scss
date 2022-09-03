@@ -1,21 +1,15 @@
-@import "src/Static/Styles/_globals.scss";
-
 .header {
+  padding: 0 10px;
   display: flex;
+
   justify-content: space-between;
+  align-items: center;
 }
 
 .heading {
+  margin: 0;
   font-size: 24px;
-  margin: 0;
 }
-
-.hint {
-  font-size: 14px;
-  font-weight: 600;
-  margin: 0;
-}
-
 
 .button {
   margin: 0;
@@ -30,6 +24,7 @@
   &:hover {
     cursor: pointer;
   }
+
   &:active {
     transform: scale(0.9);
   }
@@ -37,17 +32,4 @@
 
 .buttonIcon {
   height: 100%;
-}
-
-.name {
-  font-family: $font-family-text;
-  text-align: right;
-  color: $color-text;
-  outline: none;
-  width: 100%;
-  border: 0;
-  background-color: transparent;
-  font-size: 20px;
-  opacity: 1;
-  padding: 0;
 }

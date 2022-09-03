@@ -6,8 +6,11 @@ import styles from "./MessageTab.module.scss"
 import useWebSocket from "react-use-websocket";
 import {WSS_FEED_URL} from "../../../api";
 import {RoomModel} from "../../../Models/Room.model";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {RoomStatements} from "../../../StatementsTypes/RoomStatements";
+import {RightTabs, setRightTab} from "../../../Reducers/General";
+import back from "../../../Static/Images/back.svg"
+import {leaveRoom} from "../../../Reducers/Room";
 
 const MessageTab = () => {
     const {sendJsonMessage} = useWebSocket(WSS_FEED_URL, {
@@ -18,7 +21,7 @@ const MessageTab = () => {
 
 
     const [focus, setFocus] = useState<boolean>(false);
-    const [enteredName, setEnteredName] = useState<string>(currentRoom.name);
+    const [enteredName, setEnteredName] = useState<string>(currentRoom?.name);
 
     // Function to update the room name
     const sendUpdate = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,14 +37,36 @@ const MessageTab = () => {
     }
 
     // If the input is selected, avoid changes
-    if (!focus && enteredName !== currentRoom.name) {
-        setEnteredName(currentRoom.name)
+    if (!focus && enteredName !== currentRoom?.name) {
+        setEnteredName(currentRoom?.name)
     }
+
+    const dispatch = useDispatch();
+
+
+    // Function to leave the entered room
+    const sendLeave = async () => {
+        dispatch(leaveRoom())
+        await sendJsonMessage({
+            type: "call",
+            payload: {
+                message: RoomStatements.LeaveRoom,
+            }
+        })
+        dispatch(setRightTab(RightTabs.Rooms))
+    }
+
 
     return (
         <div>
             <div className={styles.header}>
-                <p className={styles.hint}>{Strings.MessageTabRoom}</p>
+                <div>
+                    <button className={styles.button} onClick={() => sendLeave()}>
+                        <img className={styles.buttonIcon} src={back} alt="Add icon"/>
+                    </button>
+                </div>
+                <div>
+                    <p className={styles.hint}>{Strings.MessageTabRoom}</p>
                     <input
                         className={styles.name}
                         value={enteredName}
@@ -55,6 +80,7 @@ const MessageTab = () => {
                             setFocus(false)
                         }}
                         onChange={(event) => sendUpdate(event)}/>
+                </div>
             </div>
             <List/>
             <Form/>

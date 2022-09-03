@@ -3,7 +3,8 @@ export enum Strings {
 
     SearchPlaceholder = "Search",
     ListRoomHeader = "Select Room",
-    EnterRoom = "Enter",
+
+    LogsHeading = "Event Log:",
 
     UserLoggedAs = "Logged as:",
     UserNameLabel = "Click to Edit:",

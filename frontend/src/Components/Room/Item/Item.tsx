@@ -10,6 +10,7 @@ import cross from "../../../Static/Images/cross.svg"
 import message from "../../../Static/Images/message.svg"
 import user from "../../../Static/Images/user.svg"
 import {TwitterPicker} from 'react-color';
+import {RightTabs, setRightTab} from "../../../Reducers/General";
 
 
 const Item = ({room}: { room: RoomModel }) => {
@@ -41,6 +42,7 @@ const Item = ({room}: { room: RoomModel }) => {
     // Function to select the room
     const sendSelect = async () => {
         dispatch(enterRoom(room));
+        dispatch(setRightTab(RightTabs.Messages))
         await sendJsonMessage({
             type: "call",
             payload: {
@@ -51,7 +53,8 @@ const Item = ({room}: { room: RoomModel }) => {
     }
 
     // Function to delete the room
-    const sendDelete = async () => {
+    const sendDelete = async (event: React.MouseEvent) => {
+        event.stopPropagation();
         await sendJsonMessage({
             type: "call",
             payload: {
@@ -96,7 +99,7 @@ const Item = ({room}: { room: RoomModel }) => {
                             setFocus(false)
                         }}
                         onChange={(event) => sendUpdate(event)}/>
-                    <button className={styles.closeButton} onClick={sendDelete}>
+                    <button className={styles.closeButton} onClick={(event) => sendDelete(event)}>
                         <img src={cross} alt="Cross icon"/>
                     </button>
                 </div>
