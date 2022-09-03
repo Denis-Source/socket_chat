@@ -6,9 +6,10 @@ import {WSS_FEED_URL} from "./api";
 import {UserStatements} from "./StatementsTypes/UserStatements";
 import {RoomStatements} from "./StatementsTypes/RoomStatements";
 import {add, remove, setBulk, update} from "./Reducers/Room";
-import List from "./Components/Room/List/List";
 import Header from "./Components/Header/Header";
 import styles from "./App.module.scss"
+import RoomTabMinimal from "./Components/Tabs/RoomTabMinimal/RoomTabMinimal";
+import MessageTab from "./Components/Tabs/MessageTab/MessageTab";
 
 function App() {
     const dispatch = useDispatch()
@@ -51,10 +52,8 @@ function App() {
         <div className={styles.container}>
             <Header/>
             <div className={styles.layout}>
-                <List/>
-
-
-                <List/>
+                <RoomTabMinimal/>
+                <MessageTab/>
             </div>
         </div>
     );

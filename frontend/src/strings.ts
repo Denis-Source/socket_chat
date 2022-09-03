@@ -1,6 +1,7 @@
 export enum Strings {
     Header = "Chat",
 
+    SearchPlaceholder = "Search",
     ListRoomHeader = "Select Room:",
     EnterRoom = "Enter",
 

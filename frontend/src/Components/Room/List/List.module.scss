@@ -24,43 +24,17 @@
   margin: 0;
 }
 
-
-.searchWrapper {
-  gap: 5px;
-  align-items: center;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.searchLabel {
-  font-size: 20px;
-}
-
-.search {
-  resize: none;
-  font-family: $font-family-text;
-  color: $color-text;
-  font-size: 16px;
-  padding: 10px;
-  border-radius: 5px;
-  border: 0;
-  background-color: $color-accent;
-  font-weight: 600;
-
-  &:focus {
-    outline: none;
-  }
-}
-
-.list {
+.listWrapper {
   padding: 10px;
   height: 500px;
   width: 100%;
+  gap: 15px;
+}
+
+.list {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  align-items: center;
-  overflow-y: scroll;
+  align-self: center;
 }
 
 .followButton {
@@ -68,13 +42,14 @@
 }
 
 .button {
-  margin: 0;
+  margin: 20px 0;
   padding: 0;
   border: 0;
   width: 50px;
   height: 50px;
   background-color: transparent;
   transition: 300ms;
+  align-self: center;
 
   &:hover {
     cursor: pointer;

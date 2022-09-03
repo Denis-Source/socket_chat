@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {RoomModel} from "../../../Molels/Room.model";
 import {useDispatch, useSelector} from "react-redux";
 import Item from "../Item/Item";
@@ -7,21 +7,17 @@ import useWebSocket from "react-use-websocket";
 import {WSS_FEED_URL} from "../../../api";
 import {leave} from "../../../Reducers/Room";
 import styles from "./List.module.scss"
-import {Strings} from "../../../strings";
 import add from "../../../Static/Images/add.svg";
 import ScrollToBottom from "react-scroll-to-bottom";
 
-const List = () => {
+const List = ({filterString}: {filterString: string}) => {
     // Configure websocket connection
     const {sendJsonMessage} = useWebSocket(WSS_FEED_URL, {
         share: true
     });
 
-    const [filteredString, setFilteredString] = useState<string>("");
-
-    // Select rooms including the current one
+    // Select rooms
     const rooms: RoomModel[] = useSelector((state: any) => state.room.list);
-    const currentRoom: RoomModel[] = useSelector((state: any) => state.room.current);
 
     const dispatch = useDispatch()
 
@@ -48,24 +44,16 @@ const List = () => {
 
     return (
         <div className={styles.wrapper}>
-            <div className={currentRoom ? styles.headerWrapperOne: styles.headerWrapper}>
-                {!currentRoom &&
-                    <h3 className={styles.header}>{Strings.ListRoomHeader}</h3>}
-                <div className={styles.searchWrapper}>
-                    <label className={styles.searchLabel}>Search:</label>
-                    <input className={styles.search} type="text"
-                           onChange={(event) => setFilteredString(event.target.value)}/>
+            <ScrollToBottom followButtonClassName={styles.followButton} className={styles.listWrapper}>
+                <div className={styles.list}>
+                    {rooms.filter(room => room.name.toLowerCase().includes(filterString.toLowerCase())).map(room =>
+                        <Item room={room} key={room.uuid}/>
+                    )}
+                    <button className={styles.button} onClick={sendCreate}>
+                        <img className={styles.buttonIcon} src={add} alt="Add icon"/>
+                    </button>
                 </div>
-            </div>
-            <ScrollToBottom followButtonClassName={styles.followButton} className={styles.list}>
-                {rooms.filter(room => room.name.toLowerCase().includes(filteredString.toLowerCase())).map(room =>
-                    <Item room={room} key={room.uuid}/>
-                )}
             </ScrollToBottom>
-
-            <button className={styles.button} onClick={sendCreate}>
-                <img className={styles.buttonIcon} src={add} alt="Add icon"/>
-            </button>
         </div>
 
     );
