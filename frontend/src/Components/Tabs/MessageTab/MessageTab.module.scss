@@ -5,6 +5,12 @@
   justify-content: space-between;
 }
 
+.nameWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
 .heading {
   font-size: 24px;
   margin: 0;
@@ -15,7 +21,6 @@
   font-weight: 600;
   margin: 0;
 }
-
 
 .button {
   margin: 0;

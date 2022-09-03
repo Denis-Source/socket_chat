@@ -65,7 +65,7 @@ const MessageTab = () => {
                         <img className={styles.buttonIcon} src={back} alt="Add icon"/>
                     </button>
                 </div>
-                <div>
+                <div className={styles.nameWrapper}>
                     <p className={styles.hint}>{Strings.MessageTabRoom}</p>
                     <input
                         className={styles.name}
