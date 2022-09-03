@@ -16,8 +16,8 @@ const List = () => {
       className={styles.listWrapper}
     >
       <div className={styles.list}>
-        {logs.map((log) => (
-          <Item log={log} />
+        {logs.map((log, index) => (
+          <Item log={log} key={index}/>
         ))}
       </div>
     </ScrollToBottom>
