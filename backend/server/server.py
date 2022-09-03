@@ -87,6 +87,7 @@ class Server:
                 await method(user=user, payload=payload)
 
             except (JSONDecodeError, KeyError):
+                self.logger.info(f"Bad data from {user}")
                 await user.connection.send(json.dumps({
                     "type": StatementTypes.RESULT,
                     "payload": {
@@ -301,10 +302,10 @@ class Server:
 
     # message methods
     async def create_message(self, payload: dict, user: User):
-        body = payload["name"]
+        body = payload["body"]
         if user.room:
             message = Message(body, user, user.room)
-            self.logger.info(f"Sending {message} ({body[:10]}) from {user}")
+            self.logger.info(f"Creating {message} ({body[:10]}) from {user}")
             user.room.add_message(message)
             await user.connection.send(json.dumps({
                 "type": StatementTypes.RESULT,
@@ -312,6 +313,7 @@ class Server:
                     "message": GeneralStatements.OK
                 }
             }))
+            await self.broadcast_room(user.room, RoomResultStatements.ROOM_CHANGED)
         else:
             await user.connection.send(json.dumps({
                 "type": StatementTypes.ERROR,
