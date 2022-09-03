@@ -9,12 +9,15 @@ const initialState: InitialState = {
     list: [],
 }
 
+const LOG_LIMIT = 300;
+
 export const logSlice = createSlice({
     name: "log",
     initialState: initialState,
     reducers: {
         addLog: (state, action: PayloadAction<LogModel>) => {
-            state.list.push(action.payload)
+            // Add log message to the list, cut if too many
+            state.list = [...state.list, action.payload].slice(-LOG_LIMIT);
         },
     },
 })

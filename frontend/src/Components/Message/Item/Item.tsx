@@ -13,6 +13,10 @@ const Item = ({message, isMine}: {message: MessageModel, isMine: boolean}) => {
 };
 
 const convertTime = (timeStr: string) => {
+    /*
+    Converts the provided UTC time string to the local one
+    Shows date if the message sent yesterday or earlier
+     */
     const DAY_OFFSET = 24 * 60 * 60;
 
     const messageDate = new Date(timeStr);

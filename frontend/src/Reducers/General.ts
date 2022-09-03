@@ -25,9 +25,11 @@ export const generalSlice = createSlice({
     initialState: initialState,
     reducers: {
         setLeftTab: (state, action: PayloadAction<LeftTabs>) => {
+            // Switches the left tab
             state.leftTab = action.payload;
         },
         setRightTab: (state, action: PayloadAction<RightTabs>) => {
+            // Switches the right tab
             state.rightTab = action.payload;
         },
     },

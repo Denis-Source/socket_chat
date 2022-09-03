@@ -8,8 +8,11 @@ import {Strings} from "../../../strings";
 import {RoomModel} from "../../../Models/Room.model";
 
 const LogTab = () => {
-    const dispatch = useDispatch();
+    // Get the current room from the state
     const currentRoom: RoomModel = useSelector((state: any) => state.room.current);
+
+    // Use dispatch to change the current left tab
+    const dispatch = useDispatch();
 
     return (
         <div className={styles.wrapper}>

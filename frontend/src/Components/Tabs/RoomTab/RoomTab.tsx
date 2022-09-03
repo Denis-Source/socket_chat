@@ -5,6 +5,7 @@ import styles from "./RoomTab.module.scss"
 import {Strings} from "../../../strings";
 
 const RoomTab = () => {
+    // Use state to filter rooms with the input field
     const [filterString, setFilterString] = useState("");
 
     return (

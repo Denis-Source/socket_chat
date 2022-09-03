@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {RoomModel} from "../../../Models/Room.model";
 import {enterRoom} from "../../../Reducers/Room";
 import useWebSocket from "react-use-websocket";
-import {WSS_FEED_URL} from "../../../api";
+import {prepareStatement, WSS_FEED_URL} from "../../../api";
 import {RoomStatements} from "../../../StatementsTypes/RoomStatements";
 import {useDispatch} from "react-redux";
 import styles from "./Item.module.scss"
@@ -11,6 +11,7 @@ import message from "../../../Static/Images/message.svg"
 import user from "../../../Static/Images/user.svg"
 import {TwitterPicker} from 'react-color';
 import {RightTabs, setRightTab} from "../../../Reducers/General";
+import {TypeStatements} from "../../../StatementsTypes/TypeStatements";
 
 
 const Item = ({room}: { room: RoomModel }) => {
@@ -22,69 +23,67 @@ const Item = ({room}: { room: RoomModel }) => {
     // Use states to properly handle form changes
     const [focus, setFocus] = useState<boolean>(false);
     const [enteredName, setEnteredName] = useState<string>(room.name);
-    const [pickerVisible, setPickerVisible] = useState<boolean>(false);
-
-    const dispatch = useDispatch()
-
-    // Function to update the room name
-    const sendUpdate = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        setEnteredName(event.target.value);
-        await sendJsonMessage({
-            type: "call",
-            payload: {
-                message: RoomStatements.ChangeRoomName,
-                uuid: room.uuid,
-                name: event.target.value
-            }
-        })
-    }
-
-    // Function to select the room
-    const sendSelect = async () => {
-        dispatch(enterRoom(room));
-        dispatch(setRightTab(RightTabs.Messages))
-        await sendJsonMessage({
-            type: "call",
-            payload: {
-                message: RoomStatements.EnterRoom,
-                uuid: room.uuid
-            }
-        });
-    }
-
-    // Function to delete the room
-    const sendDelete = async (event: React.MouseEvent) => {
-        event.stopPropagation();
-        await sendJsonMessage({
-            type: "call",
-            payload: {
-                message: RoomStatements.DeleteRoom,
-                uuid: room.uuid
-            }
-        })
-    }
-
-    //Function to send new selected color
-    const sendColor = async (color: string) => {
-        await sendJsonMessage({
-            type: "call",
-            payload: {
-                message: RoomStatements.ChangeRoomColor,
-                uuid: room.uuid,
-                color: color
-            }
-        });
-    }
-
-
     // If the input is selected, avoid changes
     if (!focus && enteredName !== room.name) {
         setEnteredName(room.name)
     }
 
+    // Use state to show picker
+    const [pickerVisible, setPickerVisible] = useState<boolean>(false);
+
+    // Use dispatch to call state changes
+    const dispatch = useDispatch()
+
+    // Function to update a room name
+    const sendUpdate = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        setEnteredName(event.target.value);
+        const statement = prepareStatement({
+            type: TypeStatements.Call,
+            message: RoomStatements.ChangeRoomName,
+            uuid: room.uuid,
+            name: event.target.name
+        })
+        await sendJsonMessage(statement);
+    }
+
+    // Function to enter a room
+    const sendEnter = async () => {
+        dispatch(enterRoom(room));
+        dispatch(setRightTab(RightTabs.Messages))
+        const statement = prepareStatement({
+            type: TypeStatements.Call,
+            message: RoomStatements.EnterRoom,
+            uuid: room.uuid
+        })
+        await sendJsonMessage(statement);
+    }
+
+    // Function to delete the room
+    const sendDelete = async (event: React.MouseEvent) => {
+        // Stop propagation as the listener is inside another one
+        event.stopPropagation();
+        const statement = prepareStatement({
+            type: TypeStatements.Call,
+            message: RoomStatements.DeleteRoom,
+            uuid: room.uuid
+        })
+        await sendJsonMessage(statement)
+    }
+
+    //Function to send a selected color
+    const sendColor = async (color: string) => {
+        const statement = prepareStatement({
+            type: TypeStatements.Call,
+            message: RoomStatements.ChangeRoomColor,
+            uuid: room.uuid,
+            color: color
+        })
+        await sendJsonMessage(statement);
+    }
+
     return (
         <>
-            <div className={styles.item} onClick={sendSelect}>
+            <div className={styles.item} onClick={sendEnter}>
                 <div className={styles.header}>
                     <input
                         className={styles.name}

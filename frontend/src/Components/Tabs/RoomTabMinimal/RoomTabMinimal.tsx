@@ -8,7 +8,10 @@ import {useDispatch} from "react-redux";
 import {LeftTabs, setLeftTab} from "../../../Reducers/General";
 
 const RoomTabMinimal = () => {
+    // Use state to filter rooms with the input field
     const [filterString, setFilterString] = useState("");
+
+    // Use dispatch to switch the left tab
     const dispatch = useDispatch();
 
     return (

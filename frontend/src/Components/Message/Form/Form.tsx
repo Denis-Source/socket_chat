@@ -7,13 +7,15 @@ import {TypeStatements} from "../../../StatementsTypes/TypeStatements";
 import {MessageStatements} from "../../../StatementsTypes/MessageStatements";
 
 const Form = () => {
-    //
+    // Configure websocket connection
     const {sendJsonMessage} = useWebSocket(WSS_FEED_URL, {
         share: true
     });
 
+    // Use ref to take control over the text area
     const textArea = useRef(null) as any;
 
+    // Function to send message
     const sendMessage = async (event: React.FormEvent<HTMLFormElement> | null) => {
         event?.preventDefault();
 
@@ -29,6 +31,7 @@ const Form = () => {
         }
     }
 
+    // Function to process key presses
     const onEnterPress = async (event: any) => {
         if (event.keyCode == 13 && event.shiftKey == false) {
             event.preventDefault();

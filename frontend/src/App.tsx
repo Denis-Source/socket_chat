@@ -19,8 +19,11 @@ import {LogOrigin} from "./Models/Log.model";
 import {LeftTabs, RightTabs} from "./Reducers/General";
 
 function App() {
+    // Use dispatch
     const dispatch = useDispatch()
 
+    // Configure websocket, specify callbacks
+    // To handle incoming data
     useWebSocket(WSS_FEED_URL, {
         onMessage: (event: WebSocketEventMap['message']) => {
             processMessages(JSON.parse(event.data));
@@ -28,18 +31,30 @@ function App() {
         share: true
     });
 
+    // Get tab states to render elements based on them
     const leftTab: LeftTabs = useSelector((state: any) => state.general.leftTab)
     const rightTab: RightTabs = useSelector((state: any) => state.general.rightTab)
 
     const processMessages = (data: any) => {
+        /*
+            Processes the incoming data
+            Adds log item to the state
+         */
+
+        // Get type of the message and payload
         const type = data.payload.message;
         const payload = data.payload;
+
+        // Add log item to the state
         dispatch(addLog({
             origin: LogOrigin.Received,
             description: payload.message,
             time: new Date().toLocaleTimeString(),
             type: data.type,
         }));
+
+        // Based on the incoming statement message
+        // Set the internal state
         switch (type) {
             case UserStatements.UserCreated:
                 dispatch(setUser(payload.user));
@@ -67,6 +82,7 @@ function App() {
         }
     }
 
+    // Set the tabs based on the selected in the state
     let leftTabElement;
     let rightTabElement;
 
