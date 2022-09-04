@@ -4,6 +4,7 @@ import userReducer from "./Reducers/User";
 import roomReducer from "./Reducers/Room";
 import generalReducer from "./Reducers/General";
 import logReducer from "./Reducers/Log";
+import drawingReducer from "./Reducers/Drawing";
 
 export default configureStore({
   reducer: {
@@ -12,5 +13,6 @@ export default configureStore({
     room: roomReducer,
     general: generalReducer,
     log: logReducer,
+    drawing: drawingReducer,
   },
 });

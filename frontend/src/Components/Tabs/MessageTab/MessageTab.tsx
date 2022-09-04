@@ -17,6 +17,7 @@ import {
 import back from "../../../Static/Images/back.svg";
 import { TypeStatements } from "../../../StatementsTypes/TypeStatements";
 import { clearMessages } from "../../../Reducers/Message";
+import drawing from "../../../Static/Images/drawing.svg";
 
 const MessageTab = () => {
   // Configure websocket connection
@@ -73,9 +74,15 @@ const MessageTab = () => {
   return (
     <div>
       <div className={styles.header}>
-        <div>
+        <div className={styles.navigation}>
           <button className={styles.button} onClick={() => sendLeave()}>
             <img className={styles.buttonIcon} src={back} alt="Add icon" />
+          </button>
+          <button
+              className={styles.button}
+              onClick={() => dispatch(setRightTab(RightTabs.Drawing))}
+          >
+            <img className={styles.buttonIcon} src={drawing} alt="Add icon"/>
           </button>
         </div>
         <div className={styles.nameWrapper}>

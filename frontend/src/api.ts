@@ -5,17 +5,20 @@ import { UserStatements } from "./StatementsTypes/UserStatements";
 import { LogModel, LogOrigin } from "./Models/Log.model";
 import store from "./store";
 import { addLog } from "./Reducers/Log";
+import {DrawingStatements} from "./StatementsTypes/DrawingStatements";
 
 export const WSS_FEED_URL = "ws://localhost:9000";
 // export const WSS_FEED_URL = "wss://chat.zoloto.cx.ua/api";
 
 export interface StatementParts {
   type: TypeStatements;
-  message: MessageStatements | RoomStatements | UserStatements;
+  message: MessageStatements | RoomStatements | UserStatements | DrawingStatements;
   name?: string;
   body?: string;
   uuid?: string;
   color?: string;
+  points?: string;
+  tool?: string;
 }
 
 export const prepareStatement = (parts: StatementParts) => {
@@ -23,8 +26,6 @@ export const prepareStatement = (parts: StatementParts) => {
     Construct the statements in the correct form
     Add log item to the state
   */
-
-  console.log(parts);
 
   const newLog: LogModel = {
     type: parts.type,
@@ -45,6 +46,8 @@ export const prepareStatement = (parts: StatementParts) => {
       name: parts?.name,
       uuid: parts?.uuid,
       color: parts?.color,
+      tool: parts?.tool,
+      points: parts?.points
     },
   };
 };

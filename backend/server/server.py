@@ -8,9 +8,11 @@ from logging import getLogger
 from websockets.exceptions import ConnectionClosedError
 
 from config import Config
+from models.drawing import Line
 from models.message import Message
 from models.room import Room, RoomColor, RoomColorException
 from models.user import User
+from statements.drawing_statements import DrawingErrorStatements, DrawingCallStatements, DrawingResultStatements
 from statements.general_statements import GeneralStatements
 from statements.message_statements import MessageResultStatements, MessageErrorStatements, MessageCallStatements
 from statements.room_statements import RoomCallStatements, RoomResultStatements, RoomErrorStatements
@@ -40,7 +42,11 @@ class Server:
             UserCallStatements.CHANGE_USER_NAME: self.change_user_name,
 
             MessageCallStatements.CREATE_MESSAGE: self.create_message,
-            MessageCallStatements.LIST_MESSAGES: self.list_messages
+            MessageCallStatements.LIST_MESSAGES: self.list_messages,
+
+            DrawingCallStatements.CHANGE_DRAW_LINE: self.change_draw_line,
+            DrawingCallStatements.GET_DRAWING: self.get_drawing,
+            DrawingCallStatements.RESET_DRAWING: self.reset_drawing
         }
 
     async def send_rooms(self, user: User):
@@ -100,12 +106,6 @@ class Server:
         room = Room()
         self.storage.create_room(room)
         self.logger.info(f"Created room: {room} for {user}")
-        await user.connection.send(json.dumps({
-            "type": StatementTypes.RESULT,
-            "payload": {
-                "message": GeneralStatements.OK
-            }
-        }))
         await self.broadcast_room(room, RoomResultStatements.ROOM_CREATED)
 
     async def list_rooms(self, user: User, payload: dict):
@@ -144,6 +144,8 @@ class Server:
                     "list": history
                 }
             }))
+            await self.get_drawing({}, user)
+
             if old_room:
                 await self.broadcast_room(old_room, RoomResultStatements.ROOM_CHANGED)
             await self.broadcast_room(room, RoomResultStatements.ROOM_CHANGED)
@@ -188,12 +190,6 @@ class Server:
             if not room.users:
                 self.storage.delete_room(room_uuid)
                 self.logger.info(f"Room {room} deleted")
-                await user.connection.send(json.dumps({
-                    "type": StatementTypes.RESULT,
-                    "payload": {
-                        "message": GeneralStatements.OK
-                    }
-                }))
                 await self.broadcast_room(room, RoomResultStatements.ROOM_DELETED)
             else:
                 self.logger.info(f"Room {room} is not empty ({len(room.users)}) users")
@@ -220,12 +216,6 @@ class Server:
 
             self.logger.info(f"Changing name for {room} to {room_name}")
             room.set_name(room_name)
-            await user.connection.send(json.dumps({
-                "type": StatementTypes.RESULT,
-                "payload": {
-                    "message": GeneralStatements.OK
-                }
-            }))
             await self.broadcast_room(room, RoomResultStatements.ROOM_CHANGED)
         except NoRoomSpecifiedException:
             self.logger.info(f"No room found for {user}")
@@ -244,12 +234,6 @@ class Server:
 
             self.logger.info(f"Changing color of {room.name}")
             room.set_color(color)
-            await user.connection.send(json.dumps({
-                "type": StatementTypes.RESULT,
-                "payload": {
-                    "message": GeneralStatements.OK
-                }
-            }))
             await self.broadcast_room(room, RoomResultStatements.ROOM_CHANGED)
         except NoRoomSpecifiedException:
             self.logger.info(f"No room found for {user}")
@@ -278,6 +262,78 @@ class Server:
                 }
             }))
 
+    # drawing methods
+    async def change_draw_line(self, payload: dict, user: User):
+        if user.room:
+            line_uuid = payload["uuid"]
+            points = payload["points"]
+            color = payload["color"]
+            tool = payload["tool"]
+            drawing = user.room.drawing
+            line = drawing.lines.get(line_uuid)
+            self.logger.info(f"Updating {drawing} from {user}")
+            if line:
+                drawing.update_line(line_uuid, points)
+            else:
+                line = Line(color, tool, points, line_uuid)
+                drawing.add_line(line)
+
+            await self.broadcast_drawing_line(line, user.room)
+        else:
+            await user.connection.send(json.dumps({
+                "type": StatementTypes.ERROR,
+                "payload": {
+                    "message": DrawingErrorStatements.NO_SELECTED_ROOM
+                }
+            }))
+
+    async def get_drawing(self, payload: dict, user: User):
+        if user.room:
+            self.logger.info(f"Sending drawing  to {user}")
+            await user.connection.send(json.dumps({
+                "type": StatementTypes.RESULT,
+                "payload": {
+                    "message": DrawingResultStatements.DRAWING_GOT,
+                    "drawing": user.room.drawing.get_dict()
+                }
+            }))
+        else:
+            await user.connection.send(json.dumps({
+                "type": StatementTypes.ERROR,
+                "payload": {
+                    "message": DrawingErrorStatements.NO_SELECTED_ROOM
+                }
+            }))
+
+    async def reset_drawing(self, payload: dict, user: User):
+        room = user.room
+        if room:
+            self.logger.info(f"{user} reseting {room.drawing}")
+            room.drawing.reset()
+
+            for user in room.users:
+                await self.get_drawing({}, user)
+
+        else:
+            self.logger.info(f"No room found for {user}")
+            await user.connection.send(json.dumps({
+                "type": StatementTypes.ERROR,
+                "payload": {
+                    "message": RoomErrorStatements.NO_SPECIFIED_ROOM
+                }
+            }))
+
+    async def broadcast_drawing_line(self, line: Line, room: Room):
+        self.logger.info(f"Broadcasting {line} line in {room}")
+        for user in room.users:
+            await user.connection.send(json.dumps({
+                "type": StatementTypes.RESULT,
+                "payload": {
+                    "message": DrawingResultStatements.DRAW_LINE_CHANGED,
+                    "object": line.get_dict()
+                }
+            }))
+
     # user methods
     async def change_user_name(self, payload: dict, user: User):
         name = payload["name"]
@@ -286,13 +342,7 @@ class Server:
         await user.connection.send(json.dumps({
             "type": StatementTypes.RESULT,
             "payload": {
-                "message": GeneralStatements.OK
-            }
-        }))
-        await user.connection.send(json.dumps({
-            "type": StatementTypes.RESULT,
-            "payload": {
-                "message": UserResultStatements.USER_CREATED,
+                "message": UserResultStatements.USER_CHANGED,
                 "user": user.get_dict()
             }
         }))
@@ -307,12 +357,6 @@ class Server:
             message = Message(body, user, user.room)
             self.logger.info(f"Creating {message} ({body[:10]}) from {user}")
             user.room.add_message(message)
-            await user.connection.send(json.dumps({
-                "type": StatementTypes.RESULT,
-                "payload": {
-                    "message": GeneralStatements.OK
-                }
-            }))
             await self.broadcast_room(user.room, RoomResultStatements.ROOM_CHANGED)
             await self.broadcast_message(message)
         else:

@@ -4,6 +4,7 @@ from enum import Enum
 from random import choice
 
 from .base_model import BaseModel
+from .drawing import Drawing
 from .message import Message
 from .model_types import ModelTypes
 
@@ -69,6 +70,7 @@ class Room(BaseModel):
         self.name = f"{self.TYPE}-{self.get_uuid()}"
         self.users = set()
         self.messages = []
+        self.drawing = Drawing()
         self.logger.debug(f"Created room {self}")
 
     def __str__(self):

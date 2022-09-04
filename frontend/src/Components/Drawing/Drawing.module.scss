@@ -1,0 +1,56 @@
+@import "src/Static/Styles/globals";
+
+.stage {
+  border: 3px solid $color-accent;
+  border-radius: 15px;
+  padding: 10px;
+  width: fit-content;
+  background-color: $color-drawing-board;
+}
+
+.layout {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px
+}
+
+.toolsWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-right: 10px;
+}
+
+.tools {
+  display: flex;
+  gap: 6.5px;
+  margin-left: -5px;
+}
+
+.picker {
+  height: fit-content;
+}
+
+
+.button {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  width: 36px;
+  height: 36px;
+  background-color: transparent;
+  transition: 300ms;
+  align-self: center;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+}
+
+.buttonIcon {
+  height: 100%;
+}

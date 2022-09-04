@@ -7,3 +7,5 @@ class ModelTypes(str, Enum):
     ROOM = "room"
     ROOM_COLOR = "room_color"
     CHAT = "chat"
+    DRAWING = "drawing"
+    LINE = "line"
