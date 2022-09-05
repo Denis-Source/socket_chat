@@ -1,17 +1,17 @@
 @import "src/Static/Styles/_globals.scss";
 
 .body {
-  transition: 1s;
+    transition: 1s;
 }
 
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  height: 100vh;
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 100vh;
 }
 
 .layout {
-  display: grid;
-  grid-template-columns: 350px 1fr;
-  gap: 10px;
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 10px;
 }

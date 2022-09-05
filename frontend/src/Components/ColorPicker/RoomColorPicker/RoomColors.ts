@@ -1,5 +1,5 @@
 export const roomColors = [
-  "#cf2e24",
+    "#cf2e24",
     "#e69635",
     "#e79d7e",
     "#fbeb50",

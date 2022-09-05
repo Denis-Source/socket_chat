@@ -8,27 +8,27 @@ import { RoomStatements } from "../../../StatementsTypes/RoomStatements";
 import useWebSocket from "react-use-websocket";
 
 const CreateRoomButton = () => {
-  // Configure websocket connection
-  const { sendJsonMessage } = useWebSocket(WSS_FEED_URL, {
-    share: true,
-  });
-
-  // Function to create a new room
-  const create = async () => {
-    const statement = prepareStatement({
-      type: TypeStatements.Call,
-      message: RoomStatements.CreateRoom,
+    // Configure websocket connection
+    const { sendJsonMessage } = useWebSocket(WSS_FEED_URL, {
+        share: true,
     });
-    await sendJsonMessage(statement);
-  };
 
-  return (
-    <BaseButton
-      img={addIcon}
-      imgDesc={Strings.AddRoomButtonDesc}
-      callback={create}
-    />
-  );
+    // Function to create a new room
+    const create = async () => {
+        const statement = prepareStatement({
+            type: TypeStatements.Call,
+            message: RoomStatements.CreateRoom,
+        });
+        await sendJsonMessage(statement);
+    };
+
+    return (
+        <BaseButton
+            img={addIcon}
+            imgDesc={Strings.AddRoomButtonDesc}
+            callback={create}
+        />
+    );
 };
 
 export default CreateRoomButton;

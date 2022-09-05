@@ -1,4 +1,4 @@
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export enum LeftTabs {
     Rooms = "room_list",
@@ -26,14 +26,14 @@ export const BACKGROUND_COLORS = [
     ["#ef8e38", "#108dc7"],
     ["#ef6b50", "#f8ad70"],
     ["#EC6EAD", "#3494E6"],
-    ["#159957", "#155799"]
-]
+    ["#159957", "#155799"],
+];
 
 const initialState: InitialState = {
     leftTab: LeftTabs.Log,
     rightTab: RightTabs.Rooms,
     loading: true,
-    theme: BACKGROUND_COLORS[0]
+    theme: BACKGROUND_COLORS[0],
 };
 
 export const generalSlice = createSlice({
@@ -57,11 +57,11 @@ export const generalSlice = createSlice({
             state.loading = false;
         },
         setTheme: (state, action: PayloadAction<number>) => {
-            state.theme = BACKGROUND_COLORS[action.payload]
-        }
+            state.theme = BACKGROUND_COLORS[action.payload];
+        },
     },
 });
 
-export const {setLeftTab, setRightTab, setLoading, setLoaded, setTheme} =
+export const { setLeftTab, setRightTab, setLoading, setLoaded, setTheme } =
     generalSlice.actions;
 export default generalSlice.reducer;

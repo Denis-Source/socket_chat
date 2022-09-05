@@ -1,75 +1,75 @@
 @import "src/Static/Styles/_globals.scss";
 
 .item {
-  width: calc(100% - 60px);
-  background-color: $color-room;
-  padding: 20px;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  margin: 10px;
-  gap: 10px;
-  &:hover {
-    cursor: pointer;
-  }
+    width: calc(100% - 60px);
+    background-color: $color-room;
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+    gap: 10px;
+    &:hover {
+        cursor: pointer;
+    }
 }
 
 .header {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
 }
 
 .closeButton {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  width: 25px;
-  height: 25px;
-  background-color: transparent;
-  transition: 300ms;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    width: 25px;
+    height: 25px;
+    background-color: transparent;
+    transition: 300ms;
 
-  &:hover {
-    cursor: pointer;
-  }
-  &:active {
-    transform: scale(0.9);
-  }
+    &:hover {
+        cursor: pointer;
+    }
+    &:active {
+        transform: scale(0.9);
+    }
 }
 
 .colorIcon {
-  width: 20px;
-  height: 20px;
-  border-radius: 5px;
-  outline: 2px solid $color-accent;
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    outline: 2px solid $color-accent;
 
-  &:hover {
-    cursor: pointer;
-  }
+    &:hover {
+        cursor: pointer;
+    }
 }
 
 .footer {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
 }
 
 .info {
-  display: flex;
-  gap: 10px;
-  color: $color-accent;
+    display: flex;
+    gap: 10px;
+    color: $color-accent;
 }
 
 .stat {
-  display: flex;
-  gap: 5px;
-  align-items: center;
+    display: flex;
+    gap: 5px;
+    align-items: center;
 }
 
 .statIcon {
-  height: 16px;
+    height: 16px;
 }
 
 .counter {
-  margin: 0;
+    margin: 0;
 }

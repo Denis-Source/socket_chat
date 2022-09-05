@@ -1,23 +1,25 @@
-import React, {useRef, useState} from "react";
-import {Layer, Line, Stage} from "react-konva";
+import React, { useRef, useState } from "react";
+import { Layer, Line, Stage } from "react-konva";
 import styles from "./Drawing.module.scss";
-import {CirclePicker} from "react-color";
+import { CirclePicker } from "react-color";
 import eraser from "../../Static/Images/eraser.svg";
 import pen from "../../Static/Images/pen.svg";
 import del from "../../Static/Images/delete.svg";
-import {prepareStatement, WSS_FEED_URL} from "../../api";
-import {TypeStatements} from "../../StatementsTypes/TypeStatements";
+import { prepareStatement, WSS_FEED_URL } from "../../api";
+import { TypeStatements } from "../../StatementsTypes/TypeStatements";
 import useWebSocket from "react-use-websocket";
-import {DrawingStatements} from "../../StatementsTypes/DrawingStatements";
-import {useDispatch, useSelector} from "react-redux";
+import { DrawingStatements } from "../../StatementsTypes/DrawingStatements";
+import { useDispatch, useSelector } from "react-redux";
 import {
     addDrawingLine,
     clearDrawing,
-    resetLastLine, setLastLine, updateLastLine,
+    resetLastLine,
+    setLastLine,
+    updateLastLine,
 } from "../../Reducers/Drawing";
-import {DrawingModel, LineModel} from "../../Models/Drawing.model";
+import { DrawingModel, LineModel } from "../../Models/Drawing.model";
 import Spinner from "../Spinner/Spinner";
-import {drawingColors} from "./DrawingColors";
+import { drawingColors } from "./DrawingColors";
 
 enum Tools {
     pen = "pen",
@@ -29,7 +31,7 @@ const Drawing = () => {
     const HEIGHT = 480;
 
     // Configure websocket connection
-    const {sendJsonMessage} = useWebSocket(WSS_FEED_URL, {
+    const { sendJsonMessage } = useWebSocket(WSS_FEED_URL, {
         share: true,
     });
 
@@ -78,19 +80,21 @@ const Drawing = () => {
         const stage = event.target.getStage();
         const pos = stage.getPointerPosition();
 
-        dispatch(setLastLine({
-            uuid: crypto.randomUUID(),
-            tool: tool,
-            color: color,
-            points: [pos.x, pos.y]
-        }))
+        dispatch(
+            setLastLine({
+                uuid: crypto.randomUUID(),
+                tool: tool,
+                color: color,
+                points: [pos.x, pos.y],
+            })
+        );
     };
 
     const handleMouseMove = (event: any) => {
         if (isDrawing.current && lastLine) {
             const stage = event.target.getStage();
             const pos = stage.getPointerPosition();
-            dispatch(updateLastLine([pos.x, pos.y]))
+            dispatch(updateLastLine([pos.x, pos.y]));
         }
     };
 
@@ -101,7 +105,9 @@ const Drawing = () => {
         dispatch(resetLastLine());
     };
 
-    const renderedLines = lastLine ? [...drawing.lines, lastLine] : drawing.lines;
+    const renderedLines = lastLine
+        ? [...drawing.lines, lastLine]
+        : drawing.lines;
 
     return (
         <>
@@ -121,13 +127,21 @@ const Drawing = () => {
                                 <Line
                                     key={i}
                                     points={line.points}
-                                    stroke={line.tool === "eraser" ? "#ffffff" : line.color}
-                                    strokeWidth={line.tool === "eraser" ? 50 : 5}
+                                    stroke={
+                                        line.tool === "eraser"
+                                            ? "#ffffff"
+                                            : line.color
+                                    }
+                                    strokeWidth={
+                                        line.tool === "eraser" ? 50 : 5
+                                    }
                                     tension={0.5}
                                     lineCap="round"
                                     lineJoin="round"
                                     globalCompositeOperation={
-                                        line.tool === "eraser" ? "destination-out" : "source-over"
+                                        line.tool === "eraser"
+                                            ? "destination-out"
+                                            : "source-over"
                                     }
                                 />
                             ))}
@@ -139,13 +153,21 @@ const Drawing = () => {
                                 className={styles.button}
                                 onClick={() => setTool(Tools.eraser)}
                             >
-                                <img className={styles.buttonIcon} src={eraser} alt="eraser"/>
+                                <img
+                                    className={styles.buttonIcon}
+                                    src={eraser}
+                                    alt="eraser"
+                                />
                             </button>
                             <button
                                 className={styles.button}
                                 onClick={() => setTool(Tools.pen)}
                             >
-                                <img className={styles.buttonIcon} src={pen} alt="pen"/>
+                                <img
+                                    className={styles.buttonIcon}
+                                    src={pen}
+                                    alt="pen"
+                                />
                             </button>
                             <button
                                 className={styles.button}
@@ -154,7 +176,11 @@ const Drawing = () => {
                                     await sendDelete();
                                 }}
                             >
-                                <img className={styles.buttonIcon} src={del} alt="delete"/>
+                                <img
+                                    className={styles.buttonIcon}
+                                    src={del}
+                                    alt="delete"
+                                />
                             </button>
                         </div>
                         <CirclePicker
@@ -169,7 +195,7 @@ const Drawing = () => {
                     </div>
                 </div>
             ) : (
-                <Spinner/>
+                <Spinner />
             )}
         </>
     );

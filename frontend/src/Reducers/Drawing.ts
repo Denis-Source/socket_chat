@@ -1,5 +1,5 @@
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {DrawingModel, LineModel} from "../Models/Drawing.model";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { DrawingModel, LineModel } from "../Models/Drawing.model";
 
 interface InitialState {
     drawing: DrawingModel | null;
@@ -8,7 +8,7 @@ interface InitialState {
 
 const initialState: InitialState = {
     drawing: null,
-    lastLine: null
+    lastLine: null,
 };
 
 export const POINTS_LIMIT = 1000;
@@ -28,8 +28,15 @@ export const drawingSlice = createSlice({
         },
         addDrawingLine: (state, action: PayloadAction<LineModel>) => {
             if (state.drawing) {
-                if (!state.drawing.lines.find(line => line.uuid === action.payload.uuid)) {
-                    state.drawing.lines = [...state.drawing.lines, action.payload].slice(-POINTS_LIMIT);
+                if (
+                    !state.drawing.lines.find(
+                        (line) => line.uuid === action.payload.uuid
+                    )
+                ) {
+                    state.drawing.lines = [
+                        ...state.drawing.lines,
+                        action.payload,
+                    ].slice(-POINTS_LIMIT);
                 }
             }
         },
@@ -38,18 +45,26 @@ export const drawingSlice = createSlice({
         },
         updateLastLine: (state, action: PayloadAction<number[]>) => {
             if (state.lastLine) {
-                state.lastLine.points = [...state.lastLine.points, ...action.payload].slice(-POINTS_LIMIT)
+                state.lastLine.points = [
+                    ...state.lastLine.points,
+                    ...action.payload,
+                ].slice(-POINTS_LIMIT);
             }
         },
         resetLastLine: (state) => {
             state.lastLine = null;
-        }
-    }
+        },
+    },
 });
 
-export const {setDrawing, addDrawingLine, clearDrawing, updateLastLine, resetLastLine, setLastLine} =
-    drawingSlice.actions;
+export const {
+    setDrawing,
+    addDrawingLine,
+    clearDrawing,
+    updateLastLine,
+    resetLastLine,
+    setLastLine,
+} = drawingSlice.actions;
 export default drawingSlice.reducer;
 
-export class updateDrawing {
-}
+export class updateDrawing {}

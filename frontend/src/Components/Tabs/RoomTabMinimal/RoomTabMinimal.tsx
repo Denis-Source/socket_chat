@@ -6,21 +6,21 @@ import { Strings } from "../../../strings";
 import SetLogTabButton from "../../Buttons/FuncButtons/SetLogTabButton";
 
 const RoomTabMinimal = () => {
-  // Use state to filter rooms with the input field
-  const [filterString, setFilterString] = useState("");
+    // Use state to filter rooms with the input field
+    const [filterString, setFilterString] = useState("");
 
-  return (
-    <div className={styles.wrapper}>
-      <div className={styles.header}>
-        <Input
-          setString={setFilterString}
-          placeholder={Strings.SearchPlaceholder}
-        />
-        <SetLogTabButton />
-      </div>
-      <List filterString={filterString} />
-    </div>
-  );
+    return (
+        <div className={styles.wrapper}>
+            <div className={styles.header}>
+                <Input
+                    setString={setFilterString}
+                    placeholder={Strings.SearchPlaceholder}
+                />
+                <SetLogTabButton />
+            </div>
+            <List filterString={filterString} />
+        </div>
+    );
 };
 
 export default RoomTabMinimal;

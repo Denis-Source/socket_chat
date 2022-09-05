@@ -7,12 +7,12 @@ import logReducer from "./Reducers/Log";
 import drawingReducer from "./Reducers/Drawing";
 
 export default configureStore({
-  reducer: {
-    message: messageReducer,
-    user: userReducer,
-    room: roomReducer,
-    general: generalReducer,
-    log: logReducer,
-    drawing: drawingReducer,
-  },
+    reducer: {
+        message: messageReducer,
+        user: userReducer,
+        room: roomReducer,
+        general: generalReducer,
+        log: logReducer,
+        drawing: drawingReducer,
+    },
 });

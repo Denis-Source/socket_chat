@@ -1,39 +1,39 @@
 @import "src/Static/Styles/_globals.scss";
 
 .wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
 }
 
 .hint {
-  font-size: 14px;
-  font-weight: 600;
-  margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
 }
 
 .name {
-  display: flex;
-  align-items: center;
-  gap: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 
 .nameLabel {
-  display: none;
+    display: none;
 }
 
 .nameInput {
-  margin: 0;
-  width: 550px;
-  font-family: $font-family-text;
-  text-align: right;
-  text-overflow: ellipsis;
-  background-color: transparent;
-  color: $color-text;
-  outline: none;
-  border: 0;
-  font-size: 20px;
-  opacity: 1;
-  padding: 0;
+    margin: 0;
+    width: 550px;
+    font-family: $font-family-text;
+    text-align: right;
+    text-overflow: ellipsis;
+    background-color: transparent;
+    color: $color-text;
+    outline: none;
+    border: 0;
+    font-size: 20px;
+    opacity: 1;
+    padding: 0;
 }

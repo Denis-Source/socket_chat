@@ -1,17 +1,16 @@
-import React, {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {MessageModel} from "../../../Models/Message.model";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { MessageModel } from "../../../Models/Message.model";
 import Item from "../Item/Item";
-import {UserModel} from "../../../Models/User.model";
+import { UserModel } from "../../../Models/User.model";
 
 import styles from "./List.module.scss";
 import ScrollToBottom from "react-scroll-to-bottom";
 import useSound from "use-sound";
-import {setNew} from "../../../Reducers/Message";
+import { setNew } from "../../../Reducers/Message";
 
 const notificationOther = require("../../../Static/Sound/messageOther.mp3");
 const notificationMine = require("../../../Static/Sound/messageMine.mp3");
-
 
 const List = () => {
     const messages: MessageModel[] = useSelector(
@@ -27,11 +26,13 @@ const List = () => {
     const [playMine] = useSound(notificationMine);
     useEffect(() => {
         if (toNotify) {
-            messages[messages.length - 1].user.uuid === user.uuid ? playMine() : playOther();
+            messages[messages.length - 1].user.uuid === user.uuid
+                ? playMine()
+                : playOther();
 
-            dispatch(setNew())
+            dispatch(setNew());
         }
-    })
+    });
 
     return (
         <ScrollToBottom

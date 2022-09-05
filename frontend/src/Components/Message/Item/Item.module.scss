@@ -1,43 +1,43 @@
 @import "src/Static/Styles/globals";
 
 .message {
-  padding: 10px;
-  width: 400px;
-  margin: 10px;
-  font-weight: 600;
-  display: flex;
-  flex-direction: column;
-  overflow-wrap: anywhere;
-  gap: 2px;
+    padding: 10px;
+    width: 400px;
+    margin: 10px;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    overflow-wrap: anywhere;
+    gap: 2px;
 }
 
 .myMessage {
-  @extend .message;
-  align-self: flex-end;
-  background-color: $color-my-message;
-  border-radius: 10px 0 10px 10px;
+    @extend .message;
+    align-self: flex-end;
+    background-color: $color-my-message;
+    border-radius: 10px 0 10px 10px;
 }
 
 .otherMessage {
-  @extend .message;
-  align-self: flex-start;
-  background-color: $color-other-message;
-  border-radius: 0 10px 10px 10px;
+    @extend .message;
+    align-self: flex-start;
+    background-color: $color-other-message;
+    border-radius: 0 10px 10px 10px;
 }
 
 .body {
-  margin: 0;
+    margin: 0;
 }
 
 .user {
-  margin: 0;
-  font-size: 12px;
-  align-self: flex-end;
-  font-weight: 600;
+    margin: 0;
+    font-size: 12px;
+    align-self: flex-end;
+    font-weight: 600;
 }
 
 .date {
-  margin: 0;
-  font-size: 14px;
-  align-self: flex-end;
+    margin: 0;
+    font-size: 14px;
+    align-self: flex-end;
 }

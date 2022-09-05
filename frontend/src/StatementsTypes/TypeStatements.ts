@@ -1,5 +1,5 @@
 export enum TypeStatements {
-  Call = "call",
-  Result = "result",
-  Error = "error",
+    Call = "call",
+    Result = "result",
+    Error = "error",
 }

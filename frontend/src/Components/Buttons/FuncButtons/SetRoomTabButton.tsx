@@ -6,16 +6,16 @@ import { LeftTabs, setLeftTab } from "../../../Reducers/General";
 import { useDispatch } from "react-redux";
 
 const SetRoomTabButton = () => {
-  // Use dispatch to set left tab to the log list
-  const dispatch = useDispatch();
+    // Use dispatch to set left tab to the log list
+    const dispatch = useDispatch();
 
-  return (
-    <BaseButton
-      img={roomListIcon}
-      imgDesc={Strings.RoomTabButtonDesc}
-      callback={() => dispatch(setLeftTab(LeftTabs.Rooms))}
-    />
-  );
+    return (
+        <BaseButton
+            img={roomListIcon}
+            imgDesc={Strings.RoomTabButtonDesc}
+            callback={() => dispatch(setLeftTab(LeftTabs.Rooms))}
+        />
+    );
 };
 
 export default SetRoomTabButton;

@@ -1,42 +1,42 @@
 @import "src/Static/Styles/_globals.scss";
 
 .wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
 }
 
 .headerWrapper {
-  display: flex;
-  width: calc(100% - 30px);
-  justify-content: space-between;
+    display: flex;
+    width: calc(100% - 30px);
+    justify-content: space-between;
 }
 
 .headerWrapperOne {
-  @extend .headerWrapper;
-  justify-content: flex-end;
+    @extend .headerWrapper;
+    justify-content: flex-end;
 }
 
 .header {
-  font-size: 28px;
-  text-align: center;
-  margin: 0;
+    font-size: 28px;
+    text-align: center;
+    margin: 0;
 }
 
 .listWrapper {
-  padding: 10px;
-  height: 500px;
-  width: 100%;
-  gap: 15px;
+    padding: 10px;
+    height: 500px;
+    width: 100%;
+    gap: 15px;
 }
 
 .list {
-  display: flex;
-  flex-direction: column;
-  align-self: center;
+    display: flex;
+    flex-direction: column;
+    align-self: center;
 }
 
 .followButton {
-  display: none;
+    display: none;
 }

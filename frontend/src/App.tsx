@@ -1,10 +1,10 @@
-import React, {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {setUser} from "./Reducers/User";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser } from "./Reducers/User";
 import useWebSocket from "react-use-websocket";
-import {WSS_FEED_URL} from "./api";
-import {UserStatements} from "./StatementsTypes/UserStatements";
-import {RoomStatements} from "./StatementsTypes/RoomStatements";
+import { WSS_FEED_URL } from "./api";
+import { UserStatements } from "./StatementsTypes/UserStatements";
+import { RoomStatements } from "./StatementsTypes/RoomStatements";
 import {
     addBulkRoom,
     addRoom,
@@ -16,19 +16,19 @@ import Header from "./Components/Header/Header";
 import styles from "./App.module.scss";
 import RoomTabMinimal from "./Components/Tabs/RoomTabMinimal/RoomTabMinimal";
 import MessageTab from "./Components/Tabs/MessageTab/MessageTab";
-import {MessageStatements} from "./StatementsTypes/MessageStatements";
-import {addMessage, bulkAddMessage} from "./Reducers/Message";
+import { MessageStatements } from "./StatementsTypes/MessageStatements";
+import { addMessage, bulkAddMessage } from "./Reducers/Message";
 import RoomTab from "./Components/Tabs/RoomTab/RoomTab";
 import LogTab from "./Components/Tabs/LogTab/LogTab";
-import {addLog} from "./Reducers/Log";
-import {LogOrigin} from "./Models/Log.model";
-import {LeftTabs, RightTabs, setLoaded, setTheme} from "./Reducers/General";
+import { addLog } from "./Reducers/Log";
+import { LogOrigin } from "./Models/Log.model";
+import { LeftTabs, RightTabs, setLoaded, setTheme } from "./Reducers/General";
 import Spinner from "./Components/Spinner/Spinner";
-import {UserModel} from "./Models/User.model";
+import { UserModel } from "./Models/User.model";
 import DrawingTab from "./Components/Tabs/DrawingTab/DrawingTab";
-import {DrawingStatements} from "./StatementsTypes/DrawingStatements";
-import {addDrawingLine, setDrawing} from "./Reducers/Drawing";
-import {useCookies} from "react-cookie";
+import { DrawingStatements } from "./StatementsTypes/DrawingStatements";
+import { addDrawingLine, setDrawing } from "./Reducers/Drawing";
+import { useCookies } from "react-cookie";
 
 function App() {
     // Use dispatch
@@ -46,11 +46,11 @@ function App() {
     // Use cookies to properly render theme
     const [cookies] = useCookies(["theme"]);
     useEffect(() => {
-        dispatch(setTheme(cookies.theme))
-    })
+        dispatch(setTheme(cookies.theme));
+    });
 
     // Get tab states to render elements based on them
-    const {leftTab, rightTab} = useSelector((state: any) => state.general);
+    const { leftTab, rightTab } = useSelector((state: any) => state.general);
     const loading: boolean = useSelector((state: any) => state.general.loading);
     const theme: string[] = useSelector((state: any) => state.general.theme);
     const processMessages = (data: any) => {
@@ -121,46 +121,47 @@ function App() {
 
     switch (leftTab) {
         case LeftTabs.Log:
-            leftTabElement = <LogTab/>;
+            leftTabElement = <LogTab />;
             break;
         case LeftTabs.Rooms:
-            leftTabElement = <RoomTabMinimal/>;
+            leftTabElement = <RoomTabMinimal />;
     }
 
     switch (rightTab) {
         case RightTabs.Messages:
-            rightTabElement = <MessageTab/>;
+            rightTabElement = <MessageTab />;
             break;
         case RightTabs.Rooms:
-            rightTabElement = <RoomTab/>;
+            rightTabElement = <RoomTab />;
             break;
         case RightTabs.Drawing:
-            rightTabElement = <DrawingTab/>;
+            rightTabElement = <DrawingTab />;
             break;
     }
 
     // Set loading to false if user is loaded
     useEffect(() => {
         user && dispatch(setLoaded());
-    })
+    });
 
     return (
         <div
             className={styles.body}
             style={{
-                background: `linear-gradient(135deg, ${theme[0]}, ${theme[1]})`
-            }}>
+                background: `linear-gradient(135deg, ${theme[0]}, ${theme[1]})`,
+            }}
+        >
             <div className={styles.container}>
                 {!loading ? (
                     <>
-                        <Header/>
+                        <Header />
                         <div className={styles.layout}>
                             {leftTabElement}
                             {rightTabElement}
                         </div>
                     </>
                 ) : (
-                    <Spinner/>
+                    <Spinner />
                 )}
             </div>
         </div>

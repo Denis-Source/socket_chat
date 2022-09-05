@@ -9,25 +9,28 @@ import SetMessageTabButton from "../../Buttons/FuncButtons/SetMessageTabButton";
 import MutableName, { Alignment } from "../../MutableName/MutableName";
 
 const DrawingTab = () => {
-  const currentRoom: RoomModel = useSelector(
-    (state: any) => state.room.current
-  );
+    const currentRoom: RoomModel = useSelector(
+        (state: any) => state.room.current
+    );
 
-  return (
-    <div className={styles.wrapper}>
-      <div className={styles.header}>
-        <div className={styles.navigation}>
-          <GoBackButton />
-          <SetMessageTabButton />
+    return (
+        <div className={styles.wrapper}>
+            <div className={styles.header}>
+                <div className={styles.navigation}>
+                    <GoBackButton />
+                    <SetMessageTabButton />
+                </div>
+                <div className={styles.nameWrapper}>
+                    <p className={styles.hint}>{Strings.MessageTabRoom}</p>
+                    <MutableName
+                        room={currentRoom}
+                        alignment={Alignment.right}
+                    />
+                </div>
+            </div>
+            <Drawing />
         </div>
-        <div className={styles.nameWrapper}>
-          <p className={styles.hint}>{Strings.MessageTabRoom}</p>
-          <MutableName room={currentRoom} alignment={Alignment.right} />
-        </div>
-      </div>
-      <Drawing />
-    </div>
-  );
+    );
 };
 
 export default DrawingTab;

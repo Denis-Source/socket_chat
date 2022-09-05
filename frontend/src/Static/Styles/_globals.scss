@@ -15,23 +15,22 @@ $color-text-light: #00000066;
 $color-my-message: #ffffff88;
 $color-other-message: #ffffff36;
 
-
 ::-webkit-scrollbar {
-  width: 6px;
+    width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+    background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: $color-accent;
+    background: $color-accent;
 }
 
 body {
-  font-family: $font-family-text;
-  margin: 0;
+    font-family: $font-family-text;
+    margin: 0;
 
-  color: $color-text;
-  min-height: 100vh;
+    color: $color-text;
+    min-height: 100vh;
 }
