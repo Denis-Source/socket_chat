@@ -27,7 +27,7 @@ import Spinner from "./Components/Spinner/Spinner";
 import { UserModel } from "./Models/User.model";
 import DrawingTab from "./Components/Tabs/DrawingTab/DrawingTab";
 import { DrawingStatements } from "./StatementsTypes/DrawingStatements";
-import { setDrawing, updateDrawing } from "./Reducers/Drawing";
+import { addDrawingLine, setDrawing } from "./Reducers/Drawing";
 
 function App() {
   // Use dispatch
@@ -99,8 +99,7 @@ function App() {
         dispatch(setDrawing(data.payload.object));
         break;
       case DrawingStatements.DrawLineChanged:
-        console.log(data.payload.object);
-        dispatch(updateDrawing(data.payload.object));
+        dispatch(addDrawingLine(data.payload.object));
         break;
     }
   };

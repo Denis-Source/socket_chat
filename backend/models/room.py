@@ -10,7 +10,7 @@ from .model_types import ModelTypes
 
 
 class DefaultRoomColors(str, Enum):
-    WHITE = "#ffffff"
+    WHITT = "#ffffff"
     GRUN = "#5da247"
     GELP = "#fbeb50"
     BLAU = "#2b347e"

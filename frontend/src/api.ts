@@ -21,7 +21,7 @@ export interface StatementParts {
   body?: string;
   uuid?: string;
   color?: string;
-  points?: string;
+  points?: any;
   tool?: string;
 }
 

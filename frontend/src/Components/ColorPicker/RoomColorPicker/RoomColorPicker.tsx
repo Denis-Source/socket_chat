@@ -6,6 +6,7 @@ import { prepareStatement, WSS_FEED_URL } from "../../../api";
 import { TypeStatements } from "../../../StatementsTypes/TypeStatements";
 import { RoomStatements } from "../../../StatementsTypes/RoomStatements";
 import useWebSocket from "react-use-websocket";
+import { roomColors } from "./RoomColors";
 
 const RoomColorPicker = ({
   room,
@@ -44,7 +45,10 @@ const RoomColorPicker = ({
                 setPickerVisible(!pickerVisible);
               }}
             />
-            <TwitterPicker onChangeComplete={(color) => sendColor(color.hex)} />
+            <TwitterPicker
+              colors={roomColors}
+              onChangeComplete={(color) => sendColor(color.hex)}
+            />
           </div>
         </div>
       ) : null}

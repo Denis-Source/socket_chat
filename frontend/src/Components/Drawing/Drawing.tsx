@@ -11,12 +11,13 @@ import useWebSocket from "react-use-websocket";
 import { DrawingStatements } from "../../StatementsTypes/DrawingStatements";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  addDrawingLine,
   clearDrawing,
-  updateDrawing,
-  updateDrawingLine,
+  POINTS_LIMIT,
 } from "../../Reducers/Drawing";
-import { DrawingModel } from "../../Models/Drawing.model";
+import { DrawingModel, LineModel } from "../../Models/Drawing.model";
 import Spinner from "../Spinner/Spinner";
+import { drawingColors } from "./DrawingColors";
 
 enum Tools {
   pen = "pen",
@@ -27,13 +28,12 @@ const Drawing = () => {
   const WIDTH = 640;
   const HEIGHT = 480;
 
-  const [color, setColor] = useState("#000000cc");
-
-  const stageRef = React.useRef<any>(null);
   const [tool, setTool] = useState(Tools.pen);
+  const [color, setColor] = useState("#000000cc");
+  const [lastLine, setLastLine] = useState<LineModel>();
+
+  const stageRef = useRef<any>(null);
   const isDrawing = useRef(false);
-  const [uuid, setUuid] = useState(crypto.randomUUID());
-  const [lastLine, setLastLine] = useState<any>();
 
   // Configure websocket connection
   const { sendJsonMessage } = useWebSocket(WSS_FEED_URL, {
@@ -55,41 +55,55 @@ const Drawing = () => {
 
   // Function to update a drawn line
   const sendUpdate = async () => {
-    const statement = prepareStatement({
-      type: TypeStatements.Call,
-      message: DrawingStatements.ChangeDrawLine,
-      uuid: uuid,
-      points: lastLine.points,
-      color: lastLine.color,
-      tool: lastLine.tool,
-    });
-    await sendJsonMessage(statement);
+    if (lastLine) {
+      const statement = prepareStatement({
+        type: TypeStatements.Call,
+        message: DrawingStatements.ChangeDrawLine,
+        uuid: lastLine.uuid,
+        points: lastLine.points,
+        color: lastLine.color,
+        tool: lastLine.tool,
+      });
+      await sendJsonMessage(statement);
+    }
   };
 
   const handleMouseDown = async (e: any) => {
-    setUuid(crypto.randomUUID());
-    isDrawing.current = true;
     const pos = e.target.getStage().getPointerPosition();
-    dispatch(updateDrawing({ uuid, tool, color, points: [pos.x, pos.y] }));
+    isDrawing.current = true;
+
+    setLastLine({
+      tool: tool,
+      uuid: crypto.randomUUID(),
+      color: color,
+      points: [pos.x, pos.y],
+    });
   };
 
   const handleMouseMove = (e: any) => {
-    if (isDrawing.current) {
+    if (isDrawing.current && lastLine) {
       const stage = e.target.getStage();
-      const point: { x: number; y: number } = stage.getPointerPosition();
-      dispatch(updateDrawingLine(point));
-      setLastLine(drawing.lines[drawing.lines.length - 1]);
+      const pos = stage.getPointerPosition();
+      setLastLine({
+        tool: tool,
+        uuid: crypto.randomUUID(),
+        color: color,
+        points: [...lastLine.points, pos.x, pos.y].slice(-POINTS_LIMIT),
+      });
     }
   };
 
   const handleMouseUp = async () => {
     isDrawing.current = false;
+    lastLine && dispatch(addDrawingLine(lastLine));
     await sendUpdate();
   };
 
+  const renderedLines = lastLine ? [...drawing.lines, lastLine] : drawing.lines;
+
   return (
     <>
-      {drawing ? (
+      {drawing.lines ? (
         <div className={styles.layout}>
           <Stage
             width={WIDTH}
@@ -101,7 +115,7 @@ const Drawing = () => {
             ref={stageRef}
           >
             <Layer>
-              {drawing.lines?.map((line: any, i: number) => (
+              {renderedLines.map((line: LineModel, i: number) => (
                 <Line
                   key={i}
                   points={line.points}
@@ -142,6 +156,7 @@ const Drawing = () => {
               </button>
             </div>
             <CirclePicker
+              colors={drawingColors}
               className={styles.picker}
               width={"130px"}
               onChange={(color) => {

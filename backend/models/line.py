@@ -23,7 +23,7 @@ class Line(BaseModel):
     Attributes:
         tool:       tool, that was used to draw a line
         color:      color of the drawn line
-        points:     list of coordinates of the drawn line
+        points:     base64 compressed string of points list
         name:       name of the line
     """
     TYPE = ModelTypes.LINE
@@ -33,7 +33,8 @@ class Line(BaseModel):
             self,
             color: Color,
             tool: Tools,
-            points: List[float], uuid: str = None
+            points: str,
+            uuid: str = None
     ):
         super().__init__()
         self.tool = tool
