@@ -69,25 +69,25 @@ function App() {
     // Set the internal state
     switch (type) {
       case UserStatements.UserCreated:
-        dispatch(setUser(payload.user));
+        dispatch(setUser(payload.object));
         break;
       case UserStatements.UserChanged:
-        dispatch(setUser(payload.user));
+        dispatch(setUser(payload.object));
         break;
       case RoomStatements.RoomsListed:
         dispatch(addBulkRoom(data.payload.list));
         break;
       case RoomStatements.RoomCreated:
-        dispatch(addRoom(data.payload.room));
+        dispatch(addRoom(data.payload.object));
         break;
       case RoomStatements.RoomDeleted:
-        dispatch(removeRoom(data.payload.room));
+        dispatch(removeRoom(data.payload.object));
         break;
       case RoomStatements.RoomLeft:
         dispatch(leaveRoom());
         break;
       case RoomStatements.RoomChanged:
-        dispatch(updateRoom(data.payload.room));
+        dispatch(updateRoom(data.payload.object));
         break;
       case MessageStatements.MessageListed:
         dispatch(bulkAddMessage(data.payload.list));
@@ -96,7 +96,7 @@ function App() {
         dispatch(addMessage(data.payload.object));
         break;
       case DrawingStatements.DrawingGot:
-        dispatch(setDrawing(data.payload.drawing));
+        dispatch(setDrawing(data.payload.object));
         break;
       case DrawingStatements.DrawLineChanged:
         console.log(data.payload.object);

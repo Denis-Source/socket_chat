@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Layer, Line, Stage } from "react-konva";
 import styles from "./Drawing.module.scss";
 import { CirclePicker } from "react-color";
@@ -26,7 +26,6 @@ enum Tools {
 const Drawing = () => {
   const WIDTH = 640;
   const HEIGHT = 480;
-  const OFFSET = 50;
 
   const [color, setColor] = useState("#000000cc");
 
@@ -41,7 +40,6 @@ const Drawing = () => {
     share: true,
   });
 
-  const [time, setTime] = useState(new Date().getTime());
   const drawing: DrawingModel = useSelector(
     (state: any) => state.drawing.drawing
   );
@@ -57,11 +55,6 @@ const Drawing = () => {
 
   // Function to update a drawn line
   const sendUpdate = async () => {
-    if (time + OFFSET > new Date().getTime()) {
-      return;
-    }
-    setTime(new Date().getTime());
-
     const statement = prepareStatement({
       type: TypeStatements.Call,
       message: DrawingStatements.ChangeDrawLine,
@@ -89,14 +82,10 @@ const Drawing = () => {
     }
   };
 
-  const handleMouseUp = () => {
+  const handleMouseUp = async () => {
     isDrawing.current = false;
-    setTime(0);
+    await sendUpdate();
   };
-
-  useEffect(() => {
-    sendUpdate();
-  }, [lastLine, time, setTime]);
 
   return (
     <>
