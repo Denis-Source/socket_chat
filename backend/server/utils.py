@@ -29,7 +29,16 @@ def prepare_statement(type: statement_types.StatementTypes,
                           user_statements.UserErrorStatements
                       ],
                       **kwargs
-                      ):
+                      ) -> str:
+    """
+    Constructs the message into the correct form
+    Return in the serialized JSON from
+
+    :param type:        statement type
+    :param message:     statement message
+    :param kwargs:      additional arguments
+    :return:
+    """
     LOGGER_NAME = "stat_const"
 
     payload = {

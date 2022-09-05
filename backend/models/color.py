@@ -13,7 +13,7 @@ class ColorException(Exception):
 
 class Color:
     """
-    Stores the color
+    Color Model
 
     Should be initialized with a hexadecimal value e.g:
         #ffffff

@@ -2,7 +2,7 @@ from enum import Enum
 from logging import getLogger
 from random import choice
 
-from .Color import Color
+from .color import Color
 from .base_model import BaseModel
 from .drawing import Drawing
 from .message import Message
@@ -31,7 +31,7 @@ class UserNotInRoomException(Exception):
 
 class Room(BaseModel):
     """
-    Stores chat room, it's users, messages, drawing
+    Chat room Model, it's users, messages, drawing
 
     Inherits BaseModel
 

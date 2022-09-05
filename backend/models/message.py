@@ -5,6 +5,17 @@ from .model_types import ModelTypes
 
 
 class Message(BaseModel):
+    """
+    Message model
+
+    Inherits from BaseModel
+
+    Attributes:
+        body:       message text
+        user:       user that sent a message
+        room:       location of the message
+        name:       name of the message
+    """
     TYPE = ModelTypes.MESSAGE
     logger = getLogger(f"{TYPE}-model")
 

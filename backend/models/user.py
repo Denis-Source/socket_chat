@@ -7,6 +7,15 @@ from .room import Room
 
 
 class User(BaseModel):
+    """
+    User model
+
+    Inherits from model
+    Attributes:
+        name:           user name
+        connection:     websocket connection
+        room:           entered room
+    """
     TYPE = ModelTypes.USER
     logger = getLogger(TYPE)
 
@@ -21,6 +30,13 @@ class User(BaseModel):
         return self.name
 
     def set_room(self, room: Room):
+        """
+        Sets the room of the user
+
+        :param room:    room to enter
+        :return:        None
+        """
+
         if self.room:
             self.room.remove_user(self)
         self.room = room
@@ -28,10 +44,23 @@ class User(BaseModel):
         self.logger.debug(f"Setting room {room} from {self}")
 
     def set_name(self, name: str):
+        """
+        Sets user name
+
+        :param name:    new user name
+        :return:        None
+        """
+
         self.logger.debug(f"Changing name for {self} to {name}")
         self.name = name
 
     def leave_room(self):
+        """
+        Resets user room
+
+        :return: None
+        """
+
         self.logger.debug(f"leaving room {self.room}")
         if self.room:
             self.room.remove_user(self)

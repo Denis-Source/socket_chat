@@ -24,4 +24,3 @@ class MemoryStorage(BaseStorage):
             self.rooms.pop(uuid)
         else:
             raise NoRoomSpecifiedException(f"No room with uuid {uuid}")
-
