@@ -7,6 +7,6 @@ export const roomColors = [
     "#2b347e",
     "#5e297e",
     "#d95d98",
-    "#ffffff",
+    "#cccccc",
     "#888888",
 ];

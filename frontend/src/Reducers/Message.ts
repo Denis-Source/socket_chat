@@ -7,6 +7,7 @@ export const messageSlice = createSlice({
   name: "message",
   initialState: {
     list: new Array<MessageModel>(),
+    isNew: false
   },
   reducers: {
     clearMessages: (state) => {
@@ -16,6 +17,7 @@ export const messageSlice = createSlice({
     addMessage: (state, action: PayloadAction<MessageModel>) => {
       // Add message to the list, cut if too many
       state.list = [...state.list, action.payload].slice(-MESSAGE_LIMIT);
+      state.isNew = true;
     },
     bulkAddMessage: (state, action: PayloadAction<MessageModel[]>) => {
       // Add messages to the list in bulk, cuts if too many
@@ -30,9 +32,12 @@ export const messageSlice = createSlice({
         ),
       ];
     },
+    setNew: (state) => {
+    state.isNew = false;
+    }
   },
 });
 
-export const { clearMessages, addMessage, bulkAddMessage, updateMessage } =
+export const { clearMessages, addMessage, bulkAddMessage, updateMessage, setNew} =
   messageSlice.actions;
 export default messageSlice.reducer;

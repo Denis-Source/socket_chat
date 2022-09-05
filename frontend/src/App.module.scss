@@ -1,3 +1,9 @@
+@import "src/Static/Styles/_globals.scss";
+
+.body {
+  transition: 1s;
+}
+
 .container {
   max-width: 1200px;
   margin: 0 auto;

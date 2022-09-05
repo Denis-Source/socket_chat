@@ -19,5 +19,7 @@ export enum Strings {
   RoomTabButtonDesc = "Show rooms",
   DrawingTabButtonDesc = "Show drawing",
 
+  ThemeIconDesc = "Theme selector",
+
   AddRoomButtonDesc = "Add room",
 }

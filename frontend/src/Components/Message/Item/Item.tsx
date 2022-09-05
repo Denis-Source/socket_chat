@@ -9,6 +9,7 @@ const Item = ({
   message: MessageModel;
   isMine: boolean;
 }) => {
+
   return (
     <div className={isMine ? styles.myMessage : styles.otherMessage}>
       <p className={styles.body}>{message.body}</p>

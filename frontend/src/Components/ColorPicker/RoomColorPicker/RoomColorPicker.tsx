@@ -46,6 +46,7 @@ const RoomColorPicker = ({
               }}
             />
             <TwitterPicker
+                className={styles.picker}
               colors={roomColors}
               onChangeComplete={(color) => sendColor(color.hex)}
             />

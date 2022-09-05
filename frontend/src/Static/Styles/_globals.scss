@@ -4,9 +4,6 @@
 $font-family-text: "Roboto Slab", serif;
 $font-family-code: "Roboto Slab", mono;
 
-$color-background-start: #65606b;
-$color-background-finish: #f29492;
-
 $color-room: #ffffff36;
 $color-accent: #ffffffaa;
 
@@ -17,6 +14,7 @@ $color-text-light: #00000066;
 
 $color-my-message: #ffffff88;
 $color-other-message: #ffffff36;
+
 
 ::-webkit-scrollbar {
   width: 6px;
@@ -35,11 +33,5 @@ body {
   margin: 0;
 
   color: $color-text;
-
-  background: linear-gradient(
-    -45deg,
-    $color-background-start,
-    $color-background-finish
-  );
   min-height: 100vh;
 }
