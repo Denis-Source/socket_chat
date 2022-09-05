@@ -12,4 +12,12 @@ export enum Strings {
   MessageTabRoom = "Room:",
   FormMessagePlaceholder = "Write a message...",
   FormSubmit = "Send",
+
+  MessageTabButtonDesc = "Show messages",
+  GoBackButtonDesc = "Go back",
+  LogTabButtonDesc = "Show event log",
+  RoomTabButtonDesc = "Show rooms",
+  DrawingTabButtonDesc = "Show drawing",
+
+  AddRoomButtonDesc = "Add room",
 }

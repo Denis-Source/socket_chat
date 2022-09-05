@@ -1,24 +1,23 @@
 enum Tools {
-    pen = "pen",
-    eraser = "eraser"
+  pen = "pen",
+  eraser = "eraser",
 }
 
 export interface LineModelCompressed {
-    tool: Tools,
-    uuid: string,
-    color: string,
-    points: string,
+  tool: Tools;
+  uuid: string;
+  color: string;
+  points: string;
 }
 
-
 export interface LineModel {
-    tool: Tools,
-    uuid: string,
-    color: string,
-    points: number[],
+  tool: Tools;
+  uuid: string;
+  color: string;
+  points: number[];
 }
 
 export interface DrawingModel {
-    uuid: string,
-    lines: LineModel[]
+  uuid: string;
+  lines: LineModel[];
 }

@@ -5,7 +5,6 @@
   justify-content: space-between;
   align-items: flex-start;
   padding-right: 10px;
-
 }
 
 .navigation {
@@ -29,39 +28,4 @@
   font-size: 14px;
   font-weight: 600;
   margin: 0;
-}
-
-.button {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  width: 40px;
-  height: 40px;
-  background-color: transparent;
-  transition: 300ms;
-  align-self: center;
-
-  &:hover {
-    cursor: pointer;
-  }
-  &:active {
-    transform: scale(0.9);
-  }
-}
-
-.buttonIcon {
-  height: 100%;
-}
-
-.name {
-  font-family: $font-family-text;
-  text-align: right;
-  color: $color-text;
-  outline: none;
-  width: 100%;
-  border: 0;
-  background-color: transparent;
-  font-size: 20px;
-  opacity: 1;
-  padding: 0;
 }

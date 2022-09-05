@@ -5,14 +5,18 @@ import { UserStatements } from "./StatementsTypes/UserStatements";
 import { LogModel, LogOrigin } from "./Models/Log.model";
 import store from "./store";
 import { addLog } from "./Reducers/Log";
-import {DrawingStatements} from "./StatementsTypes/DrawingStatements";
+import { DrawingStatements } from "./StatementsTypes/DrawingStatements";
 
-export const WSS_FEED_URL = "ws://localhost:9000";
-// export const WSS_FEED_URL = "wss://chat.zoloto.cx.ua/api";
+// export const WSS_FEED_URL = "ws://localhost:9000";
+export const WSS_FEED_URL = "wss://chat.zoloto.cx.ua/api";
 
 export interface StatementParts {
   type: TypeStatements;
-  message: MessageStatements | RoomStatements | UserStatements | DrawingStatements;
+  message:
+    | MessageStatements
+    | RoomStatements
+    | UserStatements
+    | DrawingStatements;
   name?: string;
   body?: string;
   uuid?: string;
@@ -47,7 +51,7 @@ export const prepareStatement = (parts: StatementParts) => {
       uuid: parts?.uuid,
       color: parts?.color,
       tool: parts?.tool,
-      points: parts?.points
+      points: parts?.points,
     },
   };
 };

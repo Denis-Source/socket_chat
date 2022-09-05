@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { LogModel } from "../Models/Log.model";
-import {TypeStatements} from "../StatementsTypes/TypeStatements";
+import { TypeStatements } from "../StatementsTypes/TypeStatements";
 
 type InitialState = {
   list: LogModel[];
@@ -30,19 +30,19 @@ export const logSlice = createSlice({
         case TypeStatements.Result:
           if (action.payload.description !== state.lastResult) {
             state.list = [...state.list, action.payload].slice(-LOG_LIMIT);
-            state.lastResult = action.payload.description
+            state.lastResult = action.payload.description;
           }
           break;
         case TypeStatements.Error:
           if (action.payload.description !== state.lastError) {
             state.list = [...state.list, action.payload].slice(-LOG_LIMIT);
-            state.lastError = action.payload.description
+            state.lastError = action.payload.description;
           }
           break;
         case TypeStatements.Call:
           if (action.payload.description !== state.lastCall) {
             state.list = [...state.list, action.payload].slice(-LOG_LIMIT);
-            state.lastCall = action.payload.description
+            state.lastCall = action.payload.description;
           }
           break;
       }
