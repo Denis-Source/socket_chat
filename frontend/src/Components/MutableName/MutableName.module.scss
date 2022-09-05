@@ -1,0 +1,22 @@
+@import "src/Static/Styles/_globals.scss";
+
+.name {
+  font-family: $font-family-text;
+  color: $color-text;
+  width: 100%;
+  outline: none;
+  border: 0;
+  background-color: transparent;
+  font-size: 20px;
+  opacity: 1;
+  padding: 0;
+}
+
+.nameRight {
+  @extend .name;
+  text-align: right;
+}
+
+.nameLeft {
+  @extend .name;
+}

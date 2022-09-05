@@ -1,5 +1,4 @@
 from logging import getLogger
-from typing import List
 
 from models.base_model import BaseModel
 from models.model_types import ModelTypes

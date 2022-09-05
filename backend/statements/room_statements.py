@@ -24,4 +24,3 @@ class RoomErrorStatements(str, Enum):
     NO_SPECIFIED_ROOM = "no_specified_room"
     NOT_VALID_COLOR = "not_valid_color"
     NOT_EMPTY_ROOM = "not_empty_room"
-
