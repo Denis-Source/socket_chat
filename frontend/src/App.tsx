@@ -46,6 +46,7 @@ function App() {
     // Use cookies to properly render theme
     const [cookies] = useCookies(["theme"]);
     useEffect(() => {
+        cookies.theme &&
         dispatch(setTheme(cookies.theme));
     });
 
