@@ -4,6 +4,11 @@ from uuid import uuid4
 
 
 class BaseModel(ABC):
+    """
+    Model abstract method
+
+    Implements date and uuid generation
+    """
     def __init__(self):
         self._created = datetime.now()
         self._uuid = uuid4()
@@ -16,4 +21,9 @@ class BaseModel(ABC):
 
     @abstractmethod
     def get_dict(self) -> dict:
+        """
+        Should be implemented
+        to have the ability to be serialized in JSON format
+        :return:
+        """
         pass

@@ -1,10 +1,9 @@
 import asyncio
 import json
 from json import JSONDecodeError
-
-import websockets
 from logging import getLogger
 
+import websockets
 from websockets.exceptions import ConnectionClosedError
 
 from config import Config
@@ -19,18 +18,28 @@ from statements.room_statements import RoomCallStatements, RoomResultStatements,
 from statements.statement_types import StatementTypes
 from statements.user_statements import UserResultStatements, UserCallStatements
 from storage.base_storage import NoRoomSpecifiedException
+from .utils import prepare_statement
 
 
 class Server:
-    NAME = "server"
+    """
+    Main server connection handler class
 
-    connected_users = dict()
-    logger = getLogger(NAME)
+    Attributes:
+        connected_users:    list of connected users
+        storage:            storage instance
+        logger:             ...logger
+        call_methods:       dictionary of mapped methods to call statements
+    """
+    NAME = "server"
 
     def __init__(self):
         self.storage = Config.STORAGE_CLS()
 
-        self.calls = {
+        self.connected_users = dict()
+        self.logger = getLogger(self.NAME)
+
+        self.call_methods = {
             RoomCallStatements.CREATE_ROOM: self.create_room,
             RoomCallStatements.DELETE_ROOM: self.delete_room,
             RoomCallStatements.LIST_ROOMS: self.list_rooms,
@@ -49,14 +58,16 @@ class Server:
             DrawingCallStatements.RESET_DRAWING: self.reset_drawing
         }
 
-    async def send_rooms(self, user: User):
-        rooms = self.storage.list_rooms()
-        await user.connection.send(json.dumps(
-            rooms
-        ))
-        self.logger.info(f"Send rooms({len(rooms)}) to {user}")
-
     async def handle_connection(self, connection: websockets.WebSocketServerProtocol):
+        """
+        Handles a connection between a user an a server
+
+        Creates a user instance
+        When connection is closed, deletes connection from the list
+
+        :param connection:  websocket connection
+        :return:            None
+        """
         user = User(connection)
         self.logger.info(f"{user} connected")
         self.connected_users[user.get_uuid()] = user
@@ -70,56 +81,85 @@ class Server:
             self.connected_users.pop(user.get_uuid())
 
     async def handle_user(self, user: User):
-        self.logger.info(f"Handling user request")
-        await user.connection.send(json.dumps({
-            "type": StatementTypes.RESULT,
-            "payload": {
-                "message": UserResultStatements.USER_CREATED,
-                "user": user.get_dict()
-            }
-        }))
+        """
+        Listens for a message and calls the corresponding method
 
+        Sends a user instance and room list
+        If the message is not parsable, sends an error message
+        :param user:    User to serve to
+        :return:        None
+        """
+        self.logger.info(f"Handling user request")
+        await user.connection.send(prepare_statement(
+            type=StatementTypes.RESULT,
+            message=UserResultStatements.USER_CREATED,
+            object=user.get_dict()
+        ))
         await self.list_rooms(user, {})
 
+        # Websocket connection is based on a generator,
+        # so the `for` loop is used
         async for raw_message in user.connection:
             try:
-                self.logger.debug(f"Received message: {raw_message}")
+                self.logger.debug(f"Received message: {raw_message.replace('/n', '')}")
+                # Parse the message
                 memo = json.loads(raw_message)
-
                 payload = memo["payload"]
                 method_type = payload["message"]
-                method = self.calls[method_type]
+                method = self.call_methods[method_type]
 
-                await method(user=user, payload=payload)
+                await method(user, payload)
 
+            # If the message is not parsable or does not
+            # have needed keys, send error message
+
+            # This is applied to the all call methods
+            # as we wrap them all with this except block
             except (JSONDecodeError, KeyError):
                 self.logger.info(f"Bad data from {user}")
-                await user.connection.send(json.dumps({
-                    "type": StatementTypes.RESULT,
-                    "payload": {
-                        "message": GeneralStatements.BAD_DATA
-                    }
-                }))
+                await user.connection.send(prepare_statement(
+                    type=StatementTypes.RESULT,
+                    message=GeneralStatements.BAD_DATA
+                ))
 
     # room methods
-    async def create_room(self, user: User, payload: dict):
+    async def create_room(self, user: User, _: dict):
+        """
+        Creates room, notifies all connected users
+        :param user:    User that called the method
+        :param _:       Dummy param to save a signature
+        :return:        None
+        """
         room = Room()
         self.storage.create_room(room)
         self.logger.info(f"Created room: {room} for {user}")
         await self.broadcast_room(room, RoomResultStatements.ROOM_CREATED)
 
-    async def list_rooms(self, user: User, payload: dict):
+    async def list_rooms(self, user: User, _: dict):
+        """
+        Lists all of the rooms
+
+        :param user:    User that called the method
+        :param _:       Dummy param to save a signature
+        :return:        None
+        """
         rooms = self.storage.list_rooms()
         self.logger.info(f"Retrieved rooms list for {user}")
-        await user.connection.send(json.dumps({
-            "type": StatementTypes.RESULT,
-            "payload": {
-                "message": RoomResultStatements.ROOMS_LISTED,
-                "list": [room.get_dict() for room in rooms]
-            }
-        }))
+        await user.connection.send(prepare_statement(
+            type=StatementTypes.RESULT,
+            message=RoomResultStatements.ROOMS_LISTED,
+            list=[room.get_dict() for room in rooms]
+        ))
 
     async def enter_room(self, user: User, payload: dict):
+        """
+        Inserts the user into the room he specified
+        Sends user room messages and drawing
+
+        :param user:        User that called the method
+        :param payload:     Payload that should include `uuid` of the room
+        :return:            None
+        """
         try:
             room_uuid = payload["uuid"]
             old_room = user.room
@@ -130,21 +170,16 @@ class Server:
 
             history = [message.get_dict() for message in room.messages]
 
-            await user.connection.send(json.dumps({
-                "type": StatementTypes.RESULT,
-                "payload": {
-                    "message": RoomResultStatements.ROOM_ENTERED
-                }
-            }))
-
-            await user.connection.send(json.dumps({
-                "type": StatementTypes.RESULT,
-                "payload": {
-                    "message": MessageResultStatements.MESSAGES_LISTED,
-                    "list": history
-                }
-            }))
-            await self.get_drawing({}, user)
+            await user.connection.send(prepare_statement(
+                type=StatementTypes.RESULT,
+                message=RoomResultStatements.ROOM_ENTERED
+            ))
+            await user.connection.send(prepare_statement(
+                type=StatementTypes.RESULT,
+                message=MessageResultStatements.MESSAGES_LISTED,
+                list=history
+            ))
+            await self.get_drawing(user, {})
 
             if old_room:
                 await self.broadcast_room(old_room, RoomResultStatements.ROOM_CHANGED)
@@ -152,37 +187,45 @@ class Server:
 
         except NoRoomSpecifiedException:
             self.logger.info(f"No room found for {user}")
-            await user.connection.send(json.dumps({
-                "type": StatementTypes.ERROR,
-                "payload": {
-                    "message": RoomErrorStatements.NO_SPECIFIED_ROOM
-                }
-            }))
+            await user.connection.send(prepare_statement(
+                type=StatementTypes.ERROR,
+                message=RoomErrorStatements.NO_SPECIFIED_ROOM
+            ))
 
-    async def leave_room(self, payload: dict, user: User):
+    async def leave_room(self, user: User, _: dict):
+        """
+        Removes a user from the entered previously room
+
+        :param user:    User that called the method
+        :param _:       Dummy param to save the signature
+        :return:        None
+        """
         if user.room:
             room = user.room
             self.logger.info(f"{user} left {user.room}")
             user.leave_room()
 
-            await user.connection.send(json.dumps({
-                "type": StatementTypes.RESULT,
-                "payload": {
-                    "message": RoomResultStatements.ROOM_LEFT
-                }
-            }))
+            await user.connection.send(prepare_statement(
+                type=StatementTypes.RESULT,
+                message=RoomResultStatements.ROOM_LEFT
+            ))
             await self.broadcast_room(room, RoomResultStatements.ROOM_CHANGED)
-
         else:
             self.logger.info(f"No room found for {user}")
-            await user.connection.send(json.dumps({
-                "type": StatementTypes.ERROR,
-                "payload": {
-                    "message": RoomErrorStatements.NO_SPECIFIED_ROOM
-                }
-            }))
+            await user.connection.send(prepare_statement(
+                type=StatementTypes.ERROR,
+                message=RoomErrorStatements.NO_SPECIFIED_ROOM
+            ))
 
-    async def delete_room(self, payload: dict, user: User):
+    async def delete_room(self, user: User, payload: dict):
+        """
+        Deletes the room specified by a user
+        Broadcasts the updated room to all connected users
+
+        :param user:        User that called the method
+        :param payload:     Payload that should include `uuid` of the room
+        :return:
+        """
         try:
             room_uuid = payload["uuid"]
             room: Room = self.storage.get_room(room_uuid)
@@ -193,22 +236,25 @@ class Server:
                 await self.broadcast_room(room, RoomResultStatements.ROOM_DELETED)
             else:
                 self.logger.info(f"Room {room} is not empty ({len(room.users)}) users")
-                await user.connection.send(json.dumps({
-                    "type": StatementTypes.ERROR,
-                    "payload": {
-                        "message": RoomErrorStatements.NOT_EMPTY_ROOM
-                    }
-                }))
+                await user.connection.send(prepare_statement(
+                    type=StatementTypes.ERROR,
+                    message=RoomErrorStatements.NOT_EMPTY_ROOM
+                ))
+
         except NoRoomSpecifiedException:
             self.logger.info(f"No room found for {user}")
-            await user.connection.send(json.dumps({
-                "type": StatementTypes.ERROR,
-                "payload": {
-                    "message": RoomErrorStatements.NO_SPECIFIED_ROOM
-                }
-            }))
+            await user.connection.send([prepare_statement(
+                type=StatementTypes.ERROR,
+                message=RoomErrorStatements.NO_SPECIFIED_ROOM
+            )])
 
-    async def change_room_name(self, payload: dict, user: User):
+    async def change_room_name(self, user: User, payload: dict):
+        """
+        Changes a name of the specified room
+        :param user:        User that called the method
+        :param payload:     Payload that should include `uuid` and `name`
+        :return:            None
+        """
         try:
             room_uuid = payload["uuid"]
             room: Room = self.storage.get_room(room_uuid)
@@ -219,51 +265,65 @@ class Server:
             await self.broadcast_room(room, RoomResultStatements.ROOM_CHANGED)
         except NoRoomSpecifiedException:
             self.logger.info(f"No room found for {user}")
-            await user.connection.send(json.dumps({
-                "type": StatementTypes.ERROR,
-                "payload": {
-                    "message": RoomErrorStatements.NO_SPECIFIED_ROOM
-                }
-            }))
+            await user.connection.send(prepare_statement(
+                type=StatementTypes.ERROR,
+                message=RoomErrorStatements.NO_SPECIFIED_ROOM
+            ))
 
-    async def change_room_color(self, payload: dict, user: User):
+    async def change_room_color(self, user: User, payload: dict):
+        """
+        Changes a color of the specified room
+        Color should have hexadecimal format e.g: #ffffff
+
+        :param user:        User that called the method
+        :param payload:     Payload that should include `uuid` and `color`
+        :return:            None
+        """
         try:
             room_uuid = payload["uuid"]
-            room: Room = self.storage.get_room(room_uuid)
             color = RoomColor(payload["color"])
+            room: Room = self.storage.get_room(room_uuid)
 
             self.logger.info(f"Changing color of {room.name}")
             room.set_color(color)
             await self.broadcast_room(room, RoomResultStatements.ROOM_CHANGED)
         except NoRoomSpecifiedException:
             self.logger.info(f"No room found for {user}")
-            await user.connection.send(json.dumps({
-                "type": StatementTypes.ERROR,
-                "payload": {
-                    "message": RoomErrorStatements.NO_SPECIFIED_ROOM
-                }
-            }))
+            await user.connection.send(prepare_statement(
+                type=StatementTypes.ERROR,
+                message=RoomErrorStatements.NO_SPECIFIED_ROOM
+            ))
         except RoomColorException:
             self.logger.info(f"Not valid color from {user}")
-            await user.connection.send(json.dumps({
-                "type": StatementTypes.ERROR,
-                "payload": {
-                    "message": RoomErrorStatements.NOT_VALID_COLOR
-                }
-            }))
+            await user.connection.send(prepare_statement(
+                type=StatementTypes.ERROR,
+                message=RoomErrorStatements.NOT_VALID_COLOR
+            ))
 
     async def broadcast_room(self, changed_room: Room, message: RoomResultStatements):
+        """
+        Broadcasts the room with a specified message
+
+        :param changed_room:    Room that changed
+        :param message:         Result message related to a change
+        :return:                None
+        """
         for _, user in self.connected_users.items():
-            await user.connection.send(json.dumps({
-                "type": StatementTypes.RESULT,
-                "payload": {
-                    "message": message,
-                    "room": changed_room.get_dict()
-                }
-            }))
+            await user.connection.send(prepare_statement(
+                type=StatementTypes.RESULT,
+                message=message,
+                object=changed_room.get_dict()
+            ))
 
     # drawing methods
-    async def change_draw_line(self, payload: dict, user: User):
+    async def change_draw_line(self, user: User, payload: dict):
+        """
+        Changes or adds a line to the drawing
+
+        :param user:        User that called the method
+        :param payload:     Payload that should include `uuid`, `points` `color` and a `tool` of the lines
+        :return:            None
+        """
         if user.room:
             line_uuid = payload["uuid"]
             points = payload["points"]
@@ -272,6 +332,7 @@ class Server:
             drawing = user.room.drawing
             line = drawing.lines.get(line_uuid)
             self.logger.info(f"Updating {drawing} from {user}")
+
             if line:
                 drawing.update_line(line_uuid, points)
             else:
@@ -280,78 +341,102 @@ class Server:
 
             await self.broadcast_drawing_line(line, user.room)
         else:
-            await user.connection.send(json.dumps({
-                "type": StatementTypes.ERROR,
-                "payload": {
-                    "message": DrawingErrorStatements.NO_SELECTED_ROOM
-                }
-            }))
+            await user.connection.send(prepare_statement(
+                type=StatementTypes.ERROR,
+                message=DrawingErrorStatements.NO_SELECTED_ROOM
+            ))
 
-    async def get_drawing(self, payload: dict, user: User):
+    async def get_drawing(self, user: User, _: dict):
+        """
+        Sends to the user drawing of the room
+
+        :param user:    User that called the method
+        :param _:       Dummy param to save the signature
+        :return:        None
+        """
         if user.room:
             self.logger.info(f"Sending drawing  to {user}")
-            await user.connection.send(json.dumps({
-                "type": StatementTypes.RESULT,
-                "payload": {
-                    "message": DrawingResultStatements.DRAWING_GOT,
-                    "drawing": user.room.drawing.get_dict()
-                }
-            }))
+            await user.connection.send(prepare_statement(
+                type=StatementTypes.RESULT,
+                message=DrawingResultStatements.DRAWING_GOT,
+                object=user.room.drawing.get_dict()
+            ))
         else:
-            await user.connection.send(json.dumps({
-                "type": StatementTypes.ERROR,
-                "payload": {
-                    "message": DrawingErrorStatements.NO_SELECTED_ROOM
-                }
-            }))
+            await user.connection.send(prepare_statement(
+                type=StatementTypes.ERROR,
+                message=DrawingErrorStatements.NO_SELECTED_ROOM
+            ))
 
-    async def reset_drawing(self, payload: dict, user: User):
-        room = user.room
-        if room:
-            self.logger.info(f"{user} reseting {room.drawing}")
-            room.drawing.reset()
+    async def reset_drawing(self, user: User, _: dict):
+        """
+        Resets the drawing as asked by a user
 
-            for user in room.users:
-                await self.get_drawing({}, user)
+        :param user:    User that called the method
+        :param _:       Dummy param to save the signature
+        :return:        None
+        """
+        if user.room:
+            self.logger.info(f"{user} resetting {user.room.drawing}")
+            user.room.drawing.reset()
+
+            for user in user.room.users:
+                await self.get_drawing(user, {})
 
         else:
             self.logger.info(f"No room found for {user}")
-            await user.connection.send(json.dumps({
-                "type": StatementTypes.ERROR,
-                "payload": {
-                    "message": RoomErrorStatements.NO_SPECIFIED_ROOM
-                }
-            }))
+            await user.connection.send(prepare_statement(
+                type=StatementTypes.ERROR,
+                message=DrawingErrorStatements.NO_SELECTED_ROOM
+            ))
 
     async def broadcast_drawing_line(self, line: Line, room: Room):
+        """
+        Broadcasts a line of a drawing to the users that are in the room
+
+        :param line:    Line to broadcast
+        :param room:    Room of the drawing
+        :return:        None
+        """
         self.logger.info(f"Broadcasting {line} line in {room}")
         for user in room.users:
-            await user.connection.send(json.dumps({
-                "type": StatementTypes.RESULT,
-                "payload": {
-                    "message": DrawingResultStatements.DRAW_LINE_CHANGED,
-                    "object": line.get_dict()
-                }
-            }))
+            await user.connection.send(prepare_statement(
+                type=StatementTypes.RESULT,
+                message=DrawingResultStatements.DRAW_LINE_CHANGED,
+                object=line.get_dict()
+            ))
 
     # user methods
-    async def change_user_name(self, payload: dict, user: User):
+    async def change_user_name(self, user: User, payload: dict):
+        """
+        Changes user name to the specified one
+        Notifies all of the users if the user is in a room
+
+        :param user:        User that called the method
+        :param payload:     Payload that should include `name`
+        :return:            None
+        """
         name = payload["name"]
         self.logger.info(f"Changed {user} name to {name}")
         user.set_name(name)
-        await user.connection.send(json.dumps({
-            "type": StatementTypes.RESULT,
-            "payload": {
-                "message": UserResultStatements.USER_CHANGED,
-                "user": user.get_dict()
-            }
-        }))
+
+        await user.connection.send(prepare_statement(
+            type=StatementTypes.RESULT,
+            message=UserResultStatements.USER_CHANGED,
+            object=user.get_dict()
+        ))
 
         if user.room:
             await self.broadcast_room(user.room, RoomResultStatements.ROOM_CHANGED)
 
     # message methods
-    async def create_message(self, payload: dict, user: User):
+    async def create_message(self, user: User, payload: dict):
+        """
+        Creates a message, adds it to the room of the user
+
+        :param user:        User that called the method
+        :param payload:     Payload that should include `body`
+        :return:            None
+        """
         body = payload["body"]
         if user.room:
             message = Message(body, user, user.room)
@@ -360,43 +445,55 @@ class Server:
             await self.broadcast_room(user.room, RoomResultStatements.ROOM_CHANGED)
             await self.broadcast_message(message)
         else:
-            await user.connection.send(json.dumps({
-                "type": StatementTypes.ERROR,
-                "payload": {
-                    "message": MessageErrorStatements.NO_SELECTED_ROOM
-                }
-            }))
+            await user.connection.send(prepare_statement(
+                type=StatementTypes.ERROR,
+                message=MessageErrorStatements.NO_SELECTED_ROOM
+            ))
 
     async def broadcast_message(self, message: Message):
+        """
+        Broadcasts the message among the users in the message room
+
+        :param message:     Message to be broadcasted
+        :return:            None
+        """
         self.logger.info(f"Broadcasting {message} in room {message.room}")
         for user in message.room.users:
-            await user.connection.send(json.dumps({
-                "type": StatementTypes.RESULT,
-                "payload": {
-                    "message": MessageResultStatements.MESSAGE_CREATED,
-                    "object": message.get_dict()
-                }
-            }))
+            await user.connection.send(prepare_statement(
+                type=StatementTypes.RESULT,
+                message=MessageResultStatements.MESSAGE_CREATED,
+                object=message.get_dict()
+            ))
 
-    async def list_messages(self, payload: dict, user: User):
+    async def list_messages(self, user: User,  _: dict):
+        """
+        List all of the messages in the room
+
+        :param user:    User that called the method
+        :param _:       Dummy param to save the signature
+        :return:        None
+        """
         if user.room:
             self.logger.info(f"Sending message list({len(user.name)}) to {user}")
-            await user.connection.send(json.dumps({
-                "type": StatementTypes.RESULT,
-                "payload": {
-                    "message": MessageResultStatements.MESSAGES_LISTED,
-                    "list": [message.get_dict() for message in user.room.messages]
-                }
-            }))
+            await user.connection.send(prepare_statement(
+                type=StatementTypes.RESULT,
+                message=MessageResultStatements.MESSAGES_LISTED,
+                list=[message.get_dict() for message in user.room.messages]
+            ))
         else:
-            await user.connection.send(json.dumps({
-                "type": StatementTypes.ERROR,
-                "payload": {
-                    "message": MessageErrorStatements.NO_SELECTED_ROOM
-                }
-            }))
+            await user.connection.send(prepare_statement(
+                type=StatementTypes.ERROR,
+                message=MessageErrorStatements.NO_SELECTED_ROOM
+            ))
 
     def run(self):
+        """
+        Runs the websocket server on the specified ip and port in the configs
+
+        Websockets use asyncio, so the event loop is required
+
+        :return: None
+        """
         loop = asyncio.get_event_loop()
         try:
             socket_server = websockets.serve(self.handle_connection, Config.IP, Config.PORT)
