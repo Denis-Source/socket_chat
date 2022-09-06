@@ -12,7 +12,12 @@
 
     @media screen and (max-width: $size-mobile) {
         height: calc(100vh - 340px);
+
+        @media screen and (max-height: $size-keyboard) {
+            height: calc(100vh - 220px);
+        }
     }
+
 }
 
 .scrollButton {

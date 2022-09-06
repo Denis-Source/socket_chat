@@ -33,7 +33,12 @@
     @media screen and (max-width: $size-mobile) {
         height: calc(100vh - 260px);
         padding: 20px;
+
+        @media screen and (max-height: $size-keyboard) {
+            height: calc(100vh - 160px);
+        }
     }
+
 }
 
 .list {
