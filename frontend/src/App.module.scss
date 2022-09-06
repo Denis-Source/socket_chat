@@ -1,17 +1,40 @@
 @import "src/Static/Styles/_globals.scss";
 
 .body {
-    transition: 1s;
+    //min-height: 100vh;
 }
 
 .container {
+    padding: 0 20px;
     max-width: 1200px;
     margin: 0 auto;
     height: 100vh;
+
+    @media screen and (max-width: $size-limited) {
+        justify-content: center;
+        max-width: 800px;
+    }
+    @media screen and (max-width: $size-mobile) {
+        padding: 10px;
+    }
 }
 
 .layout {
     display: grid;
     grid-template-columns: 350px 1fr;
     gap: 10px;
+
+    @media screen and (max-width: $size-compact) {
+        grid-template-columns: 300px 1fr;
+    }
+
+    @media screen and (max-width: $size-limited) {
+        display: block;
+    }
+}
+
+.leftTab {
+    @media screen and (max-width: $size-limited) {
+        display: none;
+    }
 }

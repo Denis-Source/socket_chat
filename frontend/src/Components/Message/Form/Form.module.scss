@@ -5,6 +5,10 @@
     gap: 15px;
     grid-template-columns: 1fr 200px;
     padding: 0 10px;
+
+    @media screen and (max-width: $size-mobile) {
+        display: block;
+    }
 }
 
 .textArea {
@@ -17,6 +21,10 @@
     border: 0;
     background-color: $color-accent;
     font-weight: 600;
+
+    @media screen and (max-width: $size-mobile) {
+        width: calc(100% - 20px);
+    }
 
     &::placeholder {
         font-family: $font-family-text;
@@ -41,6 +49,10 @@
     text-transform: uppercase;
     font-size: 16px;
     background-color: $color-accent;
+
+    @media screen and (max-width: $size-mobile) {
+        display: none;
+    }
 
     &:hover {
         cursor: pointer;

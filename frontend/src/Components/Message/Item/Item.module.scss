@@ -9,6 +9,10 @@
     flex-direction: column;
     overflow-wrap: anywhere;
     gap: 2px;
+
+    @media screen and (max-width: $size-mobile) {
+        width: 80%;
+    }
 }
 
 .myMessage {

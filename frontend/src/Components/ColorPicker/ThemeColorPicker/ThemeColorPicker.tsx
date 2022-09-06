@@ -22,7 +22,7 @@ export const ThemeColorPicker = () => {
     return (
         <div className={styles.wrapper}>
             <ReactSlider
-                value={cookies.theme}
+                value={parseInt(cookies.theme)}
                 min={0}
                 max={BACKGROUND_COLORS.length - 1}
                 className={styles.picker}

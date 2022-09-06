@@ -22,4 +22,6 @@ export enum Strings {
     ThemeIconDesc = "Theme selector",
 
     AddRoomButtonDesc = "Add room",
+
+    DrawingDummy = "This feature is not supported on mobile devices"
 }
