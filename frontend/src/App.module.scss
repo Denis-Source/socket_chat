@@ -1,7 +1,7 @@
 @import "src/Static/Styles/_globals.scss";
 
 .body {
-    //min-height: 100vh;
+    overflow: hidden;
 }
 
 .container {
@@ -9,13 +9,15 @@
     max-width: 1200px;
     margin: 0 auto;
     height: 100vh;
+    display: grid;
+    grid-template-rows: 150px 1fr;
 
     @media screen and (max-width: $size-limited) {
-        justify-content: center;
         max-width: 800px;
     }
     @media screen and (max-width: $size-mobile) {
-        padding: 10px;
+        padding: 0 10px;
+        grid-template-rows: 90px 1fr;
     }
 }
 
@@ -34,6 +36,8 @@
 }
 
 .leftTab {
+    display: flex;
+    flex-direction: column;
     @media screen and (max-width: $size-limited) {
         display: none;
     }

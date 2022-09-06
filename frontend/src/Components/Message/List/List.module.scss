@@ -1,3 +1,5 @@
+@import "src/Static/Styles/_globals.scss";
+
 .wrapper {
     margin: 15px 0;
 }
@@ -5,8 +7,12 @@
 .messages {
     display: flex;
     flex-direction: column;
-    height: 500px;
+    height: calc(100vh - 300px);
     width: 100%;
+
+    @media screen and (max-width: $size-mobile) {
+        height: calc(100vh - 230px);
+    }
 }
 
 .scrollButton {

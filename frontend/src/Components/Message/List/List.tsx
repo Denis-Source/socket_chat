@@ -38,6 +38,7 @@ const List = () => {
         <ScrollToBottom
             className={styles.wrapper}
             followButtonClassName={styles.scrollButton}
+            initialScrollBehavior={"auto"}
         >
             <div className={styles.messages}>
                 {messages.map((message) => (

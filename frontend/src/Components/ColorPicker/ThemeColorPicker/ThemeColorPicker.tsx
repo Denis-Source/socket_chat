@@ -19,10 +19,13 @@ export const ThemeColorPicker = () => {
 
     // Use dispatch to store the selected theme in the state
     const dispatch = useDispatch();
+
     return (
         <div className={styles.wrapper}>
             <ReactSlider
-                value={parseInt(cookies.theme)}
+                value={
+                    isNaN(parseInt(cookies.theme)) ? 0 : parseInt(cookies.theme)
+                }
                 min={0}
                 max={BACKGROUND_COLORS.length - 1}
                 className={styles.picker}

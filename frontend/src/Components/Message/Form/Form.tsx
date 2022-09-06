@@ -5,6 +5,8 @@ import styles from "./Form.module.scss";
 import { Strings } from "../../../strings";
 import { TypeStatements } from "../../../StatementsTypes/TypeStatements";
 import { MessageStatements } from "../../../StatementsTypes/MessageStatements";
+import BaseButton from "../../Buttons/BaseButton/BaseButton";
+import sendIcon from "../../../Static/Images/send.svg";
 
 const Form = () => {
     // Configure websocket connection
@@ -47,14 +49,10 @@ const Form = () => {
                 className={styles.textArea}
                 placeholder={Strings.FormMessagePlaceholder}
                 ref={textArea}
-                rows={5}
+                rows={1}
                 onKeyDown={(event) => onEnterPress(event)}
             />
-            <input
-                className={styles.submit}
-                value={Strings.FormSubmit}
-                type="submit"
-            />
+            <BaseButton img={sendIcon} imgDesc={"asd"} callback={sendMessage} />
         </form>
     );
 };

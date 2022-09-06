@@ -24,6 +24,7 @@ const CreateRoomButton = () => {
 
     return (
         <BaseButton
+            big={true}
             img={addIcon}
             imgDesc={Strings.AddRoomButtonDesc}
             callback={create}

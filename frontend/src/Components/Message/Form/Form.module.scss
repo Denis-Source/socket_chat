@@ -3,12 +3,8 @@
 .form {
     display: grid;
     gap: 15px;
-    grid-template-columns: 1fr 200px;
+    grid-template-columns: 1fr 40px;
     padding: 0 10px;
-
-    @media screen and (max-width: $size-mobile) {
-        display: block;
-    }
 }
 
 .textArea {

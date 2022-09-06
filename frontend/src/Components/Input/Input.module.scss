@@ -12,11 +12,14 @@
     color: $color-text;
     font-size: 16px;
     padding: 10px;
-    //width: 100%;
     border-radius: 5px;
     border: 0;
     background-color: $color-accent;
     font-weight: 600;
+
+    @media screen and (max-width: $size-mobile) {
+        width: calc(100vw - 60px);
+    }
 
     &::placeholder {
         font-family: $font-family-text;

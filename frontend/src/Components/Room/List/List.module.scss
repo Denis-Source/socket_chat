@@ -26,9 +26,14 @@
 
 .listWrapper {
     padding: 10px;
-    height: 500px;
+    height: calc(100vh - 300px);
     width: 100%;
     gap: 15px;
+
+    @media screen and (max-width: $size-mobile) {
+        height: calc(100vh - 182px);
+        padding: 20px;
+    }
 }
 
 .list {
