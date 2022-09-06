@@ -14,7 +14,10 @@ export const ThemeColorPicker = () => {
     // Function to handle theme changes
     const onChange = (value: number) => {
         dispatch(setTheme(value));
-        setCookie("theme", value, { path: "/" });
+        setCookie("theme", value, {
+            path: "/",
+            maxAge: 356 * 24 * 60 * 60
+        });
     };
 
     // Use dispatch to store the selected theme in the state
