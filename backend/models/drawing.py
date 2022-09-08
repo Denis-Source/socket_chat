@@ -1,4 +1,5 @@
 from logging import getLogger
+from typing import List
 
 from models.base_model import BaseModel
 from models.line import Line
@@ -17,10 +18,10 @@ class Drawing(BaseModel):
     TYPE = ModelTypes.DRAWING
     logger = getLogger(f"{TYPE} model")
 
-    def __init__(self):
-        super().__init__()
-        self.lines = {}
-        self.name = f"{self.TYPE}-{self.get_uuid()}"
+    def __init__(self, uuid=None):
+        super().__init__(uuid)
+        self.lines: List[Line] = []
+        self.name = f"{self.TYPE}-{self.uuid}"
 
     def __str__(self):
         return self.name
@@ -33,17 +34,7 @@ class Drawing(BaseModel):
         :return:        None
         """
         self.logger.debug(f"Adding {line} to {self}")
-        self.lines[line.get_uuid()] = line
-
-    def update_line(self, uuid: str, points: str):
-        """
-        Updates line points
-        :param uuid:        Line uuid
-        :param points:      new points
-        :return:
-        """
-        self.logger.debug(f"Adding points to {self}")
-        self.lines[uuid].points = points
+        self.lines.append(line)
 
     def reset(self):
         """
@@ -51,12 +42,12 @@ class Drawing(BaseModel):
         :return:
         """
         self.logger.debug(f"Resetting {self}")
-        self.lines = {}
+        self.lines = []
 
     def get_dict(self) -> dict:
         return {
             "type": self.TYPE,
-            "uuid": str(self.get_uuid()),
+            "uuid": self.uuid,
             "name": self.name,
-            "lines": [line.get_dict() for _, line in self.lines.items()]
+            "lines": [line.get_dict() for line in self.lines]
         }

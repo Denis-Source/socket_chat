@@ -46,18 +46,26 @@ class Room(BaseModel):
     TYPE = ModelTypes.ROOM
     logger = getLogger(TYPE)
 
-    def __init__(self, color: DefaultRoomColors = None):
-        super().__init__()
+    def __init__(self, uuid: str = None,
+                 name: str = None, color: str = None):
+        super().__init__(uuid)
 
-        self.name = f"{self.TYPE}-{self.get_uuid()}"
-        self.users = set()
+        self.name = name
+        if not self.name:
+            self.name = f"{self.TYPE}-{self.uuid}"
+        self.users = []
         self.messages = []
-        self.drawing = Drawing()
+        self.drawing = None
         self.logger.debug(f"Created room {self}")
+        self.sum = 0
 
-        self.color = color
         if not color:
             self.color = choice([e.value for e in DefaultRoomColors])
+        else:
+            self.color = Color(color).value
+
+    def set_drawing(self, drawing: Drawing):
+        self.drawing = drawing
 
     def __str__(self):
         return self.name
@@ -69,7 +77,7 @@ class Room(BaseModel):
         :param user:    User that entered the room
         :return:        None
         """
-        self.users.add(user)
+        self.users.append(user)
         self.logger.debug(f"Added {user} to {self}")
 
     def remove_user(self, user):
@@ -95,6 +103,7 @@ class Room(BaseModel):
         :return:            None
         """
         self.messages.append(message)
+        self.sum += 1
         self.logger.debug(f"Added {message} to {self}")
 
     def set_color(self, color: Color):
@@ -127,9 +136,9 @@ class Room(BaseModel):
 
         return {
             "type": self.TYPE,
-            "uuid": str(self.get_uuid()),
+            "uuid": str(self.uuid),
             "name": self.name,
             "color": self.color,
             "users": [user.get_dict() for user in self.users],
-            "sum": len(self.messages)
+            "sum": self.sum,
         }

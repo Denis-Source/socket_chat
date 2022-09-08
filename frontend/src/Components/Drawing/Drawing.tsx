@@ -105,13 +105,17 @@ const Drawing = () => {
         dispatch(resetLastLine());
     };
 
-    const renderedLines = lastLine
-        ? [...drawing.lines, lastLine]
-        : drawing.lines;
+    let renderedLines: LineModel[] = [];
+
+    if (drawing) {
+        renderedLines = lastLine
+            ? [...drawing.lines, lastLine]
+            : drawing.lines;
+    }
 
     return (
         <>
-            {drawing.lines ? (
+            {drawing ? (
                 <div className={styles.layout}>
                     <Stage
                         width={WIDTH}
@@ -195,7 +199,9 @@ const Drawing = () => {
                     </div>
                 </div>
             ) : (
-                <Spinner />
+                <div className={styles.spinnerWrapper}>
+                    <Spinner />
+                </div>
             )}
         </>
     );

@@ -22,7 +22,7 @@ class Color:
     Attributes:
         value:  color hexadecimal value
     """
-    COLOR_RE = r"^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+    COLOR_RE = r"^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3}|[A-Fa-f0-9]{8})$"
     TYPE = ModelTypes.COLOR
 
     logger = getLogger(TYPE)

@@ -15,12 +15,13 @@ from models.user import User
 from statements.general_statements import GeneralStatements
 from statements.statement_types import StatementTypes
 from statements.user_statements import UserResultStatements, UserCallStatements
-from storage.base_storage import NoRoomSpecifiedException
+from storage.alchemy_storage import AlchemyStorage
+from storage.exceptions import NotSpecifiedException
 from .utils import prepare_statement
 
 from statements.drawing_statements import \
     DrawingErrorStatements, DrawingCallStatements, DrawingResultStatements
-from statements.message_statements import\
+from statements.message_statements import \
     MessageResultStatements, MessageErrorStatements, MessageCallStatements
 from statements.room_statements import \
     RoomCallStatements, RoomResultStatements, RoomErrorStatements
@@ -31,7 +32,6 @@ class Server:
     Main server connection handler class
 
     Attributes:
-        connected_users:    list of connected users
         storage:            storage instance
         logger:             ...logger
         call_methods:       dictionary of mapped methods to call statements
@@ -39,10 +39,10 @@ class Server:
     NAME = "server"
 
     def __init__(self):
-        self.storage = Config.STORAGE_CLS()
-
-        self.connected_users = dict()
+        self.storage: AlchemyStorage = Config.STORAGE_CLS()
         self.logger = getLogger(self.NAME)
+
+        self.connections = {}
 
         self.call_methods = {
             RoomCallStatements.CREATE_ROOM: self.create_room,
@@ -74,17 +74,19 @@ class Server:
         :param connection:  websocket connection
         :return:            None
         """
-        user = User(connection)
+        user = await self.storage.create_user()
+
+        self.connections[user.uuid] = connection
         self.logger.info(f"{user} connected")
-        self.connected_users[user.get_uuid()] = user
         try:
             await self.handle_user(user)
         except ConnectionClosedError:
             self.logger.info(f"{user} closed the connection")
         finally:
             self.logger.info(f"{user} disconnected")
-            user.leave_room()
-            self.connected_users.pop(user.get_uuid())
+            self.connections.pop(user.uuid)
+            room = await self.storage.leave_room(user)
+            await self.broadcast_room(room, RoomResultStatements.ROOM_CHANGED)
 
     async def handle_user(self, user: User):
         """
@@ -92,11 +94,12 @@ class Server:
 
         Sends a user instance and room list
         If the message is not parsable, sends an error message
-        :param user:    User to serve to
-        :return:        None
+        :param connection:      Websocket connection
+        :param user:            User to serve to
+        :return:                None
         """
         self.logger.info("Handling user request")
-        await user.connection.send(prepare_statement(
+        await self.connections.get(user.uuid).send(prepare_statement(
             type=StatementTypes.RESULT,
             message=UserResultStatements.USER_CREATED,
             object=user.get_dict()
@@ -105,7 +108,7 @@ class Server:
 
         # Websocket connection is based on a generator,
         # so the `for` loop is used
-        async for raw_message in user.connection:
+        async for raw_message in self.connections.get(user.uuid):
             try:
                 self.logger.debug(
                     f"Received message: {raw_message.replace('/n', '')}")
@@ -115,6 +118,7 @@ class Server:
                 method_type = payload["message"]
                 method = self.call_methods[method_type]
 
+                self.logger.info(f"handling call {method_type}")
                 await method(user, payload)
 
             # If the message is not parsable or does not
@@ -124,10 +128,11 @@ class Server:
             # as we wrap them all with this except block
             except (JSONDecodeError, KeyError):
                 self.logger.info(f"Bad data from {user}")
-                await user.connection.send(prepare_statement(
-                    type=StatementTypes.RESULT,
-                    message=GeneralStatements.BAD_DATA
-                ))
+                await self.connections.get(user.uuid).send(
+                    prepare_statement(
+                        type=StatementTypes.RESULT,
+                        message=GeneralStatements.BAD_DATA
+                    ))
 
     # room methods
     async def create_room(self, user: User, _: dict):
@@ -137,8 +142,7 @@ class Server:
         :param _:       Dummy param to save a signature
         :return:        None
         """
-        room = Room()
-        self.storage.create_room(room)
+        room = await self.storage.create_room()
         self.logger.info(f"Created room: {room} for {user}")
         await self.broadcast_room(room, RoomResultStatements.ROOM_CREATED)
 
@@ -150,13 +154,14 @@ class Server:
         :param _:       Dummy param to save a signature
         :return:        None
         """
-        rooms = self.storage.list_rooms()
+        rooms = await self.storage.list_rooms()
         self.logger.info(f"Retrieved rooms list for {user}")
-        await user.connection.send(prepare_statement(
-            type=StatementTypes.RESULT,
-            message=RoomResultStatements.ROOMS_LISTED,
-            list=[room.get_dict() for room in rooms]
-        ))
+        await self.connections.get(user.uuid).send(
+            prepare_statement(
+                type=StatementTypes.RESULT,
+                message=RoomResultStatements.ROOMS_LISTED,
+                list=[room.get_dict() for room in rooms]
+            ))
 
     async def enter_room(self, user: User, payload: dict):
         """
@@ -169,22 +174,19 @@ class Server:
         """
         try:
             room_uuid = payload["uuid"]
-            old_room = user.room
-            room: Room = self.storage.get_room(room_uuid)
-            self.logger.info(f"Selected {room} for {user}")
-            user.set_room(room)
-            room.add_user(user)
+            room = await self.storage.get_room(room_uuid)
+            old_room, room = await self.storage.enter_room(room, user)
 
-            history = [message.get_dict() for message in room.messages]
+            history = await self.storage.list_messages(room)
 
-            await user.connection.send(prepare_statement(
+            await self.connections.get(user.uuid).send(prepare_statement(
                 type=StatementTypes.RESULT,
                 message=RoomResultStatements.ROOM_ENTERED
             ))
-            await user.connection.send(prepare_statement(
+            await self.connections.get(user.uuid).send(prepare_statement(
                 type=StatementTypes.RESULT,
                 message=MessageResultStatements.MESSAGES_LISTED,
-                list=history
+                list=[message.get_dict() for message in history]
             ))
             await self.get_drawing(user, {})
 
@@ -194,9 +196,9 @@ class Server:
             await self.broadcast_room(
                 room, RoomResultStatements.ROOM_CHANGED)
 
-        except NoRoomSpecifiedException:
+        except NotSpecifiedException:
             self.logger.info(f"No room found for {user}")
-            await user.connection.send(prepare_statement(
+            await self.connections.get(user.uuid).send(prepare_statement(
                 type=StatementTypes.ERROR,
                 message=RoomErrorStatements.NO_SPECIFIED_ROOM
             ))
@@ -209,19 +211,20 @@ class Server:
         :param _:       Dummy param to save the signature
         :return:        None
         """
-        if user.room:
-            room = user.room
-            self.logger.info(f"{user} left {user.room}")
-            user.leave_room()
 
-            await user.connection.send(prepare_statement(
+        room = await self.storage.leave_room(user)
+
+        if room:
+            self.logger.info(f"{user} left {user.room}")
+
+            await self.connections.get(user.uuid).send(prepare_statement(
                 type=StatementTypes.RESULT,
                 message=RoomResultStatements.ROOM_LEFT
             ))
             await self.broadcast_room(room, RoomResultStatements.ROOM_CHANGED)
         else:
             self.logger.info(f"No room found for {user}")
-            await user.connection.send(prepare_statement(
+            await self.connections.get(user.uuid).send(prepare_statement(
                 type=StatementTypes.ERROR,
                 message=RoomErrorStatements.NO_SPECIFIED_ROOM
             ))
@@ -237,24 +240,24 @@ class Server:
         """
         try:
             room_uuid = payload["uuid"]
-            room: Room = self.storage.get_room(room_uuid)
+            room = await self.storage.get_room(room_uuid)
             self.logger.info(f"Trying to delete room {room}")
             if not room.users:
-                self.storage.delete_room(room_uuid)
+                await self.storage.delete_room(room)
                 self.logger.info(f"Room {room} deleted")
                 await self.broadcast_room(
                     room, RoomResultStatements.ROOM_DELETED)
             else:
                 self.logger.info(
                     f"Room {room} is not empty ({len(room.users)}) users")
-                await user.connection.send(prepare_statement(
+                await self.connections.get(user.uuid).send(prepare_statement(
                     type=StatementTypes.ERROR,
                     message=RoomErrorStatements.NOT_EMPTY_ROOM
                 ))
 
-        except NoRoomSpecifiedException:
+        except NotSpecifiedException:
             self.logger.info(f"No room found for {user}")
-            await user.connection.send([prepare_statement(
+            await self.connections.get(user.uuid).send([prepare_statement(
                 type=StatementTypes.ERROR,
                 message=RoomErrorStatements.NO_SPECIFIED_ROOM
             )])
@@ -268,15 +271,14 @@ class Server:
         """
         try:
             room_uuid = payload["uuid"]
-            room: Room = self.storage.get_room(room_uuid)
             room_name = payload["name"]
-
+            room = await self.storage.get_room(room_uuid)
+            room = await self.storage.change_room(name=room_name, room=room)
             self.logger.info(f"Changing name for {room} to {room_name}")
-            room.set_name(room_name)
             await self.broadcast_room(room, RoomResultStatements.ROOM_CHANGED)
-        except NoRoomSpecifiedException:
+        except NotSpecifiedException:
             self.logger.info(f"No room found for {user}")
-            await user.connection.send(prepare_statement(
+            await self.connections.get(user.uuid).send(prepare_statement(
                 type=StatementTypes.ERROR,
                 message=RoomErrorStatements.NO_SPECIFIED_ROOM
             ))
@@ -292,21 +294,21 @@ class Server:
         """
         try:
             room_uuid = payload["uuid"]
-            color = Color(payload["color"])
-            room: Room = self.storage.get_room(room_uuid)
-
-            self.logger.info(f"Changing color of {room.name}")
-            room.set_color(color)
+            color = payload["color"]
+            room = await self.storage.get_room(room_uuid)
+            self.logger.info(f"Changing color of {room}")
+            room = await self.storage.change_room(room, color=color)
             await self.broadcast_room(room, RoomResultStatements.ROOM_CHANGED)
-        except NoRoomSpecifiedException:
+
+        except NotSpecifiedException:
             self.logger.info(f"No room found for {user}")
-            await user.connection.send(prepare_statement(
+            await self.connections.get(user.uuid).send(prepare_statement(
                 type=StatementTypes.ERROR,
                 message=RoomErrorStatements.NO_SPECIFIED_ROOM
             ))
         except ColorException:
             self.logger.info(f"Not valid color from {user}")
-            await user.connection.send(prepare_statement(
+            await self.connections.get(user.uuid).send(prepare_statement(
                 type=StatementTypes.ERROR,
                 message=RoomErrorStatements.NOT_VALID_COLOR
             ))
@@ -320,8 +322,8 @@ class Server:
         :param message:         Result message related to a change
         :return:                None
         """
-        for _, user in self.connected_users.items():
-            await user.connection.send(prepare_statement(
+        for _, connection in self.connections.items():
+            await connection.send(prepare_statement(
                 type=StatementTypes.RESULT,
                 message=message,
                 object=changed_room.get_dict()
@@ -343,19 +345,19 @@ class Server:
             points = payload["points"]
             color = payload["color"]
             tool = payload["tool"]
-            drawing = user.room.drawing
-            line = drawing.lines.get(line_uuid)
-            self.logger.info(f"Updating {drawing} from {user}")
 
-            if line:
-                drawing.update_line(line_uuid, points)
-            else:
-                line = Line(color, tool, points, line_uuid)
-                drawing.add_line(line)
+            line = Line(
+                tool=tool,
+                color=color,
+                points=points,
+                uuid=line_uuid
+            )
+            await self.storage.change_drawing(user.room, line)
+            self.logger.info(f"Updating {user.room.drawing} from {user}")
 
             await self.broadcast_drawing_line(line, user.room)
         else:
-            await user.connection.send(prepare_statement(
+            await self.connections.get(user.uuid).send(prepare_statement(
                 type=StatementTypes.ERROR,
                 message=DrawingErrorStatements.NO_SELECTED_ROOM
             ))
@@ -370,13 +372,16 @@ class Server:
         """
         if user.room:
             self.logger.info(f"Sending drawing  to {user}")
-            await user.connection.send(prepare_statement(
+
+            drawing = await self.storage.get_drawing(user.room)
+
+            await self.connections.get(user.uuid).send(prepare_statement(
                 type=StatementTypes.RESULT,
                 message=DrawingResultStatements.DRAWING_GOT,
-                object=user.room.drawing.get_dict()
+                object=drawing.get_dict()
             ))
         else:
-            await user.connection.send(prepare_statement(
+            await self.connections.get(user.uuid).send(prepare_statement(
                 type=StatementTypes.ERROR,
                 message=DrawingErrorStatements.NO_SELECTED_ROOM
             ))
@@ -390,15 +395,23 @@ class Server:
         :return:        None
         """
         if user.room:
+            await self.storage.reset_drawing(user.room)
+
+            room = await self.storage.get_room(user.room.uuid)
+            drawing = await self.storage.get_drawing(user.room)
             self.logger.info(f"{user} resetting {user.room.drawing}")
-            user.room.drawing.reset()
 
-            for user in user.room.users:
-                await self.get_drawing(user, {})
-
+            for user in room.users:
+                connection = self.connections.get(user.uuid)
+                if connection:
+                    await connection.send(prepare_statement(
+                        type=StatementTypes.RESULT,
+                        message=DrawingResultStatements.DRAWING_GOT,
+                        object=drawing.get_dict()
+                    ))
         else:
             self.logger.info(f"No room found for {user}")
-            await user.connection.send(prepare_statement(
+            await self.connections.get(user.uuid).send(prepare_statement(
                 type=StatementTypes.ERROR,
                 message=DrawingErrorStatements.NO_SELECTED_ROOM
             ))
@@ -412,16 +425,21 @@ class Server:
         :return:        None
         """
         self.logger.info(f"Broadcasting {line} line in {room}")
+
+        room = await self.storage.get_room(room.uuid)
         for user in room.users:
-            await user.connection.send(prepare_statement(
-                type=StatementTypes.RESULT,
-                message=DrawingResultStatements.DRAW_LINE_CHANGED,
-                object=line.get_dict()
-            ))
+            connection = self.connections.get(user.uuid)
+            if connection:
+                await self.connections.get(user.uuid).send(prepare_statement(
+                    type=StatementTypes.RESULT,
+                    message=DrawingResultStatements.DRAW_LINE_CHANGED,
+                    object=line.get_dict()
+                ))
 
     # user methods
     async def change_user_name(self, user: User, payload: dict):
         """
+        Changes user name to the specified one
         Changes user name to the specified one
         Notifies all of the users if the user is in a room
 
@@ -433,7 +451,7 @@ class Server:
         self.logger.info(f"Changed {user} name to {name}")
         user.set_name(name)
 
-        await user.connection.send(prepare_statement(
+        await self.connections.get(user.uuid).send(prepare_statement(
             type=StatementTypes.RESULT,
             message=UserResultStatements.USER_CHANGED,
             object=user.get_dict()
@@ -454,14 +472,15 @@ class Server:
         """
         body = payload["body"]
         if user.room:
-            message = Message(body, user, user.room)
+            room = await self.storage.get_room(user.room.uuid)
+            message = await self.storage.create_message(body=body, room=room,
+                                                        user=user)
             self.logger.info(f"Creating {message} ({body[:10]}) from {user}")
-            user.room.add_message(message)
             await self.broadcast_room(
                 user.room, RoomResultStatements.ROOM_CHANGED)
             await self.broadcast_message(message)
         else:
-            await user.connection.send(prepare_statement(
+            await self.connections.get(user.uuid).send(prepare_statement(
                 type=StatementTypes.ERROR,
                 message=MessageErrorStatements.NO_SELECTED_ROOM
             ))
@@ -475,11 +494,13 @@ class Server:
         """
         self.logger.info(f"Broadcasting {message} in room {message.room}")
         for user in message.room.users:
-            await user.connection.send(prepare_statement(
-                type=StatementTypes.RESULT,
-                message=MessageResultStatements.MESSAGE_CREATED,
-                object=message.get_dict()
-            ))
+            connection = self.connections.get(user.uuid)
+            if connection:
+                await connection.send(prepare_statement(
+                    type=StatementTypes.RESULT,
+                    message=MessageResultStatements.MESSAGE_CREATED,
+                    object=message.get_dict()
+                ))
 
     async def list_messages(self, user: User, _: dict):
         """
@@ -492,13 +513,13 @@ class Server:
         if user.room:
             self.logger.info(
                 f"Sending message list({len(user.name)}) to {user}")
-            await user.connection.send(prepare_statement(
+            await self.connections.get(user.uuid).send(prepare_statement(
                 type=StatementTypes.RESULT,
                 message=MessageResultStatements.MESSAGES_LISTED,
                 list=[message.get_dict() for message in user.room.messages]
             ))
         else:
-            await user.connection.send(prepare_statement(
+            await self.connections.get(user.uuid).send(prepare_statement(
                 type=StatementTypes.ERROR,
                 message=MessageErrorStatements.NO_SELECTED_ROOM
             ))
@@ -513,6 +534,7 @@ class Server:
         """
         loop = asyncio.get_event_loop()
         try:
+            loop.run_until_complete(self.storage.init())
             socket_server = websockets.serve(
                 self.handle_connection, Config.IP, Config.PORT)
             self.logger.info("starting server")

@@ -7,8 +7,8 @@ import store from "./store";
 import { addLog } from "./Reducers/Log";
 import { DrawingStatements } from "./StatementsTypes/DrawingStatements";
 
-// export const WSS_FEED_URL = "ws://localhost:9000";
-export const WSS_FEED_URL = "wss://chat.zoloto.cx.ua/api";
+export const WSS_FEED_URL = "ws://localhost:9000";
+// export const WSS_FEED_URL = "wss://chat.zoloto.cx.ua/api";
 
 export interface StatementParts {
     type: TypeStatements;

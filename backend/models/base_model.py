@@ -9,15 +9,16 @@ class BaseModel(ABC):
 
     Implements date and uuid generation
     """
-    def __init__(self):
-        self._created = datetime.now()
-        self._uuid = uuid4()
+    def __init__(self, uuid=None, created=None):
+        if not created:
+            self.created = datetime.now().isoformat()
+        else:
+            self.created = created
 
-    def get_iso_created(self) -> str:
-        return self._created.isoformat()
-
-    def get_uuid(self) -> str:
-        return str(self._uuid)
+        if uuid:
+            self.uuid = uuid
+        else:
+            self.uuid = str(uuid4())
 
     @abstractmethod
     def get_dict(self) -> dict:

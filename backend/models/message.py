@@ -19,12 +19,12 @@ class Message(BaseModel):
     TYPE = ModelTypes.MESSAGE
     logger = getLogger(f"{TYPE}-model")
 
-    def __init__(self, body: str, user, room):
-        super().__init__()
+    def __init__(self, body: str, user, room, uuid=None):
+        super().__init__(uuid=uuid)
         self.body = body
         self.user = user
         self.room = room
-        self.name = f"{self.TYPE}-{self.get_uuid()}"
+        self.name = f"{self.TYPE}-{self.uuid}"
 
         self.logger.debug(f"created {self}")
 
@@ -36,9 +36,9 @@ class Message(BaseModel):
 
         return {
             "type": self.TYPE,
-            "uuid": str(self.get_uuid()),
+            "uuid": self.uuid,
             "body": self.body,
-            "created": self.get_iso_created(),
+            "created": self.created,
             "user": self.user.get_dict(),
             "room": self.room.get_dict(),
             "name": self.name

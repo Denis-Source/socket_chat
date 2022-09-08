@@ -13,16 +13,16 @@ class User(BaseModel):
     Inherits from model
     Attributes:
         name:           user name
-        connection:     websocket connection
         room:           entered room
     """
     TYPE = ModelTypes.USER
     logger = getLogger(TYPE)
 
-    def __init__(self, connection: WebSocketServerProtocol):
-        super().__init__()
-        self.name = f"{self.TYPE}-{self.get_uuid()}"
-        self.connection = connection
+    def __init__(self, uuid=None, name=None):
+        super().__init__(uuid)
+        self.name = name
+        if not self.name:
+            self.name = f"{self.TYPE}-{self.uuid}"
         self.room = None
         self.logger.debug(f"created {self}")
 
@@ -36,11 +36,7 @@ class User(BaseModel):
         :param room:    room to enter
         :return:        None
         """
-
-        if self.room:
-            self.room.remove_user(self)
         self.room = room
-        room.add_user(self)
         self.logger.debug(f"Setting room {room} from {self}")
 
     def set_name(self, name: str):
@@ -62,15 +58,13 @@ class User(BaseModel):
         """
 
         self.logger.debug(f"leaving room {self.room}")
-        if self.room:
-            self.room.remove_user(self)
-            self.room = None
+        self.room = None
 
     def get_dict(self):
         self.logger.debug(f"crated dict from {self}")
 
         return {
             "type": self.TYPE,
-            "uuid": str(self.get_uuid()),
+            "uuid": str(self.uuid),
             "name": self.name,
         }

@@ -31,18 +31,18 @@ class Line(BaseModel):
 
     def __init__(
             self,
-            color: Color,
+            color: str,
             tool: Tools,
             points: str,
             uuid: str = None
     ):
         super().__init__()
         self.tool = tool
-        self.color = color
+        self.color = Color(color).value
         self.points = points
-        self.name = f"{self.TYPE}-{self.get_uuid()}"
+        self.name = f"{self.TYPE}-{self.uuid}"
         if uuid:
-            self._uuid = uuid
+            self.uuid = uuid
 
     def __str__(self):
         return self.name
@@ -50,7 +50,7 @@ class Line(BaseModel):
     def get_dict(self) -> dict:
         return {
             "type": self.TYPE,
-            "uuid": str(self.get_uuid()),
+            "uuid": self.uuid,
             "name": self.name,
             "points": self.points,
             "tool": self.tool,

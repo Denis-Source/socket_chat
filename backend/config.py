@@ -1,6 +1,7 @@
-from logging import DEBUG
+from logging import DEBUG, INFO
 
 from storage.memory_storage import MemoryStorage
+from storage.alchemy_storage import AlchemyStorage
 
 
 class Config:
@@ -9,7 +10,7 @@ class Config:
 
     STORAGE_CLS = MemoryStorage
 
-    MESSAGE_HISTORY_LIMIT = 100
+    # ALCHEMY_ENGINE = "sqlite:///test.db"
 
-    LOGGING_LEVEL = DEBUG
+    LOGGING_LEVEL = INFO
     LOGGING_FORMAT = "%(asctime)s\t%(levelname)-7s\t%(name)-8s\t%(message)s"
