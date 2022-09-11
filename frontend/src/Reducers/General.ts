@@ -20,13 +20,13 @@ interface InitialState {
 
 export const BACKGROUND_COLORS = [
     ["#bdc3c7", "#2c3e50"],
-    ["#E7E9BB", "#403B4A"],
-    ["#DBD5A4", "#649173"],
+    ["#e7e9bb", "#403b4a"],
+    ["#dbd5a4", "#649173"],
     ["#f29492", "#65606b"],
     ["#ef8e38", "#108dc7"],
     ["#f8ad70", "#ef6b50"],
-    ["#EC6EAD", "#3494E6"],
-    ["#159957", "#155799"],
+    ["#ec6ead", "#3494e6"],
+    ["#59c173", "#5d26c1"],
 ];
 
 const initialState: InitialState = {

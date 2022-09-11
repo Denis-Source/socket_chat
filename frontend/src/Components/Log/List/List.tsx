@@ -4,6 +4,7 @@ import { LogModel } from "../../../Models/Log.model";
 import Item from "../Item/Item";
 import styles from "./List.module.scss";
 import ScrollToBottom from "react-scroll-to-bottom";
+import { ViewportList } from "react-viewport-list";
 
 const List = () => {
     // Get log list from the state
@@ -16,9 +17,9 @@ const List = () => {
             className={styles.listWrapper}
         >
             <div className={styles.list}>
-                {logs.map((log, index) => (
-                    <Item log={log} key={index} />
-                ))}
+                <ViewportList items={logs}>
+                    {(item, index) => <Item log={item} key={index} />}
+                </ViewportList>
             </div>
         </ScrollToBottom>
     );

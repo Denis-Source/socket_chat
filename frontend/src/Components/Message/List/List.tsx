@@ -9,6 +9,7 @@ import ScrollToBottom from "react-scroll-to-bottom";
 import useSound from "use-sound";
 import { setNew } from "../../../Reducers/Message";
 import Spinner from "../../Spinner/Spinner";
+import { ViewportList } from "react-viewport-list";
 
 const notificationOther = require("../../../Static/Sound/messageOther.mp3");
 const notificationMine = require("../../../Static/Sound/messageMine.mp3");
@@ -44,13 +45,25 @@ const List = () => {
                     followButtonClassName={styles.scrollButton}
                 >
                     <div className={styles.messages}>
-                        {messages.map((message) => (
-                            <Item
-                                message={message}
-                                isMine={message.user.uuid === user.uuid}
-                                key={message.uuid}
-                            />
-                        ))}
+                        <ViewportList items={messages}>
+                            {(item) => (
+                                <div key={item.uuid} className="item">
+                                    <Item
+                                        message={item}
+                                        isMine={item.user.uuid === user.uuid}
+                                    />
+                                </div>
+                            )}
+                        </ViewportList>
+                        <div className={styles.messages}>
+                            {messages.map((message) => (
+                                <Item
+                                    message={message}
+                                    isMine={message.user.uuid === user.uuid}
+                                    key={message.uuid}
+                                />
+                            ))}
+                        </div>
                     </div>
                 </ScrollToBottom>
             ) : (

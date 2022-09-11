@@ -16,8 +16,6 @@ const initialState: InitialState = {
     lastError: "",
 };
 
-const LOG_LIMIT = 100;
-
 export const logSlice = createSlice({
     name: "log",
     initialState: initialState,
@@ -29,25 +27,19 @@ export const logSlice = createSlice({
             switch (action.payload.type) {
                 case TypeStatements.Result:
                     if (action.payload.description !== state.lastResult) {
-                        state.list = [...state.list, action.payload].slice(
-                            -LOG_LIMIT
-                        );
+                        state.list = [...state.list, action.payload];
                         state.lastResult = action.payload.description;
                     }
                     break;
                 case TypeStatements.Error:
                     if (action.payload.description !== state.lastError) {
-                        state.list = [...state.list, action.payload].slice(
-                            -LOG_LIMIT
-                        );
+                        state.list = [...state.list, action.payload];
                         state.lastError = action.payload.description;
                     }
                     break;
                 case TypeStatements.Call:
                     if (action.payload.description !== state.lastCall) {
-                        state.list = [...state.list, action.payload].slice(
-                            -LOG_LIMIT
-                        );
+                        state.list = [...state.list, action.payload];
                         state.lastCall = action.payload.description;
                     }
                     break;

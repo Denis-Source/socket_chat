@@ -1,8 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { MessageModel } from "../Models/Message.model";
 
-const MESSAGE_LIMIT = 200;
-
 interface InitialState {
     list: MessageModel[] | null;
     isNew: boolean;
@@ -24,15 +22,13 @@ export const messageSlice = createSlice({
         addMessage: (state, action: PayloadAction<MessageModel>) => {
             if (state.list) {
                 // Add message to the list, cut if too many
-                state.list = [...state.list, action.payload].slice(
-                    -MESSAGE_LIMIT
-                );
+                state.list = [...state.list, action.payload];
                 state.isNew = true;
             }
         },
         bulkAddMessage: (state, action: PayloadAction<MessageModel[]>) => {
             // Add messages to the list in bulk, cuts if too many
-            state.list = [...action.payload].slice(-MESSAGE_LIMIT);
+            state.list = [...action.payload];
         },
         updateMessage: (state, action: PayloadAction<MessageModel>) => {
             // Update the specified message in the list by uuid
