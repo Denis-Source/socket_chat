@@ -1,11 +1,10 @@
-import { UserModel } from "./User.model";
-import { RoomModel } from "./Room.model";
+import {UserModel} from "./User.model";
 
 export interface MessageModel {
     uuid: string;
     body: string;
     created: string;
     user: UserModel;
-    room: RoomModel;
+    room_uuid: string;
     name: string;
 }

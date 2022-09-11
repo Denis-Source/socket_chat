@@ -1,7 +1,5 @@
-import { RoomModel } from "./Room.model";
-
 export interface UserModel {
     name: string;
-    room?: RoomModel;
+    room_uuid?: string;
     uuid: string;
 }

@@ -12,5 +12,6 @@ export interface LineModel {
 
 export interface DrawingModel {
     uuid: string;
+    name: string;
     lines: LineModel[];
 }
