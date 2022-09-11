@@ -1,157 +1,111 @@
 from logging import getLogger
-from typing import List, Tuple
 
-from models.color import Color
-from models.drawing import Drawing
-from models.line import Line
-from models.message import Message
-from models.room import Room
-from models.user import User
-from .base_storage import BaseStorage
-from .exceptions import NotSpecifiedException
+import models
+from models.model_types import ModelTypes
+from storage.base_storage import BaseStorage
+from storage.exceptions import NotFoundException
 
 
 class MemoryStorage(BaseStorage):
-    NAME = "mem_stor"
-    rooms = {}
-    users = {}
+    NAME = "mem_storage"
     logger = getLogger(NAME)
 
-    async def init(self):
-        pass
+    _users = {}
+    _rooms = {}
+    _messages = {}
+    _drawings = {}
+    _lines = {}
 
-    async def create_user(self) -> User:
-        user = User()
-        self.logger.debug(f"creating {User.TYPE} {user}")
-        self.users[user.uuid] = user
-        return user
+    def __str__(self):
+        return self.NAME
 
-    async def get_user(self, uuid) -> User:
+    async def _get_user(self, uuid: str) -> "models.user.User":
+        self.logger.debug(f"getting {ModelTypes.USER} from {self}")
         try:
-            self.logger.debug(f"getting {User.TYPE}")
-            user = self.users[uuid]
+            user = self._users[uuid]
+            self.logger.debug(f"got {ModelTypes.USER} {user} from {self}")
             return user
-        except ValueError:
-            raise NotSpecifiedException(uuid, User.TYPE)
-
-    async def delete_user(self, user: User):
-        self.logger.debug(f"deleting {User.TYPE} {user}")
-        try:
-            self.users.pop(user.uuid)
         except KeyError:
-            raise NotSpecifiedException(user.uuid, User.TYPE)
+            self.logger.debug(f"{ModelTypes.USER} ({uuid}) is not in {self}")
+            raise NotFoundException(uuid, ModelTypes.USER)
 
-    async def change_user(self, user: User, name: str = None):
+    async def _get_room(self, uuid: str) -> "models.room.Room":
+        self.logger.debug(f"getting {ModelTypes.ROOM} from {self}")
         try:
-            user = self.users[user.uuid]
-            if name:
-                user.set_name(name)
-        except ValueError:
-            raise NotSpecifiedException(user.uuid, User.TYPE)
-
-    async def list_users(self) -> List[User]:
-        self.logger.debug("listing users")
-        return [user for _, user in self.users.items()]
-
-    async def get_room(self, uuid: str) -> Room:
-        self.logger.debug(f"searching {Room.TYPE} with {uuid}")
-        try:
-            return self.rooms[uuid]
-        except ValueError:
-            self.logger.debug(f"{Room.TYPE} with {uuid} not found")
-            raise NotSpecifiedException(uuid, Room.TYPE)
-
-    async def enter_room(self, room: Room, user: User) -> Tuple[Room, Room]:
-        self.logger.debug(f"adding {user} to {room}")
-        try:
-            room = self.rooms[room.uuid]
-            user = self.users[user.uuid]
-
-            old_room = user.room
-            if old_room:
-                old_room.users.remove(user)
-            user.set_room(room)
-            room.add_user(user)
-
-            return old_room, room
-
-        except ValueError:
-            raise NotSpecifiedException(room.uuid, Room.TYPE)
-
-    async def leave_room(self, user: User) -> Room:
-        user = self.users[user.uuid]
-        self.logger.debug(f"removing {user}")
-        room = user.room
-        room.remove_user(user)
-        user.leave_room()
-        return room
-
-    async def list_rooms(self):
-        self.logger.debug(f"listing {Room.TYPE}")
-        return [room for _, room in self.rooms.items()]
-
-    async def delete_room(self, room: Room):
-        try:
-            room = self.rooms[room.uuid]
-            self.logger.debug(f"deleting {room}")
-            self.rooms.pop(room.uuid)
-        except KeyError:
-            raise NotSpecifiedException(room.uuid, Room.TYPE)
-
-    async def create_room(self) -> Room:
-        room = Room()
-        room.set_drawing(Drawing())
-        self.logger.debug(f"creating {Room.TYPE} {room}")
-        self.rooms[room.uuid] = room
-        return room
-
-    async def change_room(self, room: Room, color: str = None, name: str = None) -> Room:
-        try:
-            room = self.rooms[room.uuid]
-            if color:
-                self.logger.debug(f"setting {Color.TYPE} {color} for {room}")
-                room.set_color(Color(color))
-            if name:
-                self.logger.debug(f"setting name for {room}")
-                room.set_name(name)
+            room = self._rooms[uuid]
+            self.logger.debug(f"got {ModelTypes.ROOM} {room} from {self}")
             return room
         except KeyError:
-            raise NotSpecifiedException(room.uuid, Room.TYPE)
+            self.logger.debug(f"{ModelTypes.ROOM} ({uuid}) is not in {self}")
+            raise NotFoundException(uuid, ModelTypes.ROOM)
 
-    async def get_drawing(self, room) -> Drawing:
+    async def _get_message(self, uuid: str) -> "models.message.Message":
+        self.logger.debug(f"getting {ModelTypes.MESSAGE} from {self}")
         try:
-            self.logger.debug(f"getting {Drawing.TYPE} from {room}")
-            return room.drawing
-        except KeyError:
-            raise NotSpecifiedException(room.uuid, Room.TYPE)
-
-    async def reset_drawing(self, room: Room):
-        try:
-            self.logger.debug(f"resetting {Drawing.TYPE} from {room}")
-            room = self.rooms[room.uuid]
-            room.drawing.reset()
-        except KeyError:
-            raise NotSpecifiedException(room.uuid, Room.TYPE)
-
-    async def change_drawing(self, room: Room, line: Line) -> Drawing:
-        self.logger.debug(f"changing {Drawing.TYPE}")
-        room.drawing.add_line(line)
-        return room.drawing
-
-    async def create_message(self, body: str, room: Room, user: User) -> Message:
-        try:
-            self.logger.debug(f"Creating {Message.TYPE} in {room}")
-            room = self.rooms[room.uuid]
-            message = Message(body, user, room)
-            room.add_message(message)
+            message = self._messages[uuid]
+            self.logger.debug(f"got {ModelTypes.MESSAGE} {message} from {self}")
             return message
         except KeyError:
-            raise NotSpecifiedException(room.uuid, Room.TYPE)
+            self.logger.debug(f"{ModelTypes.MESSAGE} ({uuid}) is not in {self}")
+            raise NotFoundException(uuid, ModelTypes.MESSAGE)
 
-    async def list_messages(self, room: Room) -> List[Message]:
+    async def _get_drawing(self, uuid: str) -> "models.drawing.Drawing":
+        self.logger.debug(f"getting {ModelTypes.DRAWING} from {self}")
         try:
-            self.logger.debug(f"Creating {Message.TYPE} in {room}")
-            room = self.rooms[room.uuid]
-            return room.messages
+            drawing = self._drawings[uuid]
+            self.logger.debug(f"got {ModelTypes.DRAWING} {drawing} from {self}")
+            return drawing
         except KeyError:
-            raise NotSpecifiedException(room.uuid, Room.TYPE)
+            self.logger.debug(f"{ModelTypes.DRAWING} ({uuid}) is not in {self}")
+            raise NotFoundException(uuid, ModelTypes.DRAWING)
+
+    async def _list_rooms(self):
+        self.logger.debug(f"listing {ModelTypes.ROOM}s in {self}")
+        rooms = [room for _, room in self._rooms.items()]
+        self.logger.debug(f"listed {ModelTypes.ROOM}s" in {self})
+        return rooms
+
+    async def _put_user(self, user: "models.user.User"):
+        self.logger.debug(f"putting {ModelTypes.USER} {user} in {self}")
+        self._users[user.uuid] = user
+        self.logger.debug(f"{ModelTypes.USER} {user} put in {self}")
+
+    async def _put_room(self, room: "models.room.Room"):
+        self.logger.debug(f"putting {ModelTypes.ROOM} {room} in {self}")
+        self._rooms[room.uuid] = room
+        self.logger.debug(f"{ModelTypes.ROOM} {room} put in {self}")
+
+    async def _put_message(self, message: "models.message.Message"):
+        self.logger.debug(f"putting {ModelTypes.MESSAGE} {message} in {self}")
+        self._messages[message.uuid] = message
+        self.logger.debug(f"{ModelTypes.MESSAGE} {message} put in {self}")
+
+    async def _put_drawing(self, drawing: "models.drawing.Drawing"):
+        self.logger.debug(f"putting {ModelTypes.DRAWING} {drawing} in {self}")
+        self._drawings[drawing.uuid] = drawing
+        self.logger.debug(f"{ModelTypes.DRAWING} {drawing} put in {self}")
+
+    async def _put_line(self, line: "models.line.Line"):
+        self.logger.debug(f"putting {ModelTypes.LINE} {line} in {self}")
+        self._lines[line.uuid] = line
+        self.logger.debug(f"{ModelTypes.LINE} {line} put in {self}")
+
+    async def _delete_user(self, user: "models.user.User"):
+        try:
+            self.logger.debug(f"deleting {ModelTypes.USER} {user} in {self}")
+            self._users.pop(user.uuid)
+            self.logger.debug(f"deleted {ModelTypes.USER} {user} in {self}")
+        except KeyError:
+            self.logger.debug(f"no {ModelTypes.USER} {user} in storage")
+
+    async def _delete_room(self, room: "models.room.Room"):
+        try:
+            self.logger.debug(f"deleting {ModelTypes.ROOM} {room} in {self}")
+            self._rooms.pop(room.uuid)
+            self.logger.debug(f"deleting {ModelTypes.MESSAGE} in {ModelTypes.ROOM} {room}")
+            for message in room.messages:
+                self.logger.debug(f"deleting {ModelTypes.MESSAGE} {message}")
+                self._messages.pop(message.uuid)
+            self.logger.debug(f"deleted {ModelTypes.ROOM} {room} in {self}")
+        except KeyError:
+            self.logger.debug(f"no {ModelTypes.ROOM} {room} in storage")

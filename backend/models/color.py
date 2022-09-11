@@ -4,11 +4,12 @@ from logging import getLogger
 from models.model_types import ModelTypes
 
 
-class ColorException(Exception):
-    """
-    Raised if the color is not valid
-    """
-    pass
+class NotValidColorException(Exception):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return f"{self.value} is not a valid {ModelTypes.COLOR}"
 
 
 class Color:
@@ -30,9 +31,8 @@ class Color:
     def __init__(self, value):
         if self.check_color(value):
             self.value = value
-            self.logger.debug(f"Created {self}")
         else:
-            raise ColorException(f"{value} is not a valid color")
+            raise NotValidColorException(f"{value} is not a valid color")
 
     def __str__(self):
         return self.value

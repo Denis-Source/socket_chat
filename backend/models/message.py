@@ -1,45 +1,47 @@
-from logging import getLogger
+from datetime import datetime
 
-from .base_model import BaseModel
-from .model_types import ModelTypes
+from models.base_model import BaseModel
+from models.model_types import ModelTypes
+from models.room import Room
 
 
 class Message(BaseModel):
-    """
-    Message model
-
-    Inherits from BaseModel
-
-    Attributes:
-        body:       message text
-        user:       user that sent a message
-        room:       location of the message
-        name:       name of the message
-    """
     TYPE = ModelTypes.MESSAGE
-    logger = getLogger(f"{TYPE}-model")
 
-    def __init__(self, body: str, user, room, uuid=None):
-        super().__init__(uuid=uuid)
+    def __init__(self, body, user_uuid, room_uuid, created):
+        super().__init__()
         self.body = body
-        self.user = user
-        self.room = room
-        self.name = f"{self.TYPE}-{self.uuid}"
+        self.user_uuid = user_uuid
+        self.room_uuid = room_uuid
+        self.created = created
 
-        self.logger.debug(f"created {self}")
+    @classmethod
+    def from_data(cls, body, user_uuid, room_uuid, created, **kwargs):
+        message = cls(body, user_uuid, room_uuid, created)
+        return message
 
-    def __str__(self):
-        return self.name
+    @classmethod
+    async def create(cls, body, user, room: Room):
+        created = datetime.now().isoformat()
+        message = cls(body, user.uuid, room.uuid, created)
+        cls.logger.debug(f"created {message}")
+
+        await room.add_message(message)
+        await Message.storage.put(message)
+
+        return message
+
+    async def get_room(self):
+        return await self.storage.get(ModelTypes.ROOM, self.room_uuid)
+
+    async def change(self, **kwargs):
+        raise NotImplementedError
 
     def get_dict(self) -> dict:
-        self.logger.debug(f"crated dict from {self}")
-
         return {
-            "type": self.TYPE,
             "uuid": self.uuid,
             "body": self.body,
-            "created": self.created,
-            "user": self.user.get_dict(),
-            "room": self.room.get_dict(),
-            "name": self.name
+            "name": self.name,
+            "user": self.user_uuid,
+            "created": self.created
         }

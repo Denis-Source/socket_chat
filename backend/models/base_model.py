@@ -1,30 +1,51 @@
-from abc import ABC, abstractmethod
-from datetime import datetime
+from logging import getLogger
 from uuid import uuid4
 
+from config import Config
+from models.abstract_model import AbstractModel
+from models.model_types import ModelTypes
 
-class BaseModel(ABC):
-    """
-    Model abstract method
 
-    Implements date and uuid generation
-    """
-    def __init__(self, uuid=None, created=None):
-        if not created:
-            self.created = datetime.now().isoformat()
-        else:
-            self.created = created
+class BaseModel(AbstractModel):
+    TYPE = ModelTypes.BASE
+    logger = getLogger(TYPE)
+    storage = Config.STORAGE_CLS()
 
-        if uuid:
-            self.uuid = uuid
-        else:
-            self.uuid = str(uuid4())
+    def __init__(self):
+        self.uuid = str(uuid4())
+        self.name = f"{self.TYPE}-{self.uuid}"
 
-    @abstractmethod
+    def __str__(self):
+        return self.name
+
+    @classmethod
+    def from_data(cls, **kwargs):
+        raise NotImplementedError
+
+    @classmethod
+    async def create(cls, **kwargs):
+        model = cls()
+        cls.logger.debug(f"created {model}")
+        await cls.storage.put(model)
+        return model
+
+    @classmethod
+    async def list(cls):
+        cls.logger.debug(f"getting list of {cls.TYPE}")
+        return await cls.storage.list(cls.TYPE)
+
+    @classmethod
+    async def get(cls, uuid: str):
+        cls.logger.debug(f"getting {cls.TYPE} ({uuid})")
+        return await cls.storage.get(cls.TYPE, uuid)
+
+    @classmethod
+    async def delete(cls, model):
+        cls.logger.debug(f"deleting {cls.TYPE} ({model.uuid})")
+        await cls.storage.delete(model)
+
+    async def change(self, **kwargs):
+        raise NotImplementedError
+
     def get_dict(self) -> dict:
-        """
-        Should be implemented
-        to have the ability to be serialized in JSON format
-        :return:
-        """
-        pass
+        raise NotImplementedError

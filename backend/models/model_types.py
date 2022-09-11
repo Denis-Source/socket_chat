@@ -2,6 +2,7 @@ from enum import Enum
 
 
 class ModelTypes(str, Enum):
+    BASE = "base"
     MESSAGE = "message"
     USER = "user"
     ROOM = "room"

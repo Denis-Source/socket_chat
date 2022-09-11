@@ -2,11 +2,10 @@ from enum import Enum
 from logging import getLogger
 from random import choice
 
-from .color import Color
-from .base_model import BaseModel
-from .drawing import Drawing
-from .message import Message
-from .model_types import ModelTypes
+from models.base_model import BaseModel
+from models.color import Color
+from models.drawing import Drawing
+from models.model_types import ModelTypes
 
 
 class DefaultRoomColors(str, Enum):
@@ -22,123 +21,87 @@ class DefaultRoomColors(str, Enum):
     BEIGE = "#e79d7e"
 
 
-class UserNotInRoomException(Exception):
-    """
-    Raised if user is not in the room
-    """
-    pass
-
-
 class Room(BaseModel):
-    """
-    Chat room Model, it's users, messages, drawing
-
-    Inherits BaseModel
-
-    Attributes:
-        name:       name of the room
-        users:      list of entered users
-        messages:   list of the room messages
-        drawing:    drawing of the room
-        color:      color of the room
-    """
-
     TYPE = ModelTypes.ROOM
     logger = getLogger(TYPE)
 
-    def __init__(self, uuid: str = None,
-                 name: str = None, color: str = None):
-        super().__init__(uuid)
-
-        self.name = name
-        if not self.name:
-            self.name = f"{self.TYPE}-{self.uuid}"
+    def __init__(self, color):
+        super().__init__()
+        self.color = color
         self.users = []
         self.messages = []
         self.drawing = None
-        self.logger.debug(f"Created room {self}")
-        self.sum = 0
+        self.drawing_uuid = None
 
-        if not color:
-            self.color = choice([e.value for e in DefaultRoomColors])
+    @classmethod
+    def from_data(cls, name, uuid, color, users, messages, drawing, **kwargs):
+        room = cls(color)
+        room.name = name
+        room.uuid = uuid
+        room.users = users
+        room.messages = messages
+        room.drawing = drawing
+
+        return room
+
+    @classmethod
+    async def create(cls, color=None, **kwargs):
+        if color:
+            color = Color(color).value
         else:
+            color = choice([e.value for e in DefaultRoomColors])
+
+        model = cls(color)
+        model.drawing = await Drawing.create(model.uuid)
+        cls.logger.debug(f"created {model}")
+        await cls.storage.put(model)
+        return model
+
+    async def change(self, name: str = None, color: str = None, **kwargs):
+        if name:
+            self.logger.debug(f"changing name of {self} to {name}")
+            self.name = name
+        if color:
+            self.logger.debug(f"changing color of {self} to {color}")
             self.color = Color(color).value
+        await self.storage.put(self)
 
-    def set_drawing(self, drawing: Drawing):
-        self.drawing = drawing
-
-    def __str__(self):
-        return self.name
-
-    def add_user(self, user):
-        """
-        Adds user to the room
-
-        :param user:    User that entered the room
-        :return:        None
-        """
+    async def add_user(self, user):
+        self.logger.debug(f"adding {user} to {self}")
         self.users.append(user)
-        self.logger.debug(f"Added {user} to {self}")
 
-    def remove_user(self, user):
-        """
-        Removes the user from the room
+    async def remove_user(self, user):
+        self.logger.debug(f"removing {user} from {self}")
+        self.users = list(filter(lambda _user: user.uuid != _user.uuid, self.users))
+        await self.storage.put(self)
 
-        :param user:    User that left
-        :return:        None
-        """
+    async def get_drawing(self):
+        return self.drawing
 
-        if user in self.users:
-            self.users.remove(user)
-            self.logger.debug(f"Removed {user} from {self}")
-        else:
-            self.logger.debug(f"{user} is not in {self}")
-            raise UserNotInRoomException(f"No {user} in {self}")
+    async def get_users(self):
+        return self.users
 
-    def add_message(self, message: Message):
-        """
-        Adds the message to the room
-
-        :param message:     Message that should be added
-        :return:            None
-        """
+    async def add_message(self, message):
+        self.logger.debug(f"adding {message} to {self}")
         self.messages.append(message)
-        self.sum += 1
-        self.logger.debug(f"Added {message} to {self}")
 
-    def set_color(self, color: Color):
-        """
-        Sets the color of the room
+    async def get_messages(self):
+        return self.messages
 
-        :param color:   Color to set to
-        :return:        None
-        """
-        self.color = color.value
-        self.logger.debug(f"set color {color} for {self}")
-
-    def set_name(self, name: str):
-        """
-        Sets the name of the room
-
-        :param name:    Name to set to
-        :return:        None
-        """
-        self.logger.debug(f"set name {name} for {self}")
-        self.name = name
+    @classmethod
+    async def delete(cls, model):
+        cls.logger.debug(f"deleting {cls.TYPE} ({model.uuid})")
+        for user in model.users:
+            user = await cls.storage.get(ModelTypes.USER, user.uuid)
+            await user.leave_room()
+        await cls.storage.delete(model)
 
     def get_dict(self) -> dict:
-        """
-        Generates the dictionary based on the attributes
-
-        :return:
-        """
-        self.logger.debug(f"creating dict for {self}")
-
         return {
-            "type": self.TYPE,
-            "uuid": str(self.uuid),
+            "type": self.TYPE.value,
+            "uuid": self.uuid,
             "name": self.name,
             "color": self.color,
             "users": [user.get_dict() for user in self.users],
-            "sum": self.sum,
+            "sum": len(self.messages)
         }
