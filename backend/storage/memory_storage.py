@@ -1,5 +1,3 @@
-from logging import getLogger
-
 import models
 from models.model_types import ModelTypes
 from storage.base_storage import BaseStorage
