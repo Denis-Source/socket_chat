@@ -7,8 +7,12 @@ from storage.exceptions import NotFoundException
 
 
 class MemoryStorage(BaseStorage):
+    """
+    Memory mock storage
+
+    Stores all of the models in the memory in a form of dictionaries
+    """
     NAME = "mem_storage"
-    logger = getLogger(NAME)
 
     _users = {}
     _rooms = {}

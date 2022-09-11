@@ -1,10 +1,8 @@
 import pickle
-from logging import getLogger
 
 from select import select
-from sqlalchemy import delete, update
+from sqlalchemy import delete, update, select
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 
 import models
@@ -15,9 +13,17 @@ from ..exceptions import NotFoundException
 
 
 class AlchemyStorage(BaseStorage):
-    NAME = "alchem_storage"
-    logger = getLogger(NAME)
+    """
+    SQLAlchemy storage class
 
+    Stores models in a form of ORM models
+    The ORM models is defined in tables module
+
+    Uses SQLAlchemy async extension
+    Relies on 2. api (select, update, delete) classes
+    Converts ORM models to native ones
+    """
+    NAME = "alchem_storage"
     _engine = create_async_engine(
         "sqlite+aiosqlite:///storage.db",
     )
@@ -25,6 +31,14 @@ class AlchemyStorage(BaseStorage):
 
     @staticmethod
     async def prepare():
+        """
+        Opens the session, creates tables
+
+        If the application closed abruptly and some users were in the room
+        Resets those rooms
+
+        :return:        None
+        """
         AlchemyStorage.logger.info(f"{AlchemyStorage.NAME} init")
         async with AlchemyStorage._engine.begin() as conn:
             AlchemyStorage.logger.debug(f"creating tables if needed")
@@ -254,6 +268,12 @@ class AlchemyStorage(BaseStorage):
                 name=drawing.name,
                 room_uuid=drawing.room_uuid
             ))
+        else:
+            self.logger.debug(f"{ModelTypes.DRAWING} {drawing} is already stored, changing")
+            if not drawing.lines:
+                query = delete(LineDB).where(LineDB.drawing_uuid == drawing.uuid)
+                await self._session.execute(query)
+
         await self._session.commit()
         self.logger.debug(f"{ModelTypes.DRAWING} {drawing} put in {self}")
 
@@ -284,6 +304,8 @@ class AlchemyStorage(BaseStorage):
         self.logger.debug(f"{user} deleted in {self}")
 
     async def _delete_room(self, room: "models.room.Room"):
+        drawing_db = await self._get_drawing(room.drawing.uuid)
+
         self.logger.debug(f"deleting {ModelTypes.ROOM} {room} in {self}")
         query = delete(RoomDB).filter_by(uuid=room.uuid)
         await self._session.execute(query)
@@ -300,10 +322,19 @@ class AlchemyStorage(BaseStorage):
         query = update(UserDB).filter_by(room_uuid=room.uuid).values(room_uuid=None)
         await self._session.execute(query)
 
+        self.logger.debug(f"deleting {ModelTypes.LINE}s in {ModelTypes.ROOM} {room}")
+        query = delete(LineDB).where(LineDB.drawing_uuid == drawing_db.uuid)
+        await self._session.execute(query)
+
         await self._session.commit()
         self.logger.debug(f"{ModelTypes.ROOM} {room} deleted in {self}")
 
     @staticmethod
     async def close():
+        """
+        Closes the session as the library freaks out if not done otherwise
+
+        :return:        None
+        """
         await AlchemyStorage._session.close()
         AlchemyStorage.logger.info(f"closing {AlchemyStorage.NAME}")

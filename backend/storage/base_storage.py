@@ -1,3 +1,4 @@
+from logging import getLogger
 from typing import Union
 
 import models
@@ -6,9 +7,19 @@ from storage.abstract_storage import AbstractStorage
 
 
 class BaseStorage(AbstractStorage):
+    """
+    Base storage class
+
+    Implements base functionality
+    Maps get, put, list and delete methods
+    Implements those methods and redirects to the method
+    specific to the model type
+    """
     NAME = "base storage"
+    logger = getLogger(NAME)
 
     def __init__(self):
+
         self._get_methods = {
             ModelTypes.USER: self._get_user,
             ModelTypes.ROOM: self._get_room,
@@ -35,11 +46,25 @@ class BaseStorage(AbstractStorage):
 
     @staticmethod
     async def prepare():
+        """
+        This method is not mandatory and can not be implemented in children
+
+        :return:            None
+        """
         pass
 
     async def get(self, model_type: ModelTypes, uuid: str) -> \
             Union["models.user.User", "models.room.Room",
                   "models.message.Message", "models.drawing.Drawing"]:
+        """
+        Gets the model instance by calling a corresponding model get method
+
+        :param model_type:              type of the model
+        :param uuid:                    uuid string
+        :return:                        model instance
+
+        :raises NotImplementedError:    if the model type is not supported
+        """
         try:
             return await self._get_methods[model_type](uuid)
         except KeyError:
@@ -58,6 +83,14 @@ class BaseStorage(AbstractStorage):
         raise NotImplementedError
 
     async def list(self, model_type: ModelTypes):
+        """
+        Lists all of the model instances
+
+        :param model_type:              model type
+        :return:                        list of model instances
+
+        :raises NotImplementedError:    if the model type is not supported
+        """
         try:
             return await self._list_methods[model_type]()
         except KeyError:
@@ -66,9 +99,19 @@ class BaseStorage(AbstractStorage):
     async def _list_rooms(self):
         raise NotImplementedError
 
-    async def put(self, model: Union[
+    async def put(self, model:
+    Union[
         "models.user.User", "models.room.Room",
         "models.message.Message", "models.drawing.Drawing"]):
+        """
+        Puts the model instance
+
+        :param model:                   model instance
+        :return:                        list of model instances
+
+        :raises NotImplementedError:    if the model type is not supported
+        """
+
         try:
             return await self._put_methods[model.TYPE](model)
         except KeyError:
@@ -92,6 +135,14 @@ class BaseStorage(AbstractStorage):
     async def delete(self, model: Union[
         "models.user.User", "models.room.Room",
         "models.message.Message", "models.drawing.Drawing"]):
+        """
+        Deletes the model instance
+
+        :param model:                   model instance
+        :return:                        list of model instances
+
+        :raises NotImplementedError:    if the model type is not supported
+        """
         try:
             await self._delete_methods[model.TYPE](model)
         except KeyError:
@@ -105,4 +156,9 @@ class BaseStorage(AbstractStorage):
 
     @staticmethod
     async def close():
+        """
+        This method is not mandatory and can not be implemented in children
+
+        :return:        None
+        """
         pass

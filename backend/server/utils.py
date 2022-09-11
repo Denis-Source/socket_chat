@@ -18,11 +18,21 @@ class ConvolutedStatementException(Exception):
 
 
 class Utils:
+    """
+    Server utils class
+
+    Implements statement parser, constructor and validators
+    """
     NAME = "utils"
     logger = getLogger(NAME)
 
     @staticmethod
     def validate_len(statement: str):
+        """
+        Validates whether the statement is less than limit specified in the configs
+
+        :raises ConvolutedStatementException:
+        """
         if len(statement) > Config.MAX_STATEMENT_SIZE:
             raise ConvolutedStatementException(
                 general_statements.GeneralStatements.DATA_TOO_LONG)
@@ -37,6 +47,11 @@ class Utils:
         ],
         dict
     ]:
+        """
+        Parses and validates statement
+        :param statement:           statement string
+        :return:                    tuple of statement message and payload dictionary
+        """
         Utils.logger.debug(f"parsing statement ({len(statement)})")
 
         Utils.validate_len(statement)
