@@ -1,16 +1,22 @@
-import React, {useRef, useState} from "react";
-import {Layer, Line, Stage} from "react-konva";
+import React, { useRef, useState } from "react";
+import { Layer, Line, Stage } from "react-konva";
 import styles from "./Drawing.module.scss";
 import eraser from "../../Static/Images/eraser.svg";
 import pen from "../../Static/Images/pen.svg";
 import del from "../../Static/Images/delete.svg";
-import {prepareStatement, WSS_FEED_URL} from "../../api";
-import {TypeStatements} from "../../StatementsTypes/TypeStatements";
+import { prepareStatement, WSS_FEED_URL } from "../../api";
+import { TypeStatements } from "../../StatementsTypes/TypeStatements";
 import useWebSocket from "react-use-websocket";
-import {DrawingStatements} from "../../StatementsTypes/DrawingStatements";
-import {useDispatch, useSelector} from "react-redux";
-import {addDrawingLine, clearDrawing, resetLastLine, setLastLine, updateLastLine,} from "../../Reducers/Drawing";
-import {DrawingModel, LineModel} from "../../Models/Drawing.model";
+import { DrawingStatements } from "../../StatementsTypes/DrawingStatements";
+import { useDispatch, useSelector } from "react-redux";
+import {
+    addDrawingLine,
+    clearDrawing,
+    resetLastLine,
+    setLastLine,
+    updateLastLine,
+} from "../../Reducers/Drawing";
+import { DrawingModel, LineModel } from "../../Models/Drawing.model";
 import Spinner from "../Spinner/Spinner";
 import DrawingColorPicker from "../ColorPicker/DrawingColorPicker/DrawingColorPicker";
 
@@ -101,9 +107,7 @@ const Drawing = () => {
     let renderedLines: LineModel[] = [];
 
     if (drawing) {
-        renderedLines = lastLine
-            ? [...drawing.lines, lastLine]
-            : drawing.lines;
+        renderedLines = lastLine ? [...drawing.lines, lastLine] : drawing.lines;
     }
 
     return (
@@ -180,7 +184,10 @@ const Drawing = () => {
                                 />
                             </button>
                         </div>
-                        <DrawingColorPicker setColor={setColor} setTool={setTool}/>
+                        <DrawingColorPicker
+                            setColor={setColor}
+                            setTool={setTool}
+                        />
                     </div>
                 </div>
             ) : (

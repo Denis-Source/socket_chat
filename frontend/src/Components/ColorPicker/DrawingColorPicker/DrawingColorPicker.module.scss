@@ -1,0 +1,19 @@
+@import "src/Static/Styles/globals";
+
+.picker {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    column-gap: 6px;
+    row-gap: 10px;
+}
+
+.color {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    outline: 3px solid $color-accent;
+
+    &:hover {
+        cursor: pointer;
+    }
+}

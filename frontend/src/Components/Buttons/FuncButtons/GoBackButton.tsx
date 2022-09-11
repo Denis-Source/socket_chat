@@ -9,7 +9,7 @@ import {
     setRightTab,
 } from "../../../Reducers/General";
 import { useDispatch, useSelector } from "react-redux";
-import {clearMessages, resetMessages} from "../../../Reducers/Message";
+import { clearMessages, resetMessages } from "../../../Reducers/Message";
 import { prepareStatement, WSS_FEED_URL } from "../../../api";
 import { TypeStatements } from "../../../StatementsTypes/TypeStatements";
 import { RoomStatements } from "../../../StatementsTypes/RoomStatements";
@@ -37,7 +37,7 @@ const GoBackButton = () => {
         // Switch the left tab to room selection
         dispatch(setRightTab(RightTabs.Rooms));
         // Clear the messages
-        dispatch(resetMessages())
+        dispatch(resetMessages());
         // Switch the right tab if the room list is selected
         leftTab === LeftTabs.Rooms && dispatch(setLeftTab(LeftTabs.Log));
         const statements = prepareStatement({

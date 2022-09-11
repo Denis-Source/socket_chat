@@ -1,5 +1,5 @@
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {MessageModel} from "../Models/Message.model";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { MessageModel } from "../Models/Message.model";
 
 const MESSAGE_LIMIT = 200;
 
@@ -10,8 +10,8 @@ interface InitialState {
 
 const initialState: InitialState = {
     list: null,
-    isNew: false
-}
+    isNew: false,
+};
 
 export const messageSlice = createSlice({
     name: "message",
@@ -24,7 +24,9 @@ export const messageSlice = createSlice({
         addMessage: (state, action: PayloadAction<MessageModel>) => {
             if (state.list) {
                 // Add message to the list, cut if too many
-                state.list = [...state.list, action.payload].slice(-MESSAGE_LIMIT);
+                state.list = [...state.list, action.payload].slice(
+                    -MESSAGE_LIMIT
+                );
                 state.isNew = true;
             }
         },
@@ -49,8 +51,8 @@ export const messageSlice = createSlice({
             state.isNew = false;
         },
         resetMessages: (state) => {
-            state.list = null
-        }
+            state.list = null;
+        },
     },
 });
 

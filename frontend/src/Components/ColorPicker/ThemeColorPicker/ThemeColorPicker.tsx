@@ -16,7 +16,7 @@ export const ThemeColorPicker = () => {
         dispatch(setTheme(value));
         setCookie("theme", value, {
             path: "/",
-            maxAge: 356 * 24 * 60 * 60
+            maxAge: 356 * 24 * 60 * 60,
         });
     };
 

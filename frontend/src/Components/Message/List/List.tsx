@@ -1,13 +1,13 @@
-import React, {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {MessageModel} from "../../../Models/Message.model";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { MessageModel } from "../../../Models/Message.model";
 import Item from "../Item/Item";
-import {UserModel} from "../../../Models/User.model";
+import { UserModel } from "../../../Models/User.model";
 
 import styles from "./List.module.scss";
 import ScrollToBottom from "react-scroll-to-bottom";
 import useSound from "use-sound";
-import {setNew} from "../../../Reducers/Message";
+import { setNew } from "../../../Reducers/Message";
 import Spinner from "../../Spinner/Spinner";
 
 const notificationOther = require("../../../Static/Sound/messageOther.mp3");
@@ -37,30 +37,28 @@ const List = () => {
 
     return (
         <>
-            {messages ?
+            {messages ? (
                 <ScrollToBottom
                     initialScrollBehavior={"auto"}
                     className={styles.wrapper}
                     followButtonClassName={styles.scrollButton}
                 >
-                    <div className={styles.messages}>{
-                        messages.map((message) =>
+                    <div className={styles.messages}>
+                        {messages.map((message) => (
                             <Item
                                 message={message}
                                 isMine={message.user.uuid === user.uuid}
                                 key={message.uuid}
                             />
-                        )
-                    }
+                        ))}
                     </div>
                 </ScrollToBottom>
-                :
+            ) : (
                 <div className={styles.spinnerWrapper}>
-                    <Spinner/>
+                    <Spinner />
                 </div>
-            }
+            )}
         </>
-
     );
 };
 
