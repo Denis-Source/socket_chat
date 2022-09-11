@@ -1,21 +1,60 @@
-.popOver {
-    position: absolute;
-    z-index: 2;
-    height: 0;
+@import "src/Static/Styles/globals";
 
-    left: 20px;
-    top: -20px;
+.popOver {
+  position: absolute;
+  z-index: 2;
+  height: 0;
+
+  left: 20px;
+  top: -20px;
 }
 
 .cover {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 
 .innerWrapper {
-    position: relative;
-    height: auto;
+  position: relative;
+  height: auto;
+}
+
+.picker {
+  margin-top: -3px;
+  margin-left: -1px;
+}
+
+
+
+.body {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  gap: 9px;
+  background-color: $color-room-picker;
+  padding: 12px;
+  border-radius: 10px;
+}
+
+.arrow {
+  margin-left: 9px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 12px 15px;
+  border-color: transparent transparent $color-room-picker;
+}
+
+.color {
+  z-index: 10;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  outline: 3px solid $color-accent;
+
+  &:hover {
+    cursor: pointer;
+  }
 }

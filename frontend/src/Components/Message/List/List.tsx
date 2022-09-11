@@ -36,24 +36,30 @@ const List = () => {
     });
 
     return (
-        <ScrollToBottom
-            initialScrollBehavior={"auto"}
-            className={styles.wrapper}
-            followButtonClassName={styles.scrollButton}
-        >
-            <div className={styles.messages}>
-                {messages ?
-                        messages.map((message) => (
+        <>
+            {messages ?
+                <ScrollToBottom
+                    initialScrollBehavior={"auto"}
+                    className={styles.wrapper}
+                    followButtonClassName={styles.scrollButton}
+                >
+                    <div className={styles.messages}>{
+                        messages.map((message) =>
                             <Item
                                 message={message}
                                 isMine={message.user.uuid === user.uuid}
                                 key={message.uuid}
                             />
-                        )):
+                        )
+                    }
+                    </div>
+                </ScrollToBottom>
+                :
+                <div className={styles.spinnerWrapper}>
                     <Spinner/>
-                }
-            </div>
-        </ScrollToBottom>
+                </div>
+            }
+        </>
 
     );
 };

@@ -10,9 +10,7 @@
     overflow-wrap: anywhere;
     gap: 2px;
 
-    @media screen and (max-width: $size-mobile) {
-        width: 80%;
-    }
+
 }
 
 .myMessage {
@@ -38,6 +36,7 @@
     font-size: 12px;
     align-self: flex-end;
     font-weight: 600;
+    margin-top: 10px;
 }
 
 .date {

@@ -23,3 +23,17 @@
 .scrollButton {
     display: none;
 }
+
+.spinnerWrapper {
+    height: calc(100vh - 270px);
+
+    @media screen and (max-width: $size-mobile) {
+        height: calc(100vh - 310px);
+
+        @media screen and (max-height: $size-keyboard) {
+            height: calc(100vh - 190px);
+        }
+    }
+}
+
+
