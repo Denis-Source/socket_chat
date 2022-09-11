@@ -16,9 +16,6 @@ class MemoryStorage(BaseStorage):
     _drawings = {}
     _lines = {}
 
-    def __str__(self):
-        return self.NAME
-
     async def _get_user(self, uuid: str) -> "models.user.User":
         self.logger.debug(f"getting {ModelTypes.USER} from {self}")
         try:

@@ -2,6 +2,9 @@ from enum import Enum
 
 
 class ModelTypes(str, Enum):
+    """
+    Enumeration of the available model types
+    """
     BASE = "base"
     MESSAGE = "message"
     USER = "user"

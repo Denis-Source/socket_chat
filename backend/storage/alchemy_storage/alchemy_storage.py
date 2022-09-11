@@ -23,9 +23,6 @@ class AlchemyStorage(BaseStorage):
     )
     _session = AsyncSession(_engine, expire_on_commit=False)
 
-    def __str__(self):
-        return self.NAME
-
     @staticmethod
     async def prepare():
         AlchemyStorage.logger.info(f"{AlchemyStorage.NAME} init")
@@ -33,8 +30,8 @@ class AlchemyStorage(BaseStorage):
             AlchemyStorage.logger.debug(f"creating tables if needed")
             await conn.run_sync(Base.metadata.create_all)
 
-        AlchemyStorage.logger.debug(f"resetting {ModelTypes.USER}s in {ModelTypes.ROOM}s")
-        query = update(UserDB).where(UserDB.room_uuid).values(room_uuid=None)
+        AlchemyStorage.logger.debug(f"resetting {ModelTypes.USER}s in {ModelTypes.ROOM}s if needed")
+        query = update(UserDB).where(UserDB.room_uuid is not None).values(room_uuid=None)
         await AlchemyStorage._session.execute(query)
         await AlchemyStorage._session.commit()
 
@@ -88,7 +85,7 @@ class AlchemyStorage(BaseStorage):
             result = await self._session.scalars(query)
             users_db = result.all()
 
-            query = select(MessageDB).filter_by(room_uuid=uuid)
+            query = select(MessageDB).options(selectinload(MessageDB.user)).filter_by(room_uuid=uuid)
             result = await self._session.scalars(query)
             messages_db = result.all()
 
@@ -109,7 +106,11 @@ class AlchemyStorage(BaseStorage):
                 ) for user_db in users_db],
                 [models.message.Message.from_data(
                     body=message_db.body,
-                    user_uuid=message_db.user_uuid,
+                    user=models.user.User.from_data(
+                        message_db.user.name,
+                        message_db.user.uuid,
+                        message_db.user.room_uuid,
+                    ),
                     room_uuid=message_db.room_uuid,
                     created=message_db.created
                 ) for message_db in messages_db],
@@ -128,7 +129,11 @@ class AlchemyStorage(BaseStorage):
         if message_db:
             message = models.message.Message.from_data(
                 body=message_db.body,
-                user_uuid=message_db.user_uuid,
+                user=models.user.User.from_data(
+                    message_db.user.name,
+                    message_db.user.uuid,
+                    message_db.user.room_uuid,
+                ),
                 room_uuid=message_db.room_uuid,
                 created=message_db.created,
             )
@@ -182,7 +187,7 @@ class AlchemyStorage(BaseStorage):
             ) for user_db in room_db.users],
             [models.message.Message.from_data(
                 body=message_db.body,
-                user_uuid=message_db.user_uuid,
+                user=None,
                 room_uuid=message_db.room_uuid,
                 created=message_db.created
             ) for message_db in room_db.messages],
@@ -232,7 +237,7 @@ class AlchemyStorage(BaseStorage):
             self._session.add(MessageDB(
                 body=message.body,
                 uuid=message.uuid,
-                user_uuid=message.user_uuid,
+                user_uuid=message.user.uuid,
                 room_uuid=message.room_uuid,
                 created=message.created
             ))

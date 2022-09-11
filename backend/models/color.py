@@ -5,6 +5,14 @@ from models.model_types import ModelTypes
 
 
 class NotValidColorException(Exception):
+    """
+    Not valid color Exception should be raised if the color value
+    is not of hexadecimal RGB of RGBA format
+
+    Attributes:
+        value           color value that is not of RGB or RGBA format
+    """
+
     def __init__(self, value):
         self.value = value
 
@@ -21,7 +29,7 @@ class Color:
         #1278DE
 
     Attributes:
-        value:  color hexadecimal value
+        value:          string value
     """
     COLOR_RE = r"^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3}|[A-Fa-f0-9]{8})$"
     TYPE = ModelTypes.COLOR
@@ -40,7 +48,7 @@ class Color:
     @staticmethod
     def check_color(color: str) -> bool:
         """
-        Checks whether the color value is valid
+        Checks whether the color value is RGB or RGBA format
 
         :param color:   color value
         :return:        value validity
