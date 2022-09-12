@@ -94,7 +94,7 @@ The room list is sorted by the room creation time, to solve the problem of navig
 ### Messages
 After the room is selected, the user is provided with an unlimited message history and an ability to create their own messages:
 ![05 messages](https://user-images.githubusercontent.com/58669569/189720206-b0e0d9a0-3673-43a0-9358-d6e95db85e3d.png)
-The amount of rooms and messages are **NOT LIMETED**.
+The amount of rooms and messages are **NOT LIMITED**.
 ***
 
 ### Side tabs
@@ -356,3 +356,70 @@ async def _get_user(self, uuid: str) -> "models.user.User":
 	else:
 		raise NotFoundException(uuid, ModelTypes.USER)
 ```
+
+***
+## Frontend
+Forntend is based on the [React](https://reactjs.org/)  framework. The looks and feels were designed from scratch.
+
+### Project structure
+The project was written using [TypeScript](https://www.typescriptlang.org/) and follows the basic react project structure. All of the components are styled with [sass](https://sass-lang.com/).
+
+All of the source files are located in `src` folder. The application is split into components:
+- `Buttons` that consists of the button template and all of the functional buttons, including navigation ones;
+- `ColorPicker` different custom color pickers for rooms and drawing
+- `Drawing`	drawing component based on [react-konva](https://konvajs.org/docs/react/index.html) `Stage`;
+- `Header` that displays the heading of the application and username;
+- `Input` components related to input fields;
+- `Log`	components related to logging;
+- `Message`	components related to messages;
+- `Room` components related to rooms;
+- `Spinner`;
+- `Tabs` components that group other components into a layout.
+
+#### Models and Enumerations
+Considering that the project is written with TypeScript, there is `Model` folder that provides interfaces for the `Drawing`, `Log`, `Message`, `Room` and `User` interfaces.
+
+Simple example of a `user` interface:
+```ts
+export interface UserModel {
+    name: string;
+    room_uuid?: string;
+    uuid: string;
+}
+```
+There are also Enumerations related to the statement types used to communicate with the server located in the `StatementTypes` folder.
+***
+#### Reducers
+Taking into account that the project has a complex internal state (message history, drawing, log lists, etc), the [redux](https://react-redux.js.org/) state manager was used. For every model, the corresponding [redux slice](https://redux-toolkit.js.org/api/createSlice) was implemented.
+
+The application calls the reducers with `dispatch` to avoid infinite callback passing.
+***
+
+### Libraries used
+#### [redux](https://redux.js.org/)
+As mentioned previously.
+
+#### [react-use-websocket](https://www.npmjs.com/package/react-use-websocket)
+The application relies on the websocket communication protocol. All of the communications were implemented using the library with the statement constructor `prepareStatement()` in the `api.ts` file.
+
+#### [react-scroll-to-bottom](https://stackoverflow.com/questions/37620694/how-to-scroll-to-bottom-in-react)
+To implement automatic scrolling animations on new messages, log items room etc.
+
+#### [react-viewport-list](https://www.npmjs.com/package/react-viewport-list)
+The application has several lists that are potentially infinite in size. To avoid any lags related to it, this library was used to render only the viewed elements.
+
+#### [react-konva](https://konvajs.org/docs/react/index.html)
+To have a drawing board
+
+#### [react-slider](https://www.npmjs.com/package/react-slider)
+To have a theme switcher in the form of a slider.
+
+#### [react-cookie](https://www.npmjs.com/package/react-cookie)
+To save a preferred theme in cookies, selected with a previously mentioned slider.
+
+> Only the theme number is stored in the cookies, there is no other data especially related to the user profile.
+
+#### [use-sound](https://www.npmjs.com/package/use-sound)
+The application has sound notifications, so the appropriate library was used.
+> Note: The TypeScript does not recognize the `mp3` format with the `ES6` format, so the *good old* `require` was used for that. 
+***
