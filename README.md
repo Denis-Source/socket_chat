@@ -121,7 +121,8 @@ There are 8 different themes available with the following color schemes:
 
 ## Backend
 The backend of the applications is written using [WebSockets](https://websockets.readthedocs.io/en/stable/) library. As it is a relatively simple demo, the application was written from scratch. The data travels through the internal structure:
-![Func Scheme](https://user-images.githubusercontent.com/58669569/189720366-9b9464a6-ca3a-4cea-beca-55f44cf9807e.png)
+![Func Scheme (1)](https://user-images.githubusercontent.com/58669569/189756284-ebe04879-31bd-4508-9f8c-39aa4ad16523.png)
+
 It is parsed with the `Utils` class, then goes to the Server class which decides what to do with it. All of the actions are done with the `Model` classes which are internally mapped with a database via the `Storage` class. 
 
 #### Statements
