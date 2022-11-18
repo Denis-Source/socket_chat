@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Text
+from sqlalchemy import Column, String, ForeignKey, Text
 from sqlalchemy.orm import relationship, declarative_base
 
 Base = declarative_base()
@@ -40,10 +40,10 @@ class MessageDB(Base):
     created = Column(String(20))
 
     user = relationship("UserDB", back_populates="messages")
-    user_uuid = Column(Integer, ForeignKey("user.uuid"))
+    user_uuid = Column(String, ForeignKey("user.uuid"))
 
     room = relationship("RoomDB", back_populates="messages")
-    room_uuid = Column(Integer, ForeignKey("room.uuid"))
+    room_uuid = Column(String, ForeignKey("room.uuid"))
 
     __mapper_args__ = {'eager_defaults': True}
 
@@ -55,7 +55,7 @@ class DrawingDB(Base):
     uuid = Column(String(36), primary_key=True)
 
     room = relationship("RoomDB", back_populates="drawing")
-    room_uuid = Column(Integer, ForeignKey("room.uuid"))
+    room_uuid = Column(String, ForeignKey("room.uuid"))
 
     lines = relationship("LineDB", back_populates="drawing")
 
@@ -72,6 +72,6 @@ class LineDB(Base):
     points = Column(Text)
 
     drawing = relationship("DrawingDB", back_populates="lines")
-    drawing_uuid = Column(Integer, ForeignKey("drawing.uuid"))
+    drawing_uuid = Column(String, ForeignKey("drawing.uuid"))
 
     __mapper_args__ = {'eager_defaults': True}
