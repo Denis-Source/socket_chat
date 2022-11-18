@@ -306,8 +306,8 @@ class AlchemyStorage(BaseStorage):
     async def _delete_room(self, room: "models.room.Room"):
         drawing_db = await self._get_drawing(room.drawing.uuid)
 
-        self.logger.debug(f"deleting {ModelTypes.ROOM} {room} in {self}")
-        query = delete(RoomDB).filter_by(uuid=room.uuid)
+        self.logger.debug(f"deleting {ModelTypes.LINE}s in {ModelTypes.ROOM} {room}")
+        query = delete(LineDB).where(LineDB.drawing_uuid == drawing_db.uuid)
         await self._session.execute(query)
 
         self.logger.debug(f"deleting {ModelTypes.DRAWING} in {ModelTypes.ROOM} {room}")
@@ -322,8 +322,8 @@ class AlchemyStorage(BaseStorage):
         query = update(UserDB).filter_by(room_uuid=room.uuid).values(room_uuid=None)
         await self._session.execute(query)
 
-        self.logger.debug(f"deleting {ModelTypes.LINE}s in {ModelTypes.ROOM} {room}")
-        query = delete(LineDB).where(LineDB.drawing_uuid == drawing_db.uuid)
+        self.logger.debug(f"deleting {ModelTypes.ROOM} {room} in {self}")
+        query = delete(RoomDB).filter_by(uuid=room.uuid)
         await self._session.execute(query)
 
         await self._session.commit()

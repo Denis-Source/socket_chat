@@ -12,10 +12,10 @@ class PostgreStorage(AlchemyStorage):
     Requires credentials specified in _db_credentials class attribute
     """
     _db_credentials = {
-        "user": "sock_chat",
-        "dbname": "socket_char",
-        "password": "9008UD!3MYEm",
-        "address": "localhost:5432"
+        "user": "",
+        "dbname": "",
+        "password": "",
+        "address": ""
     }
 
     NAME = "postgres_storage"
