@@ -358,7 +358,31 @@ async def _get_user(self, uuid: str) -> "models.user.User":
 		raise NotFoundException(uuid, ModelTypes.USER)
 ```
 
+#### PostgreSQL
+Given the ORM nature of SQLAlchemy, it is not that difficult to expand the previously mentioned `AlchemyStorage` class to the one that has an ability to connect to various "real" databases. In fact the only difference is the declaration of the database `engine`:
+```py
+class PostgreStorage(AlchemyStorage):
+    _db_credentials = {
+        "user": "user_name",
+        "dbname": "chat_db",
+        "password": "passwd",
+        "address": "localhost"
+    }
+
+    NAME = "postgres_storage"
+    _engine = create_async_engine(
+        f"postgresql+asyncpg://"
+        f"{_db_credentials.get('user')}:"
+        f"{_db_credentials.get('password')}"
+        f"@{_db_credentials.get('address')}"
+        f"/{_db_credentials.get('dbname')}",
+    )
+    _session = AsyncSession(_engine, expire_on_commit=False)
+```
+
+Given the postgresql is installed, a database is created and the `config.py` has `STORAGE_CLS = PostgreStorage`, the backend will attempt to connect to the local postgreSQL server with the provided credentioals.
 ***
+
 ## Frontend
 Forntend is based on the [React](https://reactjs.org/)  framework. The looks and feels were designed from scratch.
 
