@@ -380,7 +380,7 @@ class PostgreStorage(AlchemyStorage):
     _session = AsyncSession(_engine, expire_on_commit=False)
 ```
 
-Given the postgresql is installed, a database is created and the `config.py` has `STORAGE_CLS = PostgreStorage`, the backend will attempt to connect to the local postgreSQL server with the provided credentioals.
+Given the postgresql is installed, a database is created and the `config.py` has `STORAGE_CLS = PostgreStorage`, the backend will attempt to connect to the local postgreSQL server with the provided credentials.
 ***
 
 ## Frontend
