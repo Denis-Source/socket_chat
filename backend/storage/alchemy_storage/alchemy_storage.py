@@ -29,8 +29,8 @@ class AlchemyStorage(BaseStorage):
     )
     _session = AsyncSession(_engine, expire_on_commit=False)
 
-    @staticmethod
-    async def prepare():
+    @classmethod
+    async def prepare(cls):
         """
         Opens the session, creates tables
 
@@ -39,15 +39,15 @@ class AlchemyStorage(BaseStorage):
 
         :return:        None
         """
-        AlchemyStorage.logger.info(f"{AlchemyStorage.NAME} init")
-        async with AlchemyStorage._engine.begin() as conn:
-            AlchemyStorage.logger.debug(f"creating tables if needed")
+        cls.logger.info(f"{cls.NAME} init")
+        async with cls._engine.begin() as conn:
+            cls.logger.debug(f"creating tables if needed")
             await conn.run_sync(Base.metadata.create_all)
 
-        AlchemyStorage.logger.debug(f"resetting {ModelTypes.USER}s in {ModelTypes.ROOM}s if needed")
+        cls.logger.debug(f"resetting {ModelTypes.USER}s in {ModelTypes.ROOM}s if needed")
         query = update(UserDB).where(UserDB.room_uuid is not None).values(room_uuid=None)
-        await AlchemyStorage._session.execute(query)
-        await AlchemyStorage._session.commit()
+        await cls._session.execute(query)
+        await cls._session.commit()
 
     async def _query_user(self, uuid: str) -> UserDB:
         self.logger.debug(f"querying {ModelTypes.USER}")
@@ -329,12 +329,12 @@ class AlchemyStorage(BaseStorage):
         await self._session.commit()
         self.logger.debug(f"{ModelTypes.ROOM} {room} deleted in {self}")
 
-    @staticmethod
-    async def close():
+    @classmethod
+    async def close(cls):
         """
         Closes the session as the library freaks out if not done otherwise
 
         :return:        None
         """
-        await AlchemyStorage._session.close()
-        AlchemyStorage.logger.info(f"closing {AlchemyStorage.NAME}")
+        await cls._session.close()
+        cls.logger.info(f"closing {cls.NAME}")
