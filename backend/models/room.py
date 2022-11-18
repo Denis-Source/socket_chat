@@ -82,9 +82,9 @@ class Room(BaseModel):
             color = choice([e.value for e in DefaultRoomColors])
 
         model = cls(color)
+        await cls.storage.put(model)
         model.drawing = await Drawing.create(model.uuid)
         cls.logger.debug(f"created {model}")
-        await cls.storage.put(model)
         return model
 
     async def change(self, name: str = None, color: str = None):

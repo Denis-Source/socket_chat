@@ -37,7 +37,7 @@ class MessageDB(Base):
     body = Column(Text)
     uuid = Column(String(36), primary_key=True)
 
-    created = Column(String(20))
+    created = Column(String(40))
 
     user = relationship("UserDB", back_populates="messages")
     user_uuid = Column(String, ForeignKey("user.uuid"))
@@ -54,7 +54,7 @@ class DrawingDB(Base):
     name = Column(String(64))
     uuid = Column(String(36), primary_key=True)
 
-    room = relationship("RoomDB", back_populates="drawing")
+    room = relationship("RoomDB")
     room_uuid = Column(String, ForeignKey("room.uuid"))
 
     lines = relationship("LineDB", back_populates="drawing")
