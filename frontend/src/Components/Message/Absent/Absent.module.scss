@@ -1,0 +1,17 @@
+@import "src/Static/Styles/globals";
+
+.absent {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.desc {
+  margin: 40px;
+  font-size: 20px;
+  color: $color-accent;
+  font-weight: 500;
+}

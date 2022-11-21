@@ -24,4 +24,8 @@ export enum Strings {
     AddRoomButtonDesc = "Add room",
 
     DrawingDummy = "This feature is not supported on mobile devices",
+
+    NO_MESSAGES = "No messages yet",
+
+    GHOST_DESC = "Ghost"
 }

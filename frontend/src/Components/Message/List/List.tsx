@@ -10,6 +10,7 @@ import useSound from "use-sound";
 import {setNew} from "../../../Reducers/Message";
 import Spinner from "../../Spinner/Spinner";
 import {ViewportList} from "react-viewport-list";
+import Absent from "../Absent/Absent";
 
 const notificationOther = require("../../../Static/Sound/messageOther.mp3");
 const notificationMine = require("../../../Static/Sound/messageMine.mp3");
@@ -45,15 +46,18 @@ const List = () => {
                     followButtonClassName={styles.scrollButton}
                 >
                     <div className={styles.messages}>
-                        <ViewportList items={messages}>
-                            {(item) => (
-                                <Item
-                                    key={item.uuid}
-                                    message={item}
-                                    isMine={item.user.uuid === user.uuid}
-                                />
-                            )}
-                        </ViewportList>
+                        {messages.length == 0 ?
+                            <Absent/> :
+                            <ViewportList items={messages}>
+                                {(item) => (
+                                    <Item
+                                        key={item.uuid}
+                                        message={item}
+                                        isMine={item.user.uuid === user.uuid}
+                                    />
+                                )}
+                            </ViewportList>
+                        }
                     </div>
                 </ScrollToBottom>
             ) : (

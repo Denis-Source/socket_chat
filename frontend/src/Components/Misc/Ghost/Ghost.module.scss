@@ -1,0 +1,19 @@
+.ghost {
+  animation: wobble 3s ease-in-out infinite;
+}
+
+.icon {
+  width: 90px;
+}
+
+@keyframes wobble {
+  0% {
+    transform: translateY(5px);
+  }
+  50% {
+    transform: translateY(15px);
+  }
+  100% {
+    transform: translateY(5px);
+  }
+}

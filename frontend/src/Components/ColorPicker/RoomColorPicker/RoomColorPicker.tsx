@@ -47,7 +47,7 @@ const RoomColorPicker = ({
                         <div className={styles.picker}>
                             <div className={styles.arrow} />
                             <div className={styles.body}>
-                                {roomColors.map((item) => (
+                                {roomColors.map((item, count) => (
                                     <div
                                         style={{ backgroundColor: `${item}dd` }}
                                         className={styles.color}
@@ -55,6 +55,7 @@ const RoomColorPicker = ({
                                             await sendColor(item);
                                             setPickerVisible(false);
                                         }}
+                                        key={count}
                                     />
                                 ))}
                             </div>

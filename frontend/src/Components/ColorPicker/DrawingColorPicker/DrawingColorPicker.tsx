@@ -12,7 +12,7 @@ const DrawingColorPicker = ({
 }) => {
     return (
         <div className={styles.picker}>
-            {drawingColors.map((item) => (
+            {drawingColors.map((item, count) => (
                 <div
                     style={{ backgroundColor: `${item}cc` }}
                     className={styles.color}
@@ -20,6 +20,7 @@ const DrawingColorPicker = ({
                         setColor(item);
                         setTool(Tools.pen);
                     }}
+                    key={count}
                 />
             ))}
         </div>
