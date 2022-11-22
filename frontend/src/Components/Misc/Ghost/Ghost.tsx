@@ -1,15 +1,15 @@
-import React from 'react';
-import styles from "./Ghost.module.scss"
-import ghostIcon from "../../../Static/Images/ghost.svg"
-import {Strings} from "../../../strings";
-import {motion} from "framer-motion";
+import React from "react";
+import styles from "./Ghost.module.scss";
+import ghostIcon from "../../../Static/Images/ghost.svg";
+import { Strings } from "../../../strings";
+import { motion } from "framer-motion";
 
 export enum Animations {
     Wobble = "wobble",
-    Shake = "shake"
+    Shake = "shake",
 }
 
-const Ghost = ({animation}: { animation: Animations }) => {
+const Ghost = ({ animation }: { animation: Animations }) => {
     let ghostStyle;
     switch (animation) {
         case Animations.Wobble:
@@ -22,10 +22,10 @@ const Ghost = ({animation}: { animation: Animations }) => {
     return (
         <motion.div
             layout
-            animate={{opacity: 1}}
-            initial={{opacity: 0}}
-            exit={{opacity: 0}}
-            transition={{duration: 1}}
+            animate={{ opacity: 1 }}
+            initial={{ opacity: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1 }}
             className={ghostStyle}
         >
             <img

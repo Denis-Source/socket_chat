@@ -1,21 +1,27 @@
-import React, {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {setUser} from "./Reducers/User";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser } from "./Reducers/User";
 import useWebSocket from "react-use-websocket";
-import {WSS_FEED_URL} from "./api";
-import {UserStatements} from "./StatementsTypes/UserStatements";
-import {RoomStatements} from "./StatementsTypes/RoomStatements";
-import {addBulkRoom, addRoom, leaveRoom, removeRoom, updateRoom,} from "./Reducers/Room";
+import { WSS_FEED_URL } from "./api";
+import { UserStatements } from "./StatementsTypes/UserStatements";
+import { RoomStatements } from "./StatementsTypes/RoomStatements";
+import {
+    addBulkRoom,
+    addRoom,
+    leaveRoom,
+    removeRoom,
+    updateRoom,
+} from "./Reducers/Room";
 import Header from "./Components/Header/Header";
 import styles from "./App.module.scss";
 import RoomTabMinimal from "./Components/Tabs/RoomTabMinimal/RoomTabMinimal";
 import MessageTab from "./Components/Tabs/MessageTab/MessageTab";
-import {MessageStatements} from "./StatementsTypes/MessageStatements";
-import {addMessage, bulkAddMessage} from "./Reducers/Message";
+import { MessageStatements } from "./StatementsTypes/MessageStatements";
+import { addMessage, bulkAddMessage } from "./Reducers/Message";
 import RoomTab from "./Components/Tabs/RoomTab/RoomTab";
 import LogTab from "./Components/Tabs/LogTab/LogTab";
-import {addLog} from "./Reducers/Log";
-import {LogOrigin} from "./Models/Log.model";
+import { addLog } from "./Reducers/Log";
+import { LogOrigin } from "./Models/Log.model";
 import {
     AppStates,
     ErrorMessages,
@@ -23,14 +29,14 @@ import {
     RightTabs,
     setAppState,
     setErrorMessage,
-    setTheme
+    setTheme,
 } from "./Reducers/General";
 import Spinner from "./Components/Spinner/Spinner";
 import DrawingTab from "./Components/Tabs/DrawingTab/DrawingTab";
-import {DrawingStatements} from "./StatementsTypes/DrawingStatements";
-import {addDrawingLine, setDrawing} from "./Reducers/Drawing";
-import {useCookies} from "react-cookie";
-import {TypeStatements} from "./StatementsTypes/TypeStatements";
+import { DrawingStatements } from "./StatementsTypes/DrawingStatements";
+import { addDrawingLine, setDrawing } from "./Reducers/Drawing";
+import { useCookies } from "react-cookie";
+import { TypeStatements } from "./StatementsTypes/TypeStatements";
 import ErrorTab from "./Components/Tabs/ErrorTab/ErrorTab";
 
 function App() {
@@ -63,10 +69,8 @@ function App() {
                     type: TypeStatements.Result,
                 })
             );
-            dispatch(setAppState(
-                AppStates.Errored));
-            dispatch(
-                setErrorMessage(ErrorMessages.Disconnected));
+            dispatch(setAppState(AppStates.Errored));
+            dispatch(setErrorMessage(ErrorMessages.Disconnected));
         },
         onError: () => {
             dispatch(
@@ -75,11 +79,10 @@ function App() {
                     description: "connection error",
                     time: new Date().toLocaleTimeString(),
                     type: TypeStatements.Result,
-                }));
-            dispatch(
-                setAppState(AppStates.Errored))
-            dispatch(
-                setErrorMessage(ErrorMessages.Unknown))
+                })
+            );
+            dispatch(setAppState(AppStates.Errored));
+            dispatch(setErrorMessage(ErrorMessages.Unknown));
         },
         share: true,
     });
@@ -91,7 +94,7 @@ function App() {
     });
 
     // Get tab states to render elements based on them
-    const {leftTab, rightTab} = useSelector((state: any) => state.general);
+    const { leftTab, rightTab } = useSelector((state: any) => state.general);
     const theme: string[] = useSelector((state: any) => state.general.theme);
     const processMessages = (data: any) => {
         /*
@@ -153,7 +156,9 @@ function App() {
     };
 
     // Get application state from the state
-    const appState: AppStates = useSelector((state: any) => state.general.appState);
+    const appState: AppStates = useSelector(
+        (state: any) => state.general.appState
+    );
 
     // Set the tabs based on the selected in the state
     let leftTabElement;
@@ -161,21 +166,21 @@ function App() {
 
     switch (leftTab) {
         case LeftTabs.Log:
-            leftTabElement = <LogTab/>;
+            leftTabElement = <LogTab />;
             break;
         case LeftTabs.Rooms:
-            leftTabElement = <RoomTabMinimal/>;
+            leftTabElement = <RoomTabMinimal />;
     }
 
     switch (rightTab) {
         case RightTabs.Messages:
-            rightTabElement = <MessageTab/>;
+            rightTabElement = <MessageTab />;
             break;
         case RightTabs.Rooms:
-            rightTabElement = <RoomTab/>;
+            rightTabElement = <RoomTab />;
             break;
         case RightTabs.Drawing:
-            rightTabElement = <DrawingTab/>;
+            rightTabElement = <DrawingTab />;
             break;
     }
 
@@ -183,30 +188,33 @@ function App() {
     let window;
     switch (appState) {
         case AppStates.Loading:
-            window =
-                <Spinner/>;
+            window = <Spinner />;
             break;
         case AppStates.Nominal:
-            window = <div className={styles.container}>
-                <Header/>
-                <div className={styles.layout}>
-                    <div className={styles.leftTab}>{leftTabElement}</div>
-                    <div className={styles.rightTab}>{rightTabElement}</div>
+            window = (
+                <div className={styles.container}>
+                    <Header />
+                    <div className={styles.layout}>
+                        <div className={styles.leftTab}>{leftTabElement}</div>
+                        <div className={styles.rightTab}>{rightTabElement}</div>
+                    </div>
                 </div>
-            </div>
+            );
             break;
         case AppStates.Errored:
-            window = <div className={styles.container}>
-                <Header/>
-                <div className={styles.layout}>
-                    <div className={styles.leftTab}>
-                        <LogTab/>
-                    </div>
-                    <div className={styles.rightTab}>
-                        <ErrorTab/>
+            window = (
+                <div className={styles.container}>
+                    <Header />
+                    <div className={styles.layout}>
+                        <div className={styles.leftTab}>
+                            <LogTab />
+                        </div>
+                        <div className={styles.rightTab}>
+                            <ErrorTab />
+                        </div>
                     </div>
                 </div>
-            </div>
+            );
     }
 
     console.log(appState);

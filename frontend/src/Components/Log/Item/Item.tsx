@@ -1,8 +1,8 @@
 import React from "react";
 import styles from "./Item.module.scss";
-import {LogModel} from "../../../Models/Log.model";
+import { LogModel } from "../../../Models/Log.model";
 
-const Item = ({log, last}: { log: LogModel, last: boolean }) => {
+const Item = ({ log, last }: { log: LogModel; last: boolean }) => {
     return (
         <div className={last ? styles.lastItem : styles.item}>
             <p className={styles.time}>{log.time}</p>

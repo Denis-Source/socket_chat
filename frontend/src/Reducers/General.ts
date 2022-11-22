@@ -1,15 +1,15 @@
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {Strings} from "../strings";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Strings } from "../strings";
 
 export enum AppStates {
     Nominal = "nominal",
     Loading = "loading",
-    Errored = "errored"
+    Errored = "errored",
 }
 
 export enum ErrorMessages {
     Unknown = Strings.ErrorOccurred,
-    Disconnected = Strings.ErrorDisconnected
+    Disconnected = Strings.ErrorDisconnected,
 }
 
 export enum LeftTabs {
@@ -75,6 +75,11 @@ export const generalSlice = createSlice({
     },
 });
 
-export const {setLeftTab, setRightTab, setAppState, setErrorMessage, setTheme} =
-    generalSlice.actions;
+export const {
+    setLeftTab,
+    setRightTab,
+    setAppState,
+    setErrorMessage,
+    setTheme,
+} = generalSlice.actions;
 export default generalSlice.reducer;

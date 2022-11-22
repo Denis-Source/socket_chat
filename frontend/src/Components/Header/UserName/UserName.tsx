@@ -1,16 +1,16 @@
-import React, {useState} from "react";
-import {UserModel} from "../../../Models/User.model";
-import {useSelector} from "react-redux";
+import React, { useState } from "react";
+import { UserModel } from "../../../Models/User.model";
+import { useSelector } from "react-redux";
 import useWebSocket from "react-use-websocket";
-import {prepareStatement, WSS_FEED_URL} from "../../../api";
-import {UserStatements} from "../../../StatementsTypes/UserStatements";
+import { prepareStatement, WSS_FEED_URL } from "../../../api";
+import { UserStatements } from "../../../StatementsTypes/UserStatements";
 import styles from "./UserName.module.scss";
-import {Strings} from "../../../strings";
-import {TypeStatements} from "../../../StatementsTypes/TypeStatements";
+import { Strings } from "../../../strings";
+import { TypeStatements } from "../../../StatementsTypes/TypeStatements";
 
 const UserName = () => {
     // Configure websocket connection
-    const {sendJsonMessage} = useWebSocket(WSS_FEED_URL, {
+    const { sendJsonMessage } = useWebSocket(WSS_FEED_URL, {
         share: true,
     });
     // Get user model from the store

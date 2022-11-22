@@ -1,10 +1,10 @@
 import React from "react";
 import UserName from "./UserName/UserName";
-import {Strings} from "../../strings";
+import { Strings } from "../../strings";
 import styles from "./Header.module.scss";
-import {ThemeColorPicker} from "../ColorPicker/ThemeColorPicker/ThemeColorPicker";
-import {UserModel} from "../../Models/User.model";
-import {useSelector} from "react-redux";
+import { ThemeColorPicker } from "../ColorPicker/ThemeColorPicker/ThemeColorPicker";
+import { UserModel } from "../../Models/User.model";
+import { useSelector } from "react-redux";
 
 const Header = () => {
     // Get user model from the store
@@ -13,13 +13,11 @@ const Header = () => {
     return (
         <div className={styles.wrapper}>
             <div className={styles.top}>
-                <div/>
+                <div />
                 <h1 className={styles.header}>{Strings.Header}</h1>
-                <ThemeColorPicker/>
+                <ThemeColorPicker />
             </div>
-            {user && (
-                <UserName/>
-            )}
+            {user && <UserName />}
         </div>
     );
 };

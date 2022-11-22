@@ -1,15 +1,15 @@
-import React, {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {MessageModel} from "../../../Models/Message.model";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { MessageModel } from "../../../Models/Message.model";
 import Item from "../Item/Item";
-import {UserModel} from "../../../Models/User.model";
+import { UserModel } from "../../../Models/User.model";
 
 import styles from "./List.module.scss";
 import ScrollToBottom from "react-scroll-to-bottom";
 import useSound from "use-sound";
-import {setNew} from "../../../Reducers/Message";
+import { setNew } from "../../../Reducers/Message";
 import Spinner from "../../Spinner/Spinner";
-import {ViewportList} from "react-viewport-list";
+import { ViewportList } from "react-viewport-list";
 import Absent from "../Absent/Absent";
 
 const notificationOther = require("../../../Static/Sound/messageOther.mp3");
@@ -46,8 +46,9 @@ const List = () => {
                     followButtonClassName={styles.scrollButton}
                 >
                     <div className={styles.messages}>
-                        {messages.length === 0 ?
-                            <Absent/> :
+                        {messages.length === 0 ? (
+                            <Absent />
+                        ) : (
                             <ViewportList items={messages}>
                                 {(item) => (
                                     <Item
@@ -57,12 +58,12 @@ const List = () => {
                                     />
                                 )}
                             </ViewportList>
-                        }
+                        )}
                     </div>
                 </ScrollToBottom>
             ) : (
                 <div className={styles.spinnerWrapper}>
-                    <Spinner/>
+                    <Spinner />
                 </div>
             )}
         </>

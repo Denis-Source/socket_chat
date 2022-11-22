@@ -31,5 +31,5 @@ export enum Strings {
 
     ErrorOccurred = "Opps, error occurred",
     ErrorDisconnected = "Disconnected",
-    ErrorRefresh = "Refresh"
+    ErrorRefresh = "Refresh",
 }
