@@ -11,13 +11,13 @@ const List = ({ filterString }: { filterString: string }) => {
     // Get rooms from the state
     const rooms: RoomModel[] = useSelector((state: any) => state.room.list);
 
+    // Filter those rooms
     const filteredRooms = rooms.filter((room) =>
         room.name.toLowerCase().includes(filterString.toLowerCase())
     );
     return (
         <div className={styles.wrapper}>
             <ScrollToBottom
-                initialScrollBehavior={"auto"}
                 followButtonClassName={styles.followButton}
                 className={styles.listWrapper}
             >
