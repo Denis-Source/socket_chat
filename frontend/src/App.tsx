@@ -216,9 +216,6 @@ function App() {
                 </div>
             );
     }
-
-    console.log(appState);
-
     return (
         <div
             className={styles.body}
