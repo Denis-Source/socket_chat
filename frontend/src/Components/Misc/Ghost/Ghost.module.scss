@@ -1,5 +1,18 @@
 .ghost {
-  animation: wobble 3s ease-in-out infinite;
+}
+
+.ghostWobble {
+  @extend .ghost;
+  animation: 3s wobble ease-in-out infinite;
+}
+
+.ghostShake {
+  @extend .ghost;
+  animation: 0.6s shake ease-in-out infinite;
+
+  &:hover {
+    animation-duration: 0.3s;
+  }
 }
 
 .icon {
@@ -17,3 +30,40 @@
     transform: translateY(5px);
   }
 }
+
+@keyframes shake {
+  0% {
+    transform: translate(3px, 3px) rotate(0deg);
+  }
+  10% {
+    transform: translate(-3px, -6px) rotate(-5deg);
+  }
+  20% {
+    transform: translate(-9px, 0px) rotate(5deg);
+  }
+  30% {
+    transform: translate(9px, 6px) rotate(0deg);
+  }
+  40% {
+    transform: translate(3px, -3px) rotate(5deg);
+  }
+  50% {
+    transform: translate(-3px, 6px) rotate(-5deg);
+  }
+  60% {
+    transform: translate(-9px, 3px) rotate(0deg);
+  }
+  70% {
+    transform: translate(9px, 3px) rotate(-5deg);
+  }
+  80% {
+    transform: translate(-3px, -3px) rotate(5deg);
+  }
+  90% {
+    transform: translate(3px, 6px) rotate(0deg);
+  }
+  100% {
+    transform: translate(3px, -6px) rotate(-5deg);
+  }
+}
+

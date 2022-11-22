@@ -1,14 +1,15 @@
 import React from 'react';
-import Ghost from "../../Misc/Ghost/Ghost";
+import Ghost, {Animations} from "../../Misc/Ghost/Ghost";
 import styles from "./Absent.module.scss"
 import {Strings} from "../../../strings";
 
 const Absent = () => {
     return (
-        <div className={styles.absent}>
-            <Ghost/>
+        <div
+            className={styles.absent}>
+            <Ghost animation={Animations.Wobble}/>
             <p className={styles.desc}>
-                {Strings.NO_MESSAGES}
+                {Strings.noMessages}
             </p>
         </div>
     );

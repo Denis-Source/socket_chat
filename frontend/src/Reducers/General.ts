@@ -1,4 +1,16 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {Strings} from "../strings";
+
+export enum AppStates {
+    Nominal = "nominal",
+    Loading = "loading",
+    Errored = "errored"
+}
+
+export enum ErrorMessages {
+    Unknown = Strings.ErrorOccurred,
+    Disconnected = Strings.ErrorDisconnected
+}
 
 export enum LeftTabs {
     Rooms = "room_list",
@@ -14,7 +26,8 @@ export enum RightTabs {
 interface InitialState {
     leftTab: LeftTabs;
     rightTab: RightTabs;
-    loading: boolean;
+    appState: AppStates;
+    errorMessage: ErrorMessages;
     theme: string[];
 }
 
@@ -32,7 +45,8 @@ export const BACKGROUND_COLORS = [
 const initialState: InitialState = {
     leftTab: LeftTabs.Log,
     rightTab: RightTabs.Rooms,
-    loading: true,
+    appState: AppStates.Loading,
+    errorMessage: ErrorMessages.Unknown,
     theme: BACKGROUND_COLORS[0],
 };
 
@@ -48,13 +62,12 @@ export const generalSlice = createSlice({
             // Switches the right tab
             state.rightTab = action.payload;
         },
-        setLoading: (state) => {
+        setAppState: (state, action: PayloadAction<AppStates>) => {
             // Sets app loading to true
-            state.loading = true;
+            state.appState = action.payload;
         },
-        setLoaded: (state) => {
-            // Sets app loading to false
-            state.loading = false;
+        setErrorMessage: (state, action: PayloadAction<ErrorMessages>) => {
+            state.errorMessage = action.payload;
         },
         setTheme: (state, action: PayloadAction<number>) => {
             state.theme = BACKGROUND_COLORS[action.payload];
@@ -62,6 +75,6 @@ export const generalSlice = createSlice({
     },
 });
 
-export const { setLeftTab, setRightTab, setLoading, setLoaded, setTheme } =
+export const {setLeftTab, setRightTab, setAppState, setErrorMessage, setTheme} =
     generalSlice.actions;
 export default generalSlice.reducer;

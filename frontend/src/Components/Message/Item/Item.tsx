@@ -1,20 +1,27 @@
 import React from "react";
-import { MessageModel } from "../../../Models/Message.model";
+import {MessageModel} from "../../../Models/Message.model";
 import styles from "./Item.module.scss";
+import {motion} from "framer-motion";
 
 const Item = ({
-    message,
-    isMine,
-}: {
+                  message,
+                  isMine,
+              }: {
     message: MessageModel;
     isMine: boolean;
 }) => {
     return (
-        <div className={isMine ? styles.myMessage : styles.otherMessage}>
+        <motion.div
+            layout
+            animate={{opacity: 1}}
+            initial={{opacity: 0}}
+            transition={{duration: 0.2}}
+            className={isMine ? styles.myMessage : styles.otherMessage}
+        >
             <p className={styles.body}>{message.body}</p>
             <p className={styles.user}>{message.user.name}</p>
             <p className={styles.date}>{convertTime(message.created)}</p>
-        </div>
+        </motion.div>
     );
 };
 

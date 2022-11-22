@@ -13,6 +13,7 @@ import { RightTabs, setRightTab } from "../../../Reducers/General";
 import { TypeStatements } from "../../../StatementsTypes/TypeStatements";
 import MutableName, { Alignment } from "../../MutableName/MutableName";
 import RoomColorPicker from "../../ColorPicker/RoomColorPicker/RoomColorPicker";
+import { motion } from "framer-motion";
 
 const Item = ({ room }: { room: RoomModel }) => {
     // Configure websocket connection
@@ -51,7 +52,14 @@ const Item = ({ room }: { room: RoomModel }) => {
     };
 
     return (
-        <>
+        <motion.div
+            layout
+            animate={{ opacity: 1 }}
+            initial={{ opacity: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className={styles.layout}
+        >
             <div className={styles.item} onClick={sendEnter}>
                 <div className={styles.header}>
                     <MutableName room={room} alignment={Alignment.left} />
@@ -99,7 +107,7 @@ const Item = ({ room }: { room: RoomModel }) => {
                 pickerVisible={pickerVisible}
                 setPickerVisible={setPickerVisible}
             />
-        </>
+        </motion.div>
     );
 };
 

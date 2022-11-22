@@ -25,7 +25,11 @@ export enum Strings {
 
     DrawingDummy = "This feature is not supported on mobile devices",
 
-    NO_MESSAGES = "No messages yet",
+    noMessages = "No messages yet",
 
-    GHOST_DESC = "Ghost"
+    GhostDesc = "Ghost",
+
+    ErrorOccurred = "Opps, error occurred",
+    ErrorDisconnected = "Disconnected",
+    ErrorRefresh = "Refresh"
 }

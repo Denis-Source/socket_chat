@@ -1,7 +1,6 @@
 @import "src/Static/Styles/_globals.scss";
 
 .item {
-    width: calc(100% - 60px);
     background-color: $color-room;
     padding: 20px;
     border-radius: 10px;
@@ -57,6 +56,7 @@
 .info {
     display: flex;
     gap: 10px;
+    font-size: 20px;
     color: $color-accent;
 }
 
@@ -67,7 +67,7 @@
 }
 
 .statIcon {
-    height: 16px;
+    height: 20px;
 }
 
 .counter {

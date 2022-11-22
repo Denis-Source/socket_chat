@@ -46,7 +46,7 @@ const List = () => {
                     followButtonClassName={styles.scrollButton}
                 >
                     <div className={styles.messages}>
-                        {messages.length == 0 ?
+                        {messages.length === 0 ?
                             <Absent/> :
                             <ViewportList items={messages}>
                                 {(item) => (
