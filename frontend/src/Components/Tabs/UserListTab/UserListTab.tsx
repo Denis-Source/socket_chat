@@ -1,27 +1,26 @@
-import React from "react";
-import Form from "../../Message/Form/Form";
-import List from "../../Message/List/List";
-import {Strings} from "../../../strings";
-import styles from "./MessageTab.module.scss";
-import {RoomModel} from "../../../Models/Room.model";
-import {useSelector} from "react-redux";
+import React from 'react';
+import styles from "../MessageTab/MessageTab.module.scss";
 import GoBackButton from "../../Buttons/FuncButtons/GoBackButton";
 import SetDrawingTabButton from "../../Buttons/FuncButtons/SetDrawingTab";
+import SetMessageTabButton from "../../Buttons/FuncButtons/SetMessageTabButton";
+import List from "../../User/List/List";
+import {useSelector} from "react-redux";
+import {RoomModel} from "../../../Models/Room.model";
+import {UserModel} from "../../../Models/User.model";
+import {Strings} from "../../../strings";
 import MutableName, {Alignment} from "../../MutableName/MutableName";
-import SetUserListTabButton from "../../Buttons/FuncButtons/SetUserListTabButton";
 
-const MessageTab = () => {
-    // Get the current tab from the state
-    const currentRoom: RoomModel = useSelector(
-        (state: any) => state.room.current
-    );
+const UserListTab = () => {
+    // Get current room from the state
+    const currentRoom: RoomModel = useSelector((state: any) => state.room.current);
+
     return (
         <>
             <div className={styles.header}>
                 <div className={styles.navigation}>
                     <GoBackButton/>
+                    <SetMessageTabButton/>
                     <SetDrawingTabButton/>
-                    <SetUserListTabButton/>
                 </div>
                 <div className={styles.nameWrapper}>
                     <p className={styles.hint}>{Strings.MessageTabRoom}</p>
@@ -32,9 +31,8 @@ const MessageTab = () => {
                 </div>
             </div>
             <List/>
-            <Form/>
         </>
     );
 };
 
-export default MessageTab;
+export default UserListTab;

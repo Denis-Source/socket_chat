@@ -13,6 +13,7 @@ import {Animations} from "../../Components/Misc/Ghost/Ghost";
 import {Strings} from "../../strings";
 import {useNavigate} from "react-router-dom";
 import {RouterPaths} from "../../router";
+import UserListTab from "../../Components/Tabs/UserListTab/UserListTab";
 
 const RoomLayout = () => {
     // Get selected tabs from the state
@@ -33,6 +34,9 @@ const RoomLayout = () => {
             break;
         case RightTabs.Drawing:
             rightTabElement = <DrawingTab/>;
+            break;
+        case RightTabs.UserList:
+            rightTabElement = <UserListTab/>
             break;
     }
 

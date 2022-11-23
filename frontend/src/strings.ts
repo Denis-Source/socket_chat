@@ -36,5 +36,6 @@ export enum Strings {
     NoRoomSelected = "No room selected",
     GoBack = "Go back",
 
-    NoPageFound = "No page found"
+    NoPageFound = "No page found",
+    MeUserList = "(me)"
 }

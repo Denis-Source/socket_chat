@@ -8,6 +8,7 @@ import GoBackButton from "../../Buttons/FuncButtons/GoBackButton";
 import SetMessageTabButton from "../../Buttons/FuncButtons/SetMessageTabButton";
 import MutableName, {Alignment} from "../../MutableName/MutableName";
 import DrawingDummy from "./DrawingDummy/DrawingDummy";
+import SetUserListTabButton from "../../Buttons/FuncButtons/SetUserListTabButton";
 
 const DrawingTab = () => {
     // Get current room
@@ -39,6 +40,7 @@ const DrawingTab = () => {
                 <div className={styles.navigation}>
                     <GoBackButton/>
                     <SetMessageTabButton/>
+                    <SetUserListTabButton/>
                 </div>
                 <div className={styles.nameWrapper}>
                     <p className={styles.hint}>{Strings.MessageTabRoom}</p>

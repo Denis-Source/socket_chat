@@ -22,7 +22,9 @@ export const router = createBrowserRouter([
     {
         path: "/room",
         element:
-            <RoomLayout/>
+            <RoomLayout/>,
+        errorElement:
+            <ErrorLayout message={Strings.NoPageFound} description={Strings.GoBack}/>
     },
 
 ]);

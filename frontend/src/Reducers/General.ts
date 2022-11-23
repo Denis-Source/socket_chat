@@ -21,6 +21,7 @@ export enum RightTabs {
     Rooms = "room_list",
     Messages = "message_list",
     Drawing = "drawing",
+    UserList = "user_list"
 }
 
 interface InitialState {
