@@ -37,5 +37,5 @@ export enum Strings {
     GoBack = "Go back",
 
     NoPageFound = "No page found",
-    MeUserList = "(me)"
+    MeUserList = "(me)",
 }

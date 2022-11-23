@@ -1,8 +1,8 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import List from "../../Room/List/List";
 import Input from "../../Input/Input";
 import styles from "./RoomTab.module.scss";
-import {Strings} from "../../../strings";
+import { Strings } from "../../../strings";
 
 const RoomTab = () => {
     // Use state to filter rooms with the input field
@@ -17,7 +17,7 @@ const RoomTab = () => {
                     placeholder={Strings.SearchPlaceholder}
                 />
             </div>
-            <List filterString={filterString}/>
+            <List filterString={filterString} />
         </>
     );
 };

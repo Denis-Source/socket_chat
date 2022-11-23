@@ -1,42 +1,42 @@
-import React from 'react';
-import {useSelector} from "react-redux";
-import {LeftTabs, RightTabs} from "../../Reducers/General";
+import React from "react";
+import { useSelector } from "react-redux";
+import { LeftTabs, RightTabs } from "../../Reducers/General";
 import LogTab from "../../Components/Tabs/LogTab/LogTab";
 import RoomTabMinimal from "../../Components/Tabs/RoomTabMinimal/RoomTabMinimal";
 import BaseLayout from "../BaseLayout/BaseLayout";
 import styles from "./RoomLayout.module.scss";
 import MessageTab from "../../Components/Tabs/MessageTab/MessageTab";
 import DrawingTab from "../../Components/Tabs/DrawingTab/DrawingTab";
-import {RoomModel} from "../../Models/Room.model";
+import { RoomModel } from "../../Models/Room.model";
 import Announcement from "../../Components/Misc/Announcement/Announcement";
-import {Animations} from "../../Components/Misc/Ghost/Ghost";
-import {Strings} from "../../strings";
-import {useNavigate} from "react-router-dom";
-import {RouterPaths} from "../../router";
+import { Animations } from "../../Components/Misc/Ghost/Ghost";
+import { Strings } from "../../strings";
+import { useNavigate } from "react-router-dom";
+import { RouterPaths } from "../../router";
 import UserListTab from "../../Components/Tabs/UserListTab/UserListTab";
 
 const RoomLayout = () => {
     // Get selected tabs from the state
-    const {leftTab, rightTab} = useSelector((state: any) => state.general);
+    const { leftTab, rightTab } = useSelector((state: any) => state.general);
     let leftTabElement, rightTabElement;
 
     // Decide what tabs to render
     switch (leftTab) {
         case LeftTabs.Log:
-            leftTabElement = <LogTab/>;
+            leftTabElement = <LogTab />;
             break;
         case LeftTabs.Rooms:
-            leftTabElement = <RoomTabMinimal/>
+            leftTabElement = <RoomTabMinimal />;
     }
     switch (rightTab) {
         case RightTabs.Messages:
-            rightTabElement = <MessageTab/>;
+            rightTabElement = <MessageTab />;
             break;
         case RightTabs.Drawing:
-            rightTabElement = <DrawingTab/>;
+            rightTabElement = <DrawingTab />;
             break;
         case RightTabs.UserList:
-            rightTabElement = <UserListTab/>
+            rightTabElement = <UserListTab />;
             break;
     }
 
@@ -53,21 +53,20 @@ const RoomLayout = () => {
     return (
         <BaseLayout>
             <div className={styles.layout}>
-                <div className={styles.leftTab}>
-                    {leftTabElement}
-                </div>
+                <div className={styles.leftTab}>{leftTabElement}</div>
                 <div className={styles.rightTab}>
-                    {currentRoom ?
-                        rightTabElement :
+                    {currentRoom ? (
+                        rightTabElement
+                    ) : (
                         <Announcement
                             animation={Animations.Shake}
                             text={Strings.NoRoomSelected}
                             description={Strings.GoBack}
                             onClick={() => {
-                                navigate(RouterPaths.HomePage)
+                                navigate(RouterPaths.HomePage);
                             }}
                         />
-                    }
+                    )}
                 </div>
             </div>
         </BaseLayout>

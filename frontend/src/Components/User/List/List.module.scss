@@ -1,19 +1,19 @@
 @import "src/Static/Styles/_globals.scss";
 
 .wrapper {
-  margin: 15px 0;
+    margin: 15px 0;
 }
 
 .users {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  max-height: calc(100vh - 300px);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    max-height: calc(100vh - 300px);
 
-  @media screen and (max-width: $size-mobile) {
-    grid-template-columns: 1fr;
-  }
+    @media screen and (max-width: $size-mobile) {
+        grid-template-columns: 1fr;
+    }
 }
 
 .scrollButton {
-  display: none;
+    display: none;
 }

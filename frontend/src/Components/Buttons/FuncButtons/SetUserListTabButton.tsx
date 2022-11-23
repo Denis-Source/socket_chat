@@ -12,10 +12,10 @@ const SetDrawingTabButton = () => {
     return (
         <BaseButton
             img={userListIcon}
-    imgDesc={Strings.DrawingTabButtonDesc}
-    callback={() => dispatch(setRightTab(RightTabs.UserList))}
-    />
-);
+            imgDesc={Strings.DrawingTabButtonDesc}
+            callback={() => dispatch(setRightTab(RightTabs.UserList))}
+        />
+    );
 };
 
 export default SetDrawingTabButton;

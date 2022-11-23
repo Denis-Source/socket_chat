@@ -1,14 +1,20 @@
-import React, {useEffect} from "react";
-import {useDispatch} from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import useWebSocket from "react-use-websocket";
-import {processMessage, WSS_FEED_URL} from "./api";
-import {addLog} from "./Reducers/Log";
-import {LogOrigin} from "./Models/Log.model";
-import {AppStates, ErrorMessages, setAppState, setErrorMessage, setTheme,} from "./Reducers/General";
-import {useCookies} from "react-cookie";
-import {TypeStatements} from "./StatementsTypes/TypeStatements";
-import {RouterProvider} from 'react-router-dom';
-import {router} from "./router";
+import { processMessage, WSS_FEED_URL } from "./api";
+import { addLog } from "./Reducers/Log";
+import { LogOrigin } from "./Models/Log.model";
+import {
+    AppStates,
+    ErrorMessages,
+    setAppState,
+    setErrorMessage,
+    setTheme,
+} from "./Reducers/General";
+import { useCookies } from "react-cookie";
+import { TypeStatements } from "./StatementsTypes/TypeStatements";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./router";
 
 function App() {
     // Use dispatch
@@ -64,9 +70,7 @@ function App() {
         cookies.theme && dispatch(setTheme(parseInt(cookies.theme)));
     });
 
-    return (
-        <RouterProvider router={router}/>
-    );
+    return <RouterProvider router={router} />;
 }
 
 export default App;

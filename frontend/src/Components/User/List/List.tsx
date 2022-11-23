@@ -1,26 +1,32 @@
-import React from 'react';
+import React from "react";
 import ScrollToBottom from "react-scroll-to-bottom";
-import styles from "./List.module.scss"
-import {UserModel} from "../../../Models/User.model";
-import {ViewportList} from "react-viewport-list";
+import styles from "./List.module.scss";
+import { UserModel } from "../../../Models/User.model";
 import Item from "../Item/Item";
-import {RoomModel} from "../../../Models/Room.model";
-import {useSelector} from "react-redux";
+import { RoomModel } from "../../../Models/Room.model";
+import { useSelector } from "react-redux";
 
 const List = () => {
     // Get current room and user from the state
-    const currentRoom: RoomModel = useSelector((state: any) => state.room.current);
+    const currentRoom: RoomModel = useSelector(
+        (state: any) => state.room.current
+    );
     const currentUser: UserModel = useSelector((state: any) => state.user.user);
 
     return (
         <ScrollToBottom
             initialScrollBehavior={"auto"}
             className={styles.wrapper}
-            followButtonClassName={styles.scrollButton}>
+            followButtonClassName={styles.scrollButton}
+        >
             <div className={styles.users}>
-                {currentRoom.users.map(user =>
-                    <Item user={user} isMe={user.uuid === currentUser.uuid} key={user.uuid}/>
-                )}
+                {currentRoom.users.map((user) => (
+                    <Item
+                        user={user}
+                        isMe={user.uuid === currentUser.uuid}
+                        key={user.uuid}
+                    />
+                ))}
             </div>
         </ScrollToBottom>
     );

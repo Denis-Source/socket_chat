@@ -1,18 +1,18 @@
-import React, {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {MessageModel} from "../../../Models/Message.model";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { MessageModel } from "../../../Models/Message.model";
 import Item from "../Item/Item";
-import {UserModel} from "../../../Models/User.model";
+import { UserModel } from "../../../Models/User.model";
 
 import styles from "./List.module.scss";
 import ScrollToBottom from "react-scroll-to-bottom";
 import useSound from "use-sound";
-import {setNew} from "../../../Reducers/Message";
+import { setNew } from "../../../Reducers/Message";
 import Spinner from "../../Spinner/Spinner";
-import {ViewportList} from "react-viewport-list";
+import { ViewportList } from "react-viewport-list";
 import Announcement from "../../Misc/Announcement/Announcement";
-import {Animations} from "../../Misc/Ghost/Ghost";
-import {Strings} from "../../../strings";
+import { Animations } from "../../Misc/Ghost/Ghost";
+import { Strings } from "../../../strings";
 
 const notificationOther = require("../../../Static/Sound/messageOther.mp3");
 const notificationMine = require("../../../Static/Sound/messageMine.mp3");
@@ -53,7 +53,10 @@ const List = () => {
                 >
                     <div className={styles.messages}>
                         {messages.length === 0 ? (
-                            <Announcement  animation={Animations.Wobble} text={Strings.NoMessages}/>
+                            <Announcement
+                                animation={Animations.Wobble}
+                                text={Strings.NoMessages}
+                            />
                         ) : (
                             <ViewportList items={messages}>
                                 {(item) => (

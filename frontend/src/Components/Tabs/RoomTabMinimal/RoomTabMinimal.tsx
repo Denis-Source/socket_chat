@@ -1,8 +1,8 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import List from "../../Room/List/List";
 import Input from "../../Input/Input";
 import styles from "./RoomTabMinimal.module.scss";
-import {Strings} from "../../../strings";
+import { Strings } from "../../../strings";
 import SetLogTabButton from "../../Buttons/FuncButtons/SetLogTabButton";
 
 const RoomTabMinimal = () => {
@@ -16,9 +16,9 @@ const RoomTabMinimal = () => {
                     setString={setFilterString}
                     placeholder={Strings.SearchPlaceholder}
                 />
-                <SetLogTabButton/>
+                <SetLogTabButton />
             </div>
-            <List filterString={filterString}/>
+            <List filterString={filterString} />
         </>
     );
 };

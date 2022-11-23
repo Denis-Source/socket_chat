@@ -1,15 +1,21 @@
-import {TypeStatements} from "./StatementsTypes/TypeStatements";
-import {MessageStatements} from "./StatementsTypes/MessageStatements";
-import {RoomStatements} from "./StatementsTypes/RoomStatements";
-import {UserStatements} from "./StatementsTypes/UserStatements";
-import {LogModel, LogOrigin} from "./Models/Log.model";
+import { TypeStatements } from "./StatementsTypes/TypeStatements";
+import { MessageStatements } from "./StatementsTypes/MessageStatements";
+import { RoomStatements } from "./StatementsTypes/RoomStatements";
+import { UserStatements } from "./StatementsTypes/UserStatements";
+import { LogModel, LogOrigin } from "./Models/Log.model";
 import store from "./store";
-import {addLog} from "./Reducers/Log";
-import {DrawingStatements} from "./StatementsTypes/DrawingStatements";
-import {setUser} from "./Reducers/User";
-import {addBulkRoom, addRoom, leaveRoom, removeRoom, updateRoom} from "./Reducers/Room";
-import {addMessage, bulkAddMessage} from "./Reducers/Message";
-import {addDrawingLine, setDrawing} from "./Reducers/Drawing";
+import { addLog } from "./Reducers/Log";
+import { DrawingStatements } from "./StatementsTypes/DrawingStatements";
+import { setUser } from "./Reducers/User";
+import {
+    addBulkRoom,
+    addRoom,
+    leaveRoom,
+    removeRoom,
+    updateRoom,
+} from "./Reducers/Room";
+import { addMessage, bulkAddMessage } from "./Reducers/Message";
+import { addDrawingLine, setDrawing } from "./Reducers/Drawing";
 
 export const WSS_FEED_URL = "ws://localhost:9000";
 // export const WSS_FEED_URL = "wss://chat.zoloto.cx.ua/api";
@@ -87,7 +93,6 @@ export const processMessage = (data: any) => {
             break;
     }
 };
-
 
 export const prepareStatement = (parts: StatementParts) => {
     /*

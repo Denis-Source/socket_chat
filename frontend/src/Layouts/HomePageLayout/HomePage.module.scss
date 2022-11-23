@@ -1,23 +1,23 @@
 @import "src/Static/Styles/_globals.scss";
 
 .layout {
-  display: grid;
-  grid-template-columns: 350px 1fr;
-  gap: 10px;
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 10px;
 
-  @media screen and (max-width: $size-compact) {
-    grid-template-columns: 300px 1fr;
-  }
+    @media screen and (max-width: $size-compact) {
+        grid-template-columns: 300px 1fr;
+    }
 
-  @media screen and (max-width: $size-limited) {
-    display: block;
-  }
+    @media screen and (max-width: $size-limited) {
+        display: block;
+    }
 }
 
 .leftTab {
-  display: flex;
-  flex-direction: column;
-  @media screen and (max-width: $size-limited) {
-    display: none;
-  }
+    display: flex;
+    flex-direction: column;
+    @media screen and (max-width: $size-limited) {
+        display: none;
+    }
 }

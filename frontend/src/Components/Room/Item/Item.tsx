@@ -1,25 +1,25 @@
-import React, {useState} from "react";
-import {RoomModel} from "../../../Models/Room.model";
-import {enterRoom} from "../../../Reducers/Room";
+import React, { useState } from "react";
+import { RoomModel } from "../../../Models/Room.model";
+import { enterRoom } from "../../../Reducers/Room";
 import useWebSocket from "react-use-websocket";
-import {prepareStatement, WSS_FEED_URL} from "../../../api";
-import {RoomStatements} from "../../../StatementsTypes/RoomStatements";
-import {useDispatch} from "react-redux";
+import { prepareStatement, WSS_FEED_URL } from "../../../api";
+import { RoomStatements } from "../../../StatementsTypes/RoomStatements";
+import { useDispatch } from "react-redux";
 import styles from "./Item.module.scss";
 import cross from "../../../Static/Images/cross.svg";
 import message from "../../../Static/Images/message.svg";
 import user from "../../../Static/Images/user.svg";
-import {RightTabs, setRightTab} from "../../../Reducers/General";
-import {TypeStatements} from "../../../StatementsTypes/TypeStatements";
-import MutableName, {Alignment} from "../../MutableName/MutableName";
+import { RightTabs, setRightTab } from "../../../Reducers/General";
+import { TypeStatements } from "../../../StatementsTypes/TypeStatements";
+import MutableName, { Alignment } from "../../MutableName/MutableName";
 import RoomColorPicker from "../../ColorPicker/RoomColorPicker/RoomColorPicker";
-import {motion} from "framer-motion";
-import {useNavigate} from "react-router-dom";
-import {RouterPaths} from "../../../router";
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { RouterPaths } from "../../../router";
 
-const Item = ({room}: { room: RoomModel }) => {
+const Item = ({ room }: { room: RoomModel }) => {
     // Configure websocket connection
-    const {sendJsonMessage} = useWebSocket(WSS_FEED_URL, {
+    const { sendJsonMessage } = useWebSocket(WSS_FEED_URL, {
         share: true,
     });
 
@@ -63,25 +63,25 @@ const Item = ({room}: { room: RoomModel }) => {
     return (
         <motion.div
             layout
-            animate={{opacity: 1}}
-            initial={{opacity: 0.2}}
-            transition={{duration: 0.2}}
+            animate={{ opacity: 1 }}
+            initial={{ opacity: 0.2 }}
+            transition={{ duration: 0.2 }}
             className={styles.layout}
         >
             <div className={styles.item} onClick={sendEnter}>
                 <div className={styles.header}>
-                    <MutableName room={room} alignment={Alignment.left}/>
+                    <MutableName room={room} alignment={Alignment.left} />
                     <button
                         className={styles.closeButton}
                         onClick={(event) => sendDelete(event)}
                     >
-                        <img src={cross} alt="Cross icon"/>
+                        <img src={cross} alt="Cross icon" />
                     </button>
                 </div>
                 <div className={styles.footer}>
                     <div
                         className={styles.colorIcon}
-                        style={{backgroundColor: `${room.color}aa`}}
+                        style={{ backgroundColor: `${room.color}aa` }}
                         onClick={(event) => {
                             event.stopPropagation();
                             setPickerVisible(!pickerVisible);
