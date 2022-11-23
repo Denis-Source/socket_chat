@@ -1,15 +1,15 @@
 import React from "react";
 import styles from "./BaseLayout.module.scss";
 import Header from "../../Components/Header/Header";
-import { useSelector } from "react-redux";
-import { AppStates, ErrorMessages } from "../../Reducers/General";
+import {useSelector} from "react-redux";
+import {AppStates, ErrorMessages} from "../../Reducers/General";
 import Spinner from "../../Components/Spinner/Spinner";
 import ErrorTab from "../../Components/Tabs/ErrorTab/ErrorTab";
-import { Strings } from "../../strings";
+import {Strings} from "../../strings";
 
 const BaseLayout = ({
-    children,
-}: {
+                        children,
+                    }: {
     children?: JSX.Element | [JSX.Element];
 }) => {
     // Get theme, application state and error message from the state
@@ -25,7 +25,9 @@ const BaseLayout = ({
     let selectedLayout;
     switch (appState) {
         case AppStates.Loading:
-            selectedLayout = <Spinner />;
+            selectedLayout = <div className={styles.spinnerWrapper}>
+                <Spinner/>
+            </div>;
             break;
         case AppStates.Errored:
             selectedLayout = (
@@ -39,7 +41,7 @@ const BaseLayout = ({
         default:
             selectedLayout = (
                 <div className={styles.container}>
-                    <Header />
+                    <Header/>
                     {children}
                 </div>
             );

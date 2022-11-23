@@ -1,8 +1,11 @@
 @import "src/Static/Styles/_globals.scss";
 
 .body {
-    //overflow: hidden;
     min-height: 100vh;
+}
+
+.spinnerWrapper {
+    height: 100vh;
 }
 
 .container {
