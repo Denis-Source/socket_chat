@@ -1,8 +1,8 @@
 @import "src/Static/Styles/_globals.scss";
 
 .body {
-    overflow: hidden;
-    height: 100vh;
+    //overflow: hidden;
+    min-height: 100vh;
 }
 
 .container {

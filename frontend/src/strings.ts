@@ -43,7 +43,7 @@ export enum Strings {
     InfoCopyRight = "© 2022-2023 Denis Zolotoverkh",
     InfoP1 = "WebSocket realtime chat application.",
     InfoLink = "Link to other projects.",
-    InfoP2 = "The application was made for test/educational purposes. Utilizes full power of WebSocket protocol technology. It is fully anonymous and does not track or require any personal information.",
+    InfoP2 = "The application was made for testing/educational purposes. Utilizes full power of WebSocket protocol technology. It is fully anonymous and does not track or require any personal information.",
     InfoP3 = "All rights granted under GNU General Public License v2.0 and are granted for the term of copyright on the Program.",
     InfoP4 = "All the Source Code can be found on ",
 }

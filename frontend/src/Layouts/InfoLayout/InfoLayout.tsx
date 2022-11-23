@@ -20,7 +20,7 @@ const InfoLayout = () => {
                     <p className={styles.desc}>
                         <a
                             className={styles.link}
-                            href="https://zoloto.cx.ua"
+                            href="https://zoloto.cx.ua/#section-portfolio"
                             target="_blank"
                         >
                             <u>{Strings.InfoLink}</u>
