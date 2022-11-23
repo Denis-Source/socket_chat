@@ -1,11 +1,11 @@
 import React from "react";
 import ScrollToBottom from "react-scroll-to-bottom";
 import styles from "./List.module.scss";
-import {UserModel} from "../../../Models/User.model";
+import { UserModel } from "../../../Models/User.model";
 import Item from "../Item/Item";
-import {RoomModel} from "../../../Models/Room.model";
-import {useSelector} from "react-redux";
-import {Strings} from "../../../strings";
+import { RoomModel } from "../../../Models/Room.model";
+import { useSelector } from "react-redux";
+import { Strings } from "../../../strings";
 
 const List = () => {
     // Get current room and user from the state

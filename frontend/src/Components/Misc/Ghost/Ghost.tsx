@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 export enum Animations {
     Wobble = "wobble",
     Shake = "shake",
-    Nod = "nod"
+    Nod = "nod",
 }
 
 const Ghost = ({ animation }: { animation: Animations }) => {
