@@ -1,8 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap");
 
 $font-family-text: "Roboto Slab", serif;
-$font-family-code: "Roboto Slab", mono;
+$font-family-code: "Roboto Mono", monospace;
 
 $color-room: #ffffff36;
 $color-room-picker: #ffffff66;
@@ -22,34 +22,26 @@ $size-mobile: 600px;
 $size-keyboard: 600px;
 
 ::-webkit-scrollbar {
-    width: 6px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-    background: transparent;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: $color-accent;
+  background: $color-accent;
 }
 
 body {
-    font-family: $font-family-text;
-    margin: 0;
+  font-family: $font-family-text;
+  margin: 0;
 
-    color: $color-text;
-    min-height: 100vh;
+  color: $color-text;
+  min-height: 100vh;
 }
 
-a:link {
-    text-decoration: none;
-}
-a:visited {
-    text-decoration: none;
-}
-a:hover {
-    text-decoration: none;
-}
-a:active {
-    text-decoration: none;
+a:link, a:visited, a:hover, a:active {
+  text-decoration: none;
+  color: $color-text;
 }

@@ -6,6 +6,7 @@
     padding: 0 0 30px 30px;
     margin-left: 10px;
     font-family: $font-family-code;
+    font-weight: bold;
     display: flex;
     flex-direction: column;
     &:before {
@@ -31,11 +32,9 @@
 .origin {
     margin: 0;
     font-size: 14px;
-    font-weight: 600;
 }
 
 .time {
-    font-weight: 600;
     margin: 0;
 }
 

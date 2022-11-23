@@ -1,10 +1,11 @@
 import React from "react";
 import ScrollToBottom from "react-scroll-to-bottom";
 import styles from "./List.module.scss";
-import { UserModel } from "../../../Models/User.model";
+import {UserModel} from "../../../Models/User.model";
 import Item from "../Item/Item";
-import { RoomModel } from "../../../Models/Room.model";
-import { useSelector } from "react-redux";
+import {RoomModel} from "../../../Models/Room.model";
+import {useSelector} from "react-redux";
+import {Strings} from "../../../strings";
 
 const List = () => {
     // Get current room and user from the state
@@ -14,21 +15,24 @@ const List = () => {
     const currentUser: UserModel = useSelector((state: any) => state.user.user);
 
     return (
-        <ScrollToBottom
-            initialScrollBehavior={"auto"}
-            className={styles.wrapper}
-            followButtonClassName={styles.scrollButton}
-        >
-            <div className={styles.users}>
-                {currentRoom.users.map((user) => (
-                    <Item
-                        user={user}
-                        isMe={user.uuid === currentUser.uuid}
-                        key={user.uuid}
-                    />
-                ))}
-            </div>
-        </ScrollToBottom>
+        <>
+            <h2 className={styles.header}>{Strings.UserListHeader}</h2>
+            <ScrollToBottom
+                initialScrollBehavior={"auto"}
+                className={styles.wrapper}
+                followButtonClassName={styles.scrollButton}
+            >
+                <div className={styles.users}>
+                    {currentRoom.users.map((user) => (
+                        <Item
+                            user={user}
+                            isMe={user.uuid === currentUser.uuid}
+                            key={user.uuid}
+                        />
+                    ))}
+                </div>
+            </ScrollToBottom>
+        </>
     );
 };
 
