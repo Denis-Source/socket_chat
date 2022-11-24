@@ -53,17 +53,25 @@ class User(BaseModel):
         except NotFoundException:
             return None
 
-    async def enter_room(self, room):
+    async def enter_room(self, room) -> Room:
         """
         Entered the specified room
 
         :param room:        room instance
-        :return:            None
+        :return:            old room instance
         """
         self.logger.debug(f"{self} entering {room}")
+        old_room = None
+        if self.room_uuid:
+            old_room = await Room.get(self.room_uuid)
+            await old_room.remove_user(self)
         self.room_uuid = room.uuid
         await self.storage.put(self)
         await room.add_user(self)
+
+        if old_room:
+            return old_room
+
 
     async def leave_room(self):
         """

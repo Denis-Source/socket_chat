@@ -1,4 +1,4 @@
-from logging import DEBUG, INFO
+from logging import DEBUG, INFO, ERROR
 
 from storage.alchemy_storage.alchemy_storage import AlchemyStorage
 
@@ -12,12 +12,12 @@ class Config:
     STORAGE_CLS = AlchemyStorage
 
     # Logging
-    LOGGING_LEVEL = DEBUG
+    LOGGING_LEVEL = ERROR
     LOGGING_FORMAT = "%(asctime)s\t%(levelname)-7s\t%(name)-16s\t%(message)s"
 
     # Special logging modules to have a different level
     LOGGING_QUITES = [AlchemyStorage.NAME, "aiosqlite", "websockets"]
-    LOGGING_QUITES_LEVEL = INFO
+    LOGGING_QUITES_LEVEL = ERROR
 
     # Length limit of a parsable message
     MAX_STATEMENT_SIZE = 1e5

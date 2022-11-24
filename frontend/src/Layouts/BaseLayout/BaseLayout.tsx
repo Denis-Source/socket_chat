@@ -9,8 +9,10 @@ import { Strings } from "../../strings";
 
 const BaseLayout = ({
     children,
+    dynamicHeight,
 }: {
     children?: JSX.Element | [JSX.Element];
+    dynamicHeight?: boolean;
 }) => {
     // Get theme, application state and error message from the state
     const theme: string[] = useSelector((state: any) => state.general.theme);
@@ -25,6 +27,7 @@ const BaseLayout = ({
     let selectedLayout;
     switch (appState) {
         case AppStates.Loading:
+            dynamicHeight = false;
             selectedLayout = <Spinner />;
             break;
         case AppStates.Errored:
@@ -47,7 +50,7 @@ const BaseLayout = ({
 
     return (
         <div
-            className={styles.body}
+            className={dynamicHeight ? styles.bodyFixed : styles.body}
             style={{
                 background: `linear-gradient(135deg, ${theme[0]}, ${theme[1]})`,
             }}

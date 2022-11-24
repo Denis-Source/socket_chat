@@ -10,8 +10,13 @@
     height: calc(100vh - 370px);
 }
 
-.icon {
+.iconWrapper {
     width: 40px;
+    height: 40px;
+}
+
+.icon {
+    width: 100%;
 }
 
 .text {

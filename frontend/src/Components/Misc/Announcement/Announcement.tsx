@@ -16,13 +16,15 @@ const Announcement = ({
 }) => {
     return (
         <div className={styles.wrapper} onClick={onClick}>
-            <Ghost animation={animation} />
-            <p className={styles.desc}>{text}</p>
-            {description && (
-                <div className={styles.refreshWrapper}>
-                    <p className={styles.refreshDesc}>{description}</p>
-                </div>
-            )}
+            <div className={onClick ? styles.ghostClickable : styles.ghost}>
+                <Ghost animation={animation} />
+                <p className={styles.desc}>{text}</p>
+                {description && (
+                    <div className={styles.refreshWrapper}>
+                        <p className={styles.refreshDesc}>{description}</p>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };

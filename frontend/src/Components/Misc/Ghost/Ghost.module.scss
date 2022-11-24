@@ -20,8 +20,13 @@
     animation: 2s nod infinite;
 }
 
-.icon {
+.iconWrapper {
     width: 90px;
+    height: 98px;
+}
+
+.icon {
+    width: 100%;
 }
 
 @keyframes wobble {

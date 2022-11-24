@@ -5,18 +5,27 @@
     align-items: center;
     flex-direction: column;
     justify-content: center;
-    height: 75%;
+    height: 100%;
+}
 
+.ghost {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.ghostClickable {
+    @extend .ghost;
     &:hover {
         cursor: pointer;
+    }
+
+    &:hover {
         .refreshWrapper {
             opacity: 1;
             transform: translateY(0);
         }
-    }
-
-    @media screen and (max-width: $size-mobile) {
-        height: 100%;
     }
 }
 

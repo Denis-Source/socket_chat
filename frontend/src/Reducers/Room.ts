@@ -1,16 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RoomModel } from "../Models/Room.model";
 
-const MAX_ROOMS = 100;
-
 type InitialState = {
     list: RoomModel[];
     current: RoomModel | null;
+    entered: boolean;
 };
 
 const initialState: InitialState = {
     list: [],
     current: null,
+    entered: false,
 };
 
 export const roomSlice = createSlice({
@@ -19,11 +19,11 @@ export const roomSlice = createSlice({
     reducers: {
         addBulkRoom: (state, action: PayloadAction<RoomModel[]>) => {
             // Add rooms in bulk, cut if too many
-            state.list = [...action.payload].slice(-MAX_ROOMS);
+            state.list = [...action.payload];
         },
         addRoom: (state, action: PayloadAction<RoomModel>) => {
             // add room to the list, cut if too many
-            state.list = [...state.list, action.payload].slice(-MAX_ROOMS);
+            state.list = [...state.list, action.payload];
         },
         updateRoom: (state, action: PayloadAction<RoomModel>) => {
             // Update the specified room in the list by uuid
@@ -42,6 +42,7 @@ export const roomSlice = createSlice({
         enterRoom: (state, action: PayloadAction<RoomModel>) => {
             // Set the current room to the provided one
             state.current = action.payload;
+            state.entered = true;
         },
         removeRoom: (state, action: PayloadAction<RoomModel>) => {
             // Delete the specified room
@@ -53,6 +54,7 @@ export const roomSlice = createSlice({
         leaveRoom: (state) => {
             // Set the current room to a blank value
             state.current = null;
+            state.entered = false;
         },
     },
 });

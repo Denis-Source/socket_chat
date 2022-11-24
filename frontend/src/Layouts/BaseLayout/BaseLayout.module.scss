@@ -1,8 +1,11 @@
 @import "src/Static/Styles/_globals.scss";
 
 .body {
+    height: 100vh;
+}
+
+.bodyFixed {
     min-height: 100vh;
-    height: 1px;
 }
 
 .container {

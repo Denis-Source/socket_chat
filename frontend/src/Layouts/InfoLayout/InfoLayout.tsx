@@ -8,7 +8,7 @@ import { RouterPaths } from "../../router";
 
 const InfoLayout = () => {
     return (
-        <BaseLayout>
+        <BaseLayout dynamicHeight={true}>
             <div className={styles.wrapper}>
                 <div className={styles.header}>
                     <h2>{Strings.InfoHeader}</h2>

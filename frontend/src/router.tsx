@@ -25,7 +25,7 @@ export const router = createBrowserRouter([
         ),
     },
     {
-        path: "/room",
+        path: "/room/:roomUuid",
         element: <RoomLayout />,
         errorElement: (
             <ErrorLayout
@@ -37,5 +37,11 @@ export const router = createBrowserRouter([
     {
         path: "/info",
         element: <InfoLayout />,
+        errorElement: (
+            <ErrorLayout
+                message={ErrorMessages.Unknown}
+                description={Strings.GoBack}
+            />
+        ),
     },
 ]);

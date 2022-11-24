@@ -5,7 +5,6 @@ import { UserModel } from "../../../Models/User.model";
 import Item from "../Item/Item";
 import { RoomModel } from "../../../Models/Room.model";
 import { useSelector } from "react-redux";
-import { Strings } from "../../../strings";
 
 const List = () => {
     // Get current room and user from the state
@@ -16,7 +15,6 @@ const List = () => {
 
     return (
         <>
-            <h2 className={styles.header}>{Strings.UserListHeader}</h2>
             <ScrollToBottom
                 initialScrollBehavior={"auto"}
                 className={styles.wrapper}

@@ -1,15 +1,12 @@
 import React, { useState } from "react";
 import { RoomModel } from "../../../Models/Room.model";
-import { enterRoom } from "../../../Reducers/Room";
 import useWebSocket from "react-use-websocket";
 import { prepareStatement, WSS_FEED_URL } from "../../../api";
 import { RoomStatements } from "../../../StatementsTypes/RoomStatements";
-import { useDispatch } from "react-redux";
 import styles from "./Item.module.scss";
 import cross from "../../../Static/Images/cross.svg";
 import message from "../../../Static/Images/message.svg";
 import user from "../../../Static/Images/user.svg";
-import { RightTabs, setRightTab } from "../../../Reducers/General";
 import { TypeStatements } from "../../../StatementsTypes/TypeStatements";
 import MutableName, { Alignment } from "../../MutableName/MutableName";
 import RoomColorPicker from "../../ColorPicker/RoomColorPicker/RoomColorPicker";
@@ -27,26 +24,7 @@ const Item = ({ room }: { room: RoomModel }) => {
     const [pickerVisible, setPickerVisible] = useState<boolean>(false);
 
     // Use dispatch to call state changes
-    const dispatch = useDispatch();
     const navigate = useNavigate();
-
-    // Function to enter a room
-    const sendEnter = async () => {
-        // Navigate to the room view
-        navigate(RouterPaths.Rooms);
-
-        // Change internal states
-        dispatch(enterRoom(room));
-        dispatch(setRightTab(RightTabs.Messages));
-
-        // Send the corresponding message to the server
-        const statement = prepareStatement({
-            type: TypeStatements.Call,
-            message: RoomStatements.EnterRoom,
-            uuid: room.uuid,
-        });
-        await sendJsonMessage(statement);
-    };
 
     // Function to delete the room
     const sendDelete = async (event: React.MouseEvent) => {
@@ -68,7 +46,10 @@ const Item = ({ room }: { room: RoomModel }) => {
             transition={{ duration: 0.2 }}
             className={styles.layout}
         >
-            <div className={styles.item} onClick={sendEnter}>
+            <div
+                className={styles.item}
+                onClick={() => navigate(`${RouterPaths.Rooms}/${room.uuid}`)}
+            >
                 <div className={styles.header}>
                     <MutableName room={room} alignment={Alignment.left} />
                     <button

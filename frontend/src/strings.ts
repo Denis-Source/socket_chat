@@ -33,11 +33,10 @@ export enum Strings {
     ErrorDisconnected = "Disconnected",
     ErrorRefresh = "Refresh",
 
-    NoRoomSelected = "No room selected",
+    RoomDoesNotExist = "Room does not exist",
     GoBack = "Back to homepage",
 
     NoPageFound = "No page found",
-    UserListHeader = "Users in the room:",
 
     InfoHeader = "About the Project",
     InfoCopyRight = "© 2022-2023 Denis Zolotoverkh",

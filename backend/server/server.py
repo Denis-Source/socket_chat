@@ -173,9 +173,7 @@ class Server:
         try:
             room_uuid = payload["uuid"]
             room = await Room.get(room_uuid)
-            old_room = await user.get_room()
-
-            await user.enter_room(room)
+            old_room = await user.enter_room(room)
 
             history = await room.get_messages()
 
@@ -472,6 +470,10 @@ class Server:
             message=UserResultStatements.USER_CHANGED,
             object=user.get_dict()
         ))
+
+        if user.room_uuid:
+            room = await Room.get(user.room_uuid)
+            await self.broadcast_room(room, message=RoomResultStatements.ROOM_CHANGED)
 
     # message methods
     async def create_message(self, user: User, payload: dict):

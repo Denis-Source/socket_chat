@@ -32,11 +32,13 @@ const Ghost = ({ animation }: { animation: Animations }) => {
             transition={{ duration: 1 }}
             className={ghostStyle}
         >
-            <img
-                className={styles.icon}
-                src={ghostIcon}
-                alt={Strings.GhostDesc}
-            />
+            <div className={styles.iconWrapper}>
+                <img
+                    className={styles.icon}
+                    src={ghostIcon}
+                    alt={Strings.GhostDesc}
+                />
+            </div>
         </motion.div>
     );
 };
