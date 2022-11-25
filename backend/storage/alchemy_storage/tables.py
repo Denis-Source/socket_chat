@@ -1,5 +1,6 @@
-from sqlalchemy import Column, String, ForeignKey, Text
+from sqlalchemy import Column, String, ForeignKey, Text, DateTime
 from sqlalchemy.orm import relationship, declarative_base
+from sqlalchemy.sql import func
 
 Base = declarative_base()
 
@@ -24,11 +25,13 @@ class RoomDB(Base):
     name = Column(String(64))
     uuid = Column(String(36), primary_key=True)
     color = Column(String(9))
+    created = Column(DateTime(timezone=True), server_default=func.now())
+
     users = relationship("UserDB", back_populates="room")
     messages = relationship("MessageDB", back_populates="room")
     drawing = relationship("DrawingDB", back_populates="room", uselist=False)
 
-    __mapper_args__ = {'eager_defaults': True}
+    __mapper_args__ = {"eager_defaults": True}
 
 
 class MessageDB(Base):
@@ -45,7 +48,7 @@ class MessageDB(Base):
     room = relationship("RoomDB", back_populates="messages")
     room_uuid = Column(String, ForeignKey("room.uuid"))
 
-    __mapper_args__ = {'eager_defaults': True}
+    __mapper_args__ = {"eager_defaults": True}
 
 
 class DrawingDB(Base):
@@ -59,7 +62,7 @@ class DrawingDB(Base):
 
     lines = relationship("LineDB", back_populates="drawing")
 
-    __mapper_args__ = {'eager_defaults': True}
+    __mapper_args__ = {"eager_defaults": True}
 
 
 class LineDB(Base):
@@ -74,4 +77,4 @@ class LineDB(Base):
     drawing = relationship("DrawingDB", back_populates="lines")
     drawing_uuid = Column(String, ForeignKey("drawing.uuid"))
 
-    __mapper_args__ = {'eager_defaults': True}
+    __mapper_args__ = {"eager_defaults": True}

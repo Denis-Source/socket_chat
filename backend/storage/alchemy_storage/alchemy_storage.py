@@ -186,7 +186,7 @@ class AlchemyStorage(BaseStorage):
 
     async def _list_rooms(self):
         query = select(RoomDB).options(selectinload(RoomDB.users), selectinload(RoomDB.drawing),
-                                       selectinload(RoomDB.messages))
+                                       selectinload(RoomDB.messages)).order_by(RoomDB.created)
         result = await self._session.scalars(query)
         rooms_db = result.all()
 
