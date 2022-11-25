@@ -1,8 +1,8 @@
-
 # Websocket Chat
 
 Websocket realtime chat application.
 https://chat.zoloto.cx.ua/
+https://chat.zoloto.cx.ua/info
 
 ## Installation
 ```sh
@@ -11,7 +11,7 @@ git clone https://github.com/Denis-Source/socket_chat.git
 
 #### backend
 
-After clonning the repository, go to the `backend` folder, configure the virtual environment  and install dependencies.
+After cloning the repository, go to the `backend` folder, configure the virtual environment  and install dependencies.
 
 ```sh
 cd .\socket_chat\backend\
@@ -77,7 +77,7 @@ Both frontend and backend provide verbose logging. The frontend one is visible b
 The application does not require registration of any sort as the user name is generated at the start:
 ![02 user](https://user-images.githubusercontent.com/58669569/189720158-4abaa8b3-8b81-433b-bd6a-f3a435a6c51a.png)
 
-The application is completely anonymous and does not store any user data as it is not needed. Also, there is no form of roles or admin privilages, anyone can do anything.
+The application is completely anonymous and does not store any user data as it is not needed. Also, there is no form of roles or admin privileges, anyone can do anything.
 
 Most of the names are changeable, the username as well.
 
@@ -88,7 +88,7 @@ All entities of the application are distinguished by their universally unique id
 The main objective of the application is to provide an ability to exchange messages between people, which takes place in rooms. The room can be created or deleted by anyone and it is fully customizable:
 ![03 room](https://user-images.githubusercontent.com/58669569/189720181-7dbd8b26-0d67-4922-afe2-411c80863cb5.png)
 
-The room list is sorted by the room creation time, to solve the problem of navigating an overwhelmingly large number of them, the search is provided.
+The room list is sorted by the room creation time, to solve the problem of navigating a potential overwhelmingly large number of them, the search is provided.
 ***
 
 ### Messages
@@ -100,6 +100,7 @@ The amount of rooms and messages are **NOT LIMITED**.
 ### Side tabs
 When entered the room, there is still an option to see rooms, by switching the left tab to the room list:
 ![07 roomMini](https://user-images.githubusercontent.com/58669569/189720568-b46db0c2-d072-425c-a16c-71fe9f4c1098.png)
+Both left and right tabs can be selected. The one consists of logging and room list, the right one – a list of messages, a list of users entered the room and a drawing. 
 ***
 
 ### Drawings
@@ -149,7 +150,7 @@ The statement has one of the following types:
 - `error`.
 
 All of the statement have `payload` field. 
-`message` specifies the type of actions that were or should be performed. Both the backend and frontend side have enumerations that list all of the avaliable `message` types.
+`message` specifies the type of actions that were or should be performed. Both the backend and frontend side have enumerations that list all of the available `message` types.
 To send a data, `payload` could have other fields, such as `object`, `list`.
 
 The statement used to change a room color:
@@ -166,9 +167,9 @@ The statement used to change a room color:
 ***
 
 ### Utils class
-All of the incomming messages are filtered and cleaned with the `Utils` class `parse_statement` method with the specified validators. 
+All of the incoming messages are filtered and cleaned with the `Utils` class `parse_statement` method with the specified validators. 
 
-The `prepare_statement` method is on the other hand is used to costruct a statement based on type, message and othe additional parameters.
+The `prepare_statement` method is on the other hand is used to construct a statement based on type, message and other additional parameters.
 ***
 
 ### Server class
@@ -214,7 +215,7 @@ As we can see from the `AbstractModel` all of the classes should implement the f
 - `get` to get a specific model instance (based on `uuid`)			
 - `delete` to delete a model instance
 
-And instance `get_dict` to construct a dictionary reprasentation of an instance that is easily JSON serializable.
+And instance `get_dict` to construct a dictionary representation of an instance that is easily JSON serializable.
 
 The models uses `Storage` class to save it's contents to the database. Since the `websockets` library is *asynchronous*, the `Storage` is made as well. That means that the model can not use default `__init__()` constructor to create an instance, so the `create()` class method is needed.
 
@@ -415,7 +416,7 @@ export interface UserModel {
 There are also Enumerations related to the statement types used to communicate with the server located in the `StatementTypes` folder.
 ***
 #### Reducers
-Taking into account that the project has a complex internal state (message history, drawing, log lists, etc), the [redux](https://react-redux.js.org/) state manager was used. For every model, the corresponding [redux slice](https://redux-toolkit.js.org/api/createSlice) was implemented.
+Taking into account that the project has a complex internal state (message history, drawing, log lists, etc.), the [redux](https://react-redux.js.org/) state manager was used. For every model, the corresponding [redux slice](https://redux-toolkit.js.org/api/createSlice) was implemented.
 
 The application calls the reducers with `dispatch` to avoid infinite callback passing.
 ***
@@ -446,5 +447,10 @@ To save a preferred theme in cookies, selected with a previously mentioned slide
 
 #### [use-sound](https://www.npmjs.com/package/use-sound)
 The application has sound notifications, so the appropriate library was used.
-> Note: The TypeScript does not recognize the `mp3` format with the `ES6` format, so the *good old* `require` was used for that. 
+> TypeScript does not recognize the `mp3` format with the `ES6` format, so the *good old* `require` was used for that. 
+
+#### [react-router](https://reactrouter.com/en/main)
+Even though it is a one page application, it still uses sever routes such as homepage, room page, information page, etc.
+> Rooms have dynamic routing so it is possible to enter a room given its URL.
+
 ***
