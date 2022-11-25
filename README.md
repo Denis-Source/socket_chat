@@ -447,7 +447,7 @@ To save a preferred theme in cookies, selected with a previously mentioned slide
 
 #### [use-sound](https://www.npmjs.com/package/use-sound)
 The application has sound notifications, so the appropriate library was used.
-> The TypeScript does not recognize the `mp3` format with the `ES6` format, so the *good old* `require` was used for that. 
+> TypeScript does not recognize the `mp3` format with the `ES6` format, so the *good old* `require` was used for that. 
 
 #### [react-router](https://reactrouter.com/en/main)
 Even though it is a one page application, it still uses sever routes such as homepage, room page, information page, etc.
