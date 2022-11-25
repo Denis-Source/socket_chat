@@ -43,7 +43,7 @@ const HomePageLayout = () => {
         if (currentRoom) {
             leave().then();
         }
-    }, [currentRoom]);
+    }, [currentRoom, dispatch, sendJsonMessage]);
 
     // Decide what left tab to display
     const { leftTab } = useSelector((state: any) => state.general);

@@ -44,7 +44,7 @@ export const BACKGROUND_COLORS = [
 ];
 
 const initialState: InitialState = {
-    leftTab: LeftTabs.Log,
+    leftTab: LeftTabs.Rooms,
     rightTab: RightTabs.Rooms,
     appState: AppStates.Loading,
     errorMessage: ErrorMessages.Unknown,
