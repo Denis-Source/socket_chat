@@ -7,7 +7,7 @@ import { RoomModel } from "../../../Models/Room.model";
 import { useSelector } from "react-redux";
 
 const List = () => {
-    // Get current room and user from the state
+    // Get the current room and the user from the state
     const currentRoom: RoomModel = useSelector(
         (state: any) => state.room.current
     );

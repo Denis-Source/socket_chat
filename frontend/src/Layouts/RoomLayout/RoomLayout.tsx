@@ -82,7 +82,7 @@ const RoomLayout = () => {
         if (!currentRoom && selectedRoom) {
             sendEnter(selectedRoom).then();
         }
-    }, [roomUuid, rooms, currentRoom, sendJsonMessage]);
+    }, [roomUuid, rooms, currentRoom, dispatch, sendJsonMessage]);
 
     // Get navigation
     const navigate = useNavigate();

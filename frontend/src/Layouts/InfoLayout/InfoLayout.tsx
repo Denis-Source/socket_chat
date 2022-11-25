@@ -22,7 +22,7 @@ const InfoLayout = () => {
                             className={styles.link}
                             href="https://zoloto.cx.ua/#section-portfolio"
                             target="_blank"
-                            rel="noopener"
+                            rel="noopener noreferrer"
                         >
                             <u>{Strings.InfoLink}</u>
                         </a>
@@ -33,8 +33,7 @@ const InfoLayout = () => {
                         <a
                             className={styles.link}
                             href="https://github.com/Denis-Source/socket_chat"
-                            target="_blank"
-                            rel="noopener"
+                            rel="noopener noreferrer"
                         >
                             <u>GitHub</u>
                         </a>
