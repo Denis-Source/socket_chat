@@ -408,7 +408,7 @@ class Server:
         :param _:       Dummy param to save the signature
         :return:        None
         """
-        room = user.get_room()
+        room = await user.get_room()
         if room:
             room = await user.get_room()
             drawing = await room.get_drawing()
